@@ -1,0 +1,4 @@
+node 22.21.1
+pre-commit 4.2.0
+pnpm latest
+typos latest
