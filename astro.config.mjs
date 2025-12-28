@@ -17,7 +17,9 @@ export default defineConfig({
 	site: "https://metalops.dev",
 
 	integrations: [
-		expressiveCode(), // https://shiki.style/languages
+		expressiveCode({
+			themes: ["catppuccin-mocha", "catppuccin-latte"],
+		}), // https://shiki.style/languages
 		mdx(),
 		sitemap(),
 		d2({ output: "static/diagrams" }),
