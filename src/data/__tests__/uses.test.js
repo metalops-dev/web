@@ -21,29 +21,36 @@ describe("uses.js", () => {
 	it("each category has required properties", () => {
 		usesData.categories.forEach((category) => {
 			expect(category).toHaveProperty("name");
-			expect(category).toHaveProperty("items");
 			expect(typeof category.name).toBe("string");
-			expect(Array.isArray(category.items)).toBe(true);
+			// Categories must have either items array or subsections array (or both)
+			const hasItems = "items" in category && Array.isArray(category.items);
+			const hasSubsections =
+				"subsections" in category && Array.isArray(category.subsections);
+			expect(hasItems || hasSubsections).toBe(true);
 		});
 	});
 
 	it("each item has required properties", () => {
 		usesData.categories.forEach((category) => {
-			category.items.forEach((item) => {
-				expect(item).toHaveProperty("name");
-				expect(item).toHaveProperty("description");
-				expect(typeof item.name).toBe("string");
-				expect(typeof item.description).toBe("string");
-			});
+			if (category.items && category.items.length > 0) {
+				category.items.forEach((item) => {
+					expect(item).toHaveProperty("name");
+					expect(item).toHaveProperty("description");
+					expect(typeof item.name).toBe("string");
+					expect(typeof item.description).toBe("string");
+				});
+			}
 		});
 	});
 
 	it("all names and descriptions are non-empty", () => {
 		usesData.categories.forEach((category) => {
-			category.items.forEach((item) => {
-				expect(item.name.length).toBeGreaterThan(0);
-				expect(item.description.length).toBeGreaterThan(0);
-			});
+			if (category.items && category.items.length > 0) {
+				category.items.forEach((item) => {
+					expect(item.name.length).toBeGreaterThan(0);
+					expect(item.description.length).toBeGreaterThan(0);
+				});
+			}
 		});
 	});
 
@@ -55,9 +62,39 @@ describe("uses.js", () => {
 
 	it("items per category are not duplicated", () => {
 		usesData.categories.forEach((category) => {
-			const itemNames = category.items.map((i) => i.name);
-			const uniqueNames = new Set(itemNames);
-			expect(uniqueNames.size).toBe(itemNames.length);
+			if (category.items && category.items.length > 0) {
+				const itemNames = category.items.map((i) => i.name);
+				const uniqueNames = new Set(itemNames);
+				expect(uniqueNames.size).toBe(itemNames.length);
+			}
+		});
+	});
+
+	it("subsections have required structure", () => {
+		usesData.categories.forEach((category) => {
+			if (category.subsections) {
+				expect(Array.isArray(category.subsections)).toBe(true);
+				category.subsections.forEach((subsection) => {
+					expect(subsection).toHaveProperty("title");
+					expect(subsection).toHaveProperty("items");
+					expect(typeof subsection.title).toBe("string");
+					expect(Array.isArray(subsection.items)).toBe(true);
+					expect(subsection.title.length).toBeGreaterThan(0);
+				});
+			}
+		});
+	});
+
+	it("subsection items are non-empty strings", () => {
+		usesData.categories.forEach((category) => {
+			if (category.subsections) {
+				category.subsections.forEach((subsection) => {
+					subsection.items.forEach((item) => {
+						expect(typeof item).toBe("string");
+						expect(item.length).toBeGreaterThan(0);
+					});
+				});
+			}
 		});
 	});
 });

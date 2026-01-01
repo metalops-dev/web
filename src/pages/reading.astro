@@ -28,30 +28,19 @@ const description = "Books, articles, and papers I'm reading";
 						A log of books, articles, and research papers I'm reading or have read. Notes and summaries coming soon.
 					</p>
 
-					<h2>Currently Reading</h2>
-					<ul class="reading-list">
-						{readingData.currentlyReading.map((book) => (
-							<li>
-								<span class="title">{book.title}</span>
-								<span class="author">{book.author}</span>
-							</li>
-						))}
-					</ul>
-
-					<h2>Recently Finished</h2>
-					<ul class="reading-list">
-						{readingData.recentlyFinished.map((book) => (
-							<li>
-								<span class="title">{book.title}</span>
-								<span class="author">{book.author}</span>
-							</li>
-						))}
-					</ul>
-
-					<h2>Articles & Papers</h2>
-					<p class="muted">
-						I regularly read technical articles and papers on distributed systems, infrastructure, and software architecture. Curated list coming soon.
-					</p>
+					{readingData.sections.map((section) => (
+						<>
+							<h2>{section.name}</h2>
+							<ul class="reading-list">
+								{section.books.map((book) => (
+									<li>
+										<span class="title">{book.title}</span>
+										<span class="author">{book.author}</span>
+									</li>
+								))}
+							</ul>
+						</>
+					))}
 
 					<div style="margin-top: 2rem; padding: 1rem; border-left: 2px solid var(--border);">
 						<p style="margin: 0;">
