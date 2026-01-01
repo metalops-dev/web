@@ -7,7 +7,7 @@
 		"build": "astro build",
 		"preview": "astro preview",
 		"test": "vitest",
-		"test:ui": "vitest --ui",
+		"test:ui": "vitest ",
 		"astro": "astro"
 	},
 	"dependencies": {
