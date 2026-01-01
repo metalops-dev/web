@@ -1,9 +1,29 @@
-currentlyReading: []
-# Example:
-# - title: Designing Data-Intensive Applications
-#   author: Martin Kleppmann
+sections:
+  - name: Currently Reading
+    books:
+      - title: "Deep Work"
+        author: "Cal Newport"
+      - title: Building a second brain
+        author: Tiago Forte
 
-recentlyFinished: []
-# Example:
-# - title: The Phoenix Project
-#   author: Gene Kim, Kevin Behr, George Spafford
+  - name: Recently Finished
+    books: []
+
+  - name: Pending
+    books:
+      - title: "The pragmatic programmer"
+        author: "Andrew Hunt, David Thomas"
+      - title: "Designing Data-Intensive Applications"
+        author: "Martin Kleppmann"
+      - title: The psychology of money
+        author: Morgan Housel
+      - title: Design patterns 2nd edition
+        author: Freeman & Robson
+      - title: Atomic habits
+        author: James Clear
+      - title: Communication for engineers
+        author: Chris Lafka
+      - title: The kubernetes book
+        author: Nigel Poulton
+  - name: Articles & Papers
+    books: []

@@ -23,11 +23,27 @@ import usesData from "../data/uses.yaml";
 			{usesData.categories.map((category) => (
 				<section>
 					<h2>{category.name}</h2>
-					<ul>
-						{category.items.map((item) => (
-							<li><strong>{item.name}</strong> — {item.description}</li>
-						))}
-					</ul>
+					{category.items && category.items.length > 0 && (
+						<ul>
+							{category.items.map((item) => (
+								<li><strong>{item.name}</strong> — {item.description}</li>
+							))}
+						</ul>
+					)}
+					{category.subsections && (
+						<>
+							{category.subsections.map((subsection) => (
+								<div class="subsection">
+									<h3>{subsection.title}</h3>
+									<ul>
+										{subsection.items.map((item) => (
+											<li>{item}</li>
+										))}
+									</ul>
+								</div>
+							))}
+						</>
+					)}
 				</section>
 			))}
 		</main>

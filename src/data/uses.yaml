@@ -1,36 +1,32 @@
 categories:
-  - name: Editor & Terminal
-    items: []
-    # Example:
-    # - name: VS Code
-    #   description: Primary editor
-    # - name: iTerm2
-    #   description: Terminal emulator
-  - name: Development
-    items: []
-    # Example:
-    # - name: Docker
-    #   description: Containerization
-    # - name: Kubernetes
-    #   description: Orchestration
-  - name: Hardware
-    items: []
-    # Example:
-    # - name: MacBook Pro
-    #   description: Main machine
-    # - name: Keychron K2
-    #   description: Mechanical keyboard
-  - name: Software
-    items: []
-    # Example:
-    # - name: 1Password
-    #   description: Password manager
-    # - name: Arc
-    #   description: Browser
-  - name: This Site
-    items: []
-    # Example:
-    # - name: Astro
-    #   description: Static site generator
-    # - name: Cloudflare Pages
-    #   description: Hosting
+  - name: Hardware & Software Stack
+    subsections:
+      - title: Primary Workstation
+        items:
+          - MacBook Pro M4 48GB RAM 2TB
+
+      - title: Display & Peripherals
+        items:
+          - 'Monitor: Philips 2K 24" display'
+          - "Input: Mechanical keyboard, Nuphy Halo 75% rose glacier switches + Logitech g402 bluetooth"
+          - "Audio: DT 770 Pro headphones + Focusrite gen 4 2i2 audio interface"
+          - "Mobile: iPhone 15 Pro Max"
+
+      - title: Secondary Systems
+        items:
+          - "Thinkpad T480s: 42GB RAM, 2TB storage with Arch Linux"
+          - "MINISFORUM UM780 Pro: Ryzen 7880H, 64GB RAM, 1TB storage with Proxmox"
+          - "Nipogi N100: Intel N100, 16GB RAM, 500GB storage with Proxmox"
+
+      - title: Gaming & Entertainment
+        items:
+          - "Steam Deck OLED: 1TB + 1TB microSD"
+          - "HP Omen 15: Ryzen 5880H, 16GB RAM, RTX 3060"
+
+      - title: Development Environment
+        items:
+          - "Terminal: Ghostty + Zsh + Starship + Rust CLI tools"
+          - "Editor: Neovim"
+          - "Browser: Firefox"
+          - "Containers: OrbStack (macOS), Docker (Linux)"
+          - "Version Control: Git"

@@ -7,6 +7,5 @@ categories:
     #   description: Official Kubernetes documentation
   - name: Learning Resources
     links: []
-    #   description: Learn how to design large-scale systems
   - name: Tools
     links: []
