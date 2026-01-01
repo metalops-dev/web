@@ -1,3 +1,13 @@
 upcoming: []
+# Example:
+# - title: "Building Resilient Infrastructure"
+#   date: 2026-02-15
+#   event: DevOps Summit 2026
+
 past: []
-contactUrl: https://adrianvillanueva.com/contact
+# Example:
+# - title: "Kubernetes for Everyone"
+#   date: 2025-11-20
+#   event: Tech Talk Tuesday
+
+contactUrl: https://adrianvillanueva.com

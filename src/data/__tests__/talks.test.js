@@ -1,5 +1,12 @@
+import { readFileSync } from "fs";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
 import { describe, expect, it } from "vitest";
-import talksData from "../talks.js";
+import { parse } from "yaml";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const talksYaml = readFileSync(`${__dirname}/../talks.yaml`, "utf-8");
+const talksData = parse(talksYaml);
 
 describe("talks.js", () => {
 	it("exports an object with upcoming and past arrays", () => {

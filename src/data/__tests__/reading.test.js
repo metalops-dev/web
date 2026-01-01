@@ -1,5 +1,12 @@
+import { readFileSync } from "fs";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
 import { describe, expect, it } from "vitest";
-import readingData from "../reading.js";
+import { parse } from "yaml";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const readingYaml = readFileSync(`${__dirname}/../reading.yaml`, "utf-8");
+const readingData = parse(readingYaml);
 
 describe("reading.js", () => {
 	it("exports an object with currentlyReading and recentlyFinished arrays", () => {

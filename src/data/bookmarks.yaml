@@ -1,19 +1,12 @@
 categories:
   - name: Infrastructure & DevOps
-    links:
-      - title: Kubernetes Documentation
-        url: https://kubernetes.io/docs/
-        description: The official source for K8s knowledge
-      - title: Cloud Native Computing Foundation
-        url: https://www.cncf.io/
-        description: Home of cloud-native open source projects
+    links: []
+    # Example:
+    # - title: Kubernetes Official Docs
+    #   url: https://kubernetes.io/docs/
+    #   description: Official Kubernetes documentation
   - name: Learning Resources
-    links:
-      - title: GitHub
-        url: https://github.com
-        description: Explore open source projects and code
+    links: []
+    #   description: Learn how to design large-scale systems
   - name: Tools
-    links:
-      - title: Docker
-        url: https://www.docker.com/
-        description: Containerization platform
+    links: []

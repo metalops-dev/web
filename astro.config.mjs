@@ -1,6 +1,7 @@
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers";
+import yaml from "@rollup/plugin-yaml";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 import d2 from "astro-d2";
@@ -33,6 +34,11 @@ export default defineConfig({
 		icon(),
 	],
 	vite: {
-		plugins: [tailwindcss(), pluginLineNumbers(), pluginLanguageBadge()],
+		plugins: [
+			tailwindcss(),
+			pluginLineNumbers(),
+			pluginLanguageBadge(),
+			yaml(),
+		],
 	},
 });

@@ -1,5 +1,12 @@
+import { readFileSync } from "fs";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
 import { describe, expect, it } from "vitest";
-import nowData from "../now.js";
+import { parse } from "yaml";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const nowYaml = readFileSync(`${__dirname}/../now.yaml`, "utf-8");
+const nowData = parse(nowYaml);
 
 describe("now.js", () => {
 	it("exports an object with sections array", () => {
@@ -20,9 +27,9 @@ describe("now.js", () => {
 		});
 	});
 
-	it("each section has at least one item", () => {
+	it("each section has items array (can be empty)", () => {
 		nowData.sections.forEach((section) => {
-			expect(section.items.length).toBeGreaterThan(0);
+			expect(Array.isArray(section.items)).toBe(true);
 		});
 	});
 
