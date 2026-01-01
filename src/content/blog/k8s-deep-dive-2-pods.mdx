@@ -1,0 +1,181 @@
+---
+title: 'Kubernetes Deep Dive: Pods and Deployments'
+description: 'Part 2 of the Kubernetes Deep Dive series - Working with Pods and Deployments'
+pubDate: 2024-12-21
+draft: true
+tags: ['kubernetes', 'devops', 'containers']
+series: 'Kubernetes Deep Dive'
+seriesPart: 2
+---
+
+import SeriesBanner from '../../components/SeriesBanner.astro';
+
+<SeriesBanner
+  series="Kubernetes Deep Dive"
+  part={2}
+  totalParts={3}
+  posts={[
+    { title: "Introduction", slug: "k8s-deep-dive-1-intro", part: 1 },
+    { title: "Pods and Deployments", slug: "k8s-deep-dive-2-pods", part: 2 },
+    { title: "Services and Networking", slug: "k8s-deep-dive-3-networking", part: 3 },
+  ]}
+/>
+
+In this part, we'll explore Pods and Deployments — the fundamental building blocks for running applications in Kubernetes.
+
+## Understanding Pods
+
+A Pod is the smallest deployable unit in Kubernetes. It represents a single instance of a running process in your cluster.
+
+### Pod Anatomy
+
+```d2
+pod: Pod {
+  container1: App Container {
+    shape: rectangle
+  }
+  container2: Sidecar {
+    shape: rectangle
+  }
+  volume: Shared Volume {
+    shape: cylinder
+  }
+
+  container1 -> volume
+  container2 -> volume
+}
+
+network: localhost:port {
+  shape: cloud
+}
+
+pod.container1 -> network
+pod.container2 -> network
+```
+
+### Creating a Pod
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+  labels:
+    app: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.25
+    ports:
+    - containerPort: 80
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "250m"
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+```
+
+```bash
+# Apply the pod
+kubectl apply -f nginx-pod.yaml
+
+# Check pod status
+kubectl get pods
+
+# View pod details
+kubectl describe pod nginx-pod
+
+# View logs
+kubectl logs nginx-pod
+```
+
+## Deployments
+
+While Pods are useful for understanding, you'll rarely create them directly. Instead, use **Deployments** to manage replicated applications.
+
+### Why Deployments?
+
+- **Declarative updates** — Describe the desired state
+- **Rolling updates** — Update pods without downtime
+- **Rollback** — Revert to previous versions
+- **Scaling** — Easily adjust replica count
+
+### Deployment Example
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.25
+        ports:
+        - containerPort: 80
+```
+
+### Managing Deployments
+
+```bash
+# Create deployment
+kubectl apply -f nginx-deployment.yaml
+
+# Check rollout status
+kubectl rollout status deployment/nginx-deployment
+
+# Scale up
+kubectl scale deployment/nginx-deployment --replicas=5
+
+# Update image (triggers rolling update)
+kubectl set image deployment/nginx-deployment nginx=nginx:1.26
+
+# Rollback
+kubectl rollout undo deployment/nginx-deployment
+
+# View rollout history
+kubectl rollout history deployment/nginx-deployment
+```
+
+## Resource Management
+
+Always set resource requests and limits:
+
+| Resource | Request | Limit |
+|----------|---------|-------|
+| CPU | Minimum guaranteed | Maximum allowed |
+| Memory | Minimum guaranteed | Maximum (OOM killed if exceeded) |
+
+```yaml
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "500m"
+  limits:
+    memory: "512Mi"
+    cpu: "1000m"
+```
+
+## What's Next?
+
+In **Part 3**, we'll cover Services and Networking:
+
+- ClusterIP, NodePort, LoadBalancer
+- Ingress controllers
+- Network policies
+- Service mesh basics
+
+---
+
+*← [Part 1: Introduction](/blog/k8s-deep-dive-1-intro/) | [Part 3: Services and Networking](/blog/k8s-deep-dive-3-networking/) →*

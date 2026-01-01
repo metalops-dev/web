@@ -1,0 +1,48 @@
+---
+// Substack newsletter signup component
+interface Props {
+	substackUrl?: string;
+}
+
+const { substackUrl = "https://metalops.substack.com" } = Astro.props;
+---
+
+<aside class="newsletter">
+	<h3>Newsletter</h3>
+	<p>Get notified when I publish new posts. No spam.</p>
+	<a href={substackUrl} target="_blank" rel="noopener noreferrer" class="subscribe-btn">
+		Subscribe on Substack →
+	</a>
+</aside>
+
+<style>
+	.newsletter {
+		margin: 3rem 0;
+		padding: 1.5rem;
+		border: 2px solid var(--border);
+		background: var(--code-bg);
+	}
+	.newsletter h3 {
+		margin: 0 0 0.5rem 0;
+		font-size: 1rem;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+	.newsletter p {
+		margin: 0 0 1rem 0;
+		color: var(--muted);
+		font-size: 0.9rem;
+	}
+	.subscribe-btn {
+		display: inline-block;
+		padding: 0.5rem 1rem;
+		background: var(--fg);
+		color: var(--bg);
+		text-decoration: none;
+		font-weight: 700;
+		font-size: 0.875rem;
+	}
+	.subscribe-btn:hover {
+		background: var(--muted);
+	}
+</style>

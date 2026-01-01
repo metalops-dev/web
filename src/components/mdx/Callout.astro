@@ -1,0 +1,69 @@
+---
+interface Props {
+	type?: "note" | "warning" | "error" | "tip";
+	title?: string;
+}
+
+const { type = "note", title } = Astro.props;
+
+const icons: Record<string, string> = {
+	note: "→",
+	warning: "!",
+	error: "×",
+	tip: "✓",
+};
+
+const defaultTitles: Record<string, string> = {
+	note: "Note",
+	warning: "Warning",
+	error: "Error",
+	tip: "Tip",
+};
+---
+
+<aside class={`callout callout-${type}`}>
+	<div class="callout-header">
+		<span class="callout-icon">{icons[type]}</span>
+		<span class="callout-title">{title || defaultTitles[type]}</span>
+	</div>
+	<div class="callout-content">
+		<slot />
+	</div>
+</aside>
+
+<style>
+	.callout {
+		border-left: 3px solid var(--border);
+		padding: 1rem;
+		margin: 1.5rem 0;
+		background: var(--code-bg);
+	}
+	.callout-header {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin-bottom: 0.5rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		font-size: 0.8rem;
+		letter-spacing: 0.05em;
+	}
+	.callout-icon {
+		font-family: var(--font-mono);
+	}
+	.callout-content :global(p:first-child) {
+		margin-top: 0;
+	}
+	.callout-content :global(p:last-child) {
+		margin-bottom: 0;
+	}
+
+	.callout-note { border-color: var(--fg); }
+	.callout-warning { border-color: #f59e0b; }
+	.callout-error { border-color: #ef4444; }
+	.callout-tip { border-color: #22c55e; }
+
+	.callout-warning .callout-header { color: #f59e0b; }
+	.callout-error .callout-header { color: #ef4444; }
+	.callout-tip .callout-header { color: #22c55e; }
+</style>

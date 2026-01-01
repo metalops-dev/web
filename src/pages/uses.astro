@@ -1,0 +1,68 @@
+---
+import BaseHead from "../components/BaseHead.astro";
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import { SITE_TITLE } from "../consts";
+import usesData from "../data/uses.js";
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`Uses | ${SITE_TITLE}`} description="Tools, hardware, and software I use daily" />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<h1>Uses</h1>
+			<p class="intro">
+				A list of the tools, hardware, and software I use for development and daily work.
+				Inspired by <a href="https://uses.tech" target="_blank" rel="noopener">uses.tech</a>.
+			</p>
+
+			{usesData.categories.map((category) => (
+				<section>
+					<h2>{category.name}</h2>
+					<ul>
+						{category.items.map((item) => (
+							<li><strong>{item.name}</strong> — {item.description}</li>
+						))}
+					</ul>
+				</section>
+			))}
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.intro {
+		color: var(--muted);
+		margin-bottom: 2rem;
+	}
+	section {
+		margin-bottom: 2.5rem;
+	}
+	h2 {
+		font-size: 1.1rem;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		margin-bottom: 1rem;
+		padding-bottom: 0.5rem;
+		border-bottom: 1px solid var(--border);
+	}
+	ul {
+		list-style: none;
+		padding: 0;
+	}
+	li {
+		padding: 0.5rem 0;
+		border-bottom: 1px solid var(--code-bg);
+	}
+	li:last-child {
+		border-bottom: none;
+	}
+	strong {
+		color: var(--fg);
+	}
+</style>

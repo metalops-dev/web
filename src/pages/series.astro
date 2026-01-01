@@ -1,0 +1,166 @@
+---
+import { getCollection } from "astro:content";
+import BaseHead from "../components/BaseHead.astro";
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+
+const allPosts = await getCollection("blog");
+const posts = (
+	import.meta.env.PROD ? allPosts.filter((post) => !post.data.draft) : allPosts
+).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// Group posts by series
+const seriesMap = new Map<string, typeof posts>();
+posts.forEach((post) => {
+	if (post.data.series) {
+		if (!seriesMap.has(post.data.series)) {
+			seriesMap.set(post.data.series, []);
+		}
+		seriesMap.get(post.data.series)!.push(post);
+	}
+});
+
+// Sort posts within each series by seriesPart
+const seriesList = Array.from(seriesMap.entries()).map(
+	([name, seriesPosts]) => {
+		const sorted = seriesPosts.sort((a, b) => {
+			const partA = a.data.seriesPart ?? 0;
+			const partB = b.data.seriesPart ?? 0;
+			return partA - partB;
+		});
+		return { name, posts: sorted };
+	},
+);
+
+const title = "Series";
+const description = "Multi-part blog series";
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={title} description={description} />
+	</head>
+
+	<body>
+		<Header />
+		<main aria-label="Series archive">
+			<article class="page-article">
+				<header>
+					<h1>{title}</h1>
+					<p class="subtitle">{description}</p>
+					<p class="series-count" aria-live="polite">{seriesList.length} {seriesList.length === 1 ? 'series' : 'series'}</p>
+				</header>
+
+				<div class="content">
+					{seriesList.length === 0 ? (
+						<p class="muted">No series yet. Check back soon!</p>
+					) : (
+						<div class="series-list" role="region" aria-label="Published series">
+							{seriesList.map((series, idx) => (
+								<section class="series-item" aria-labelledby={`series-${idx}`}>
+									<h2 id={`series-${idx}`}>{series.name}</h2>
+									<p class="series-meta" aria-label="Number of posts in series">{series.posts.length} {series.posts.length === 1 ? 'post' : 'posts'}</p>
+									<nav class="series-posts" aria-label={`Posts in ${series.name}`}>
+										<ol>
+											{series.posts.map((post, idx) => (
+												<li class="series-post">
+													<a href={`/blog/${post.id}/`}>
+														<span class="part">Part {idx + 1}</span>
+														<span class="post-title">{post.data.title}</span>
+													</a>
+												</li>
+											))}
+										</ol>
+									</nav>
+								</section>
+							))}
+						</div>
+					)}
+				</div>
+			</article>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	main {
+		max-width: 680px;
+		margin: 0 auto;
+		padding: 2rem 1.5rem;
+	}
+
+	.page-article header {
+		margin-bottom: 2rem;
+	}
+
+	.page-article h1 {
+		margin: 0 0 0.5rem 0;
+	}
+
+	.subtitle {
+		color: var(--muted);
+		margin: 0;
+	}
+
+	.content {
+		line-height: 1.8;
+		color: var(--fg);
+	}
+
+	.series-count {
+		font-size: 0.85rem;
+		color: var(--muted);
+		margin: 0.5rem 0 0 0;
+	}
+
+	.series-meta {
+		font-size: 0.85rem;
+		color: var(--muted);
+		margin: 0.5rem 0 1rem 0;
+	}
+
+	.series-posts {
+		list-style: decimal;
+		padding-left: 2rem;
+		margin: 0;
+	}
+
+	.series-post {
+		margin-bottom: 0.75rem;
+	}
+
+	.series-post a {
+		display: inline;
+		color: var(--fg);
+		text-decoration: underline;
+		text-decoration-color: var(--border);
+	}
+
+	.series-post a:focus-visible {
+		outline: 2px solid var(--fg);
+		outline-offset: 2px;
+	}
+
+	.series-post a:hover {
+		color: var(--bg);
+		background: var(--fg);
+		text-decoration: none;
+	}
+
+	.part {
+		color: var(--muted);
+		font-size: 0.85rem;
+		font-weight: 500;
+		margin-right: 0.5rem;
+	}
+
+	.series-post a:hover .part {
+		color: var(--bg);
+	}
+
+	.muted {
+		color: var(--muted);
+	}
+</style>

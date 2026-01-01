@@ -1,0 +1,121 @@
+---
+import BaseHead from "../components/BaseHead.astro";
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import bookmarksData from "../data/bookmarks.js";
+
+const title = "Bookmarks";
+const description = "Curated links and resources";
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={title} description={description} />
+	</head>
+
+	<body>
+		<Header />
+		<main>
+			<article class="page-article">
+				<header>
+					<h1>{title}</h1>
+					<p class="subtitle">{description}</p>
+				</header>
+
+				<div class="content">
+					<p>
+						A curated collection of articles, tools, and resources I find valuable and recommend.
+					</p>
+
+					{bookmarksData.categories.map((category) => (
+						<>
+							<h2>{category.name}</h2>
+							<ul class="link-list">
+								{category.links.map((link) => (
+									<li>
+										<a href={link.url} target="_blank" rel="noopener">{link.title}</a>
+										<span class="desc">{link.description}</span>
+									</li>
+								))}
+							</ul>
+						</>
+					))}
+
+					<p class="muted" style="margin-top: 2rem; font-size: 0.85rem;">
+						More bookmarks coming soon. Have a suggestion? Reach out!
+					</p>
+				</div>
+			</article>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	main {
+		max-width: 680px;
+		margin: 0 auto;
+		padding: 2rem 1.5rem;
+	}
+
+	.page-article header {
+		margin-bottom: 2rem;
+	}
+
+	.page-article h1 {
+		margin: 0 0 0.5rem 0;
+	}
+
+	.subtitle {
+		color: var(--muted);
+		margin: 0;
+	}
+
+	.content {
+		line-height: 1.8;
+		color: var(--fg);
+	}
+
+	.content h2 {
+		margin-top: 2rem;
+		margin-bottom: 1rem;
+		border-bottom: 1px solid var(--border);
+		padding-bottom: 0.5rem;
+	}
+
+	.link-list {
+		list-style: none;
+		padding: 0;
+	}
+
+	.link-list li {
+		margin-bottom: 1.5rem;
+		padding: 1rem;
+		border-left: 2px solid var(--border);
+	}
+
+	.link-list a {
+		color: var(--fg);
+		text-decoration: underline;
+		text-decoration-color: var(--border);
+		font-weight: 500;
+	}
+
+	.link-list a:hover {
+		color: var(--bg);
+		background: var(--fg);
+		text-decoration: none;
+	}
+
+	.desc {
+		display: block;
+		color: var(--muted);
+		font-size: 0.9rem;
+		margin-top: 0.25rem;
+	}
+
+	.muted {
+		color: var(--muted);
+	}
+</style>

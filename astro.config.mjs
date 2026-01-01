@@ -21,7 +21,13 @@ export default defineConfig({
 			themes: ["catppuccin-mocha", "catppuccin-latte"],
 		}), // https://shiki.style/languages
 		mdx(),
-		sitemap(),
+		sitemap({
+			serialize(item) {
+				// Add lastmod to all pages
+				item.lastmod = new Date().toISOString();
+				return item;
+			},
+		}),
 		d2({ output: "static/diagrams" }),
 		robotsTxt(),
 		icon(),

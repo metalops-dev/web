@@ -1,0 +1,89 @@
+---
+import { getCollection } from "astro:content";
+import BaseHead from "../../components/BaseHead.astro";
+import Footer from "../../components/Footer.astro";
+import Header from "../../components/Header.astro";
+import { SITE_TITLE } from "../../consts";
+
+const allPosts = await getCollection("blog");
+const posts = import.meta.env.PROD
+	? allPosts.filter((post) => !post.data.draft)
+	: allPosts;
+
+// Get all unique tags with post counts
+const tagCounts = new Map<string, number>();
+posts.forEach((post) => {
+	post.data.tags?.forEach((tag) => {
+		tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1);
+	});
+});
+
+// Sort tags alphabetically
+const sortedTags = [...tagCounts.entries()].sort((a, b) =>
+	a[0].localeCompare(b[0]),
+);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`Tags | ${SITE_TITLE}`} description="All tags" />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<h1>Tags</h1>
+			{sortedTags.length > 0 ? (
+				<ul class="tags-list">
+					{sortedTags.map(([tag, count]) => (
+						<li>
+							<a href={`/tags/${tag}/`}>
+								<span class="tag-name">#{tag}</span>
+								<span class="tag-count">{count}</span>
+							</a>
+						</li>
+					))}
+				</ul>
+			) : (
+				<p class="empty">No tags yet.</p>
+			)}
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.tags-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+	.tags-list a {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.5rem 1rem;
+		border: 2px solid var(--border);
+		text-decoration: none;
+	}
+	.tags-list a:hover {
+		background: var(--fg);
+		color: var(--bg);
+	}
+	.tag-name {
+		font-weight: 500;
+	}
+	.tag-count {
+		font-size: 0.85rem;
+		color: var(--muted);
+	}
+	.tags-list a:hover .tag-count {
+		color: var(--bg);
+	}
+	.empty {
+		color: var(--muted);
+	}
+</style>

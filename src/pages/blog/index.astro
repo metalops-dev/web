@@ -1,114 +1,123 @@
 ---
-import { Image } from 'astro:assets';
-import { getCollection } from 'astro:content';
-import BaseHead from '../../components/BaseHead.astro';
-import Footer from '../../components/Footer.astro';
-import FormattedDate from '../../components/FormattedDate.astro';
-import Header from '../../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
+import { getCollection } from "astro:content";
+import BaseHead from "../../components/BaseHead.astro";
+import Footer from "../../components/Footer.astro";
+import FormattedDate from "../../components/FormattedDate.astro";
+import Header from "../../components/Header.astro";
+import { SITE_DESCRIPTION, SITE_TITLE } from "../../consts";
 
-const posts = (await getCollection('blog')).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+const allPosts = await getCollection("blog");
+const posts = (
+	import.meta.env.PROD ? allPosts.filter((post) => !post.data.draft) : allPosts
+).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-		<style>
-			main {
-				width: 960px;
-			}
-			ul {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 2rem;
-				list-style-type: none;
-				margin: 0;
-				padding: 0;
-			}
-			ul li {
-				width: calc(50% - 1rem);
-			}
-			ul li * {
-				text-decoration: none;
-				transition: 0.2s ease;
-			}
-			ul li:first-child {
-				width: 100%;
-				margin-bottom: 1rem;
-				text-align: center;
-			}
-			ul li:first-child img {
-				width: 100%;
-			}
-			ul li:first-child .title {
-				font-size: 2.369rem;
-			}
-			ul li img {
-				margin-bottom: 0.5rem;
-				border-radius: 12px;
-			}
-			ul li a {
-				display: block;
-			}
-			.title {
-				margin: 0;
-				color: rgb(var(--black));
-				line-height: 1;
-			}
-			.date {
-				margin: 0;
-				color: rgb(var(--gray));
-			}
-			ul li a:hover h4,
-			ul li a:hover .date {
-				color: rgb(var(--accent));
-			}
-			ul a:hover img {
-				box-shadow: var(--box-shadow);
-			}
-			@media (max-width: 720px) {
-				ul {
-					gap: 0.5em;
-				}
-				ul li {
-					width: 100%;
-					text-align: center;
-				}
-				ul li:first-child {
-					margin-bottom: 0;
-				}
-				ul li:first-child .title {
-					font-size: 1.563em;
-				}
-			}
-		</style>
+		<BaseHead title={`Blog | ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
 	</head>
 	<body>
 		<Header />
 		<main>
-			<section>
-				<ul>
-					{
-						posts.map((post) => (
-							<li>
-								<a href={`/blog/${post.id}/`}>
-									{post.data.heroImage && (
-										<Image width={720} height={360} src={post.data.heroImage} alt="" />
-									)}
-									<h4 class="title">{post.data.title}</h4>
-									<p class="date">
-										<FormattedDate date={post.data.pubDate} />
-									</p>
-								</a>
-							</li>
-						))
-					}
-				</ul>
-			</section>
+			<div class="blog-header">
+				<h1>Blog</h1>
+				<p class="series-link"><a href="/series">view series</a></p>
+			</div>
+			<ul class="posts">
+				{
+					posts.map((post) => (
+						<li class={post.data.draft ? 'draft' : ''}>
+							<a href={`/blog/${post.id}/`}>
+								<span class="title">
+									{post.data.draft && <span class="draft-indicator">◇</span>}
+									{post.data.title}
+								</span>
+								<span class="date"><FormattedDate date={post.data.pubDate} /></span>
+							</a>
+						</li>
+					))
+				}
+			</ul>
 		</main>
 		<Footer />
 	</body>
 </html>
+
+<style>
+	.blog-header {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		margin-bottom: 1rem;
+	}
+	.blog-header h1 {
+		margin: 0;
+	}
+	.series-link {
+		font-size: 0.85rem;
+		margin: 0;
+		color: var(--muted);
+	}
+	.series-link a {
+		color: var(--muted);
+		text-decoration: underline;
+		text-decoration-color: var(--border);
+	}
+	.series-link a:hover {
+		background: transparent;
+		color: var(--muted);
+	}
+	.posts {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+	.posts li {
+		border-bottom: 1px solid var(--border);
+		margin: 0;
+	}
+	.posts li:first-child {
+		border-top: 1px solid var(--border);
+	}
+	.posts a {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 1rem;
+		padding: 0.75rem 0;
+		text-decoration: none;
+	}
+	.posts a:hover {
+		background: var(--fg);
+		color: var(--bg);
+		padding-left: 0.5rem;
+		padding-right: 0.5rem;
+		margin-left: -0.5rem;
+		margin-right: -0.5rem;
+	}
+	.posts .title {
+		font-weight: 500;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+	.posts .date {
+		font-size: 0.85rem;
+		color: var(--muted);
+		flex-shrink: 0;
+	}
+	.posts a:hover .date {
+		color: var(--bg);
+	}
+	.posts li.draft {
+		opacity: 0.7;
+	}
+	.draft-indicator {
+		color: #f59e0b;
+		font-size: 0.9em;
+	}
+	.posts a:hover .draft-indicator {
+		color: var(--bg);
+	}
+</style>

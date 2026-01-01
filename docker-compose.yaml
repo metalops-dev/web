@@ -1,0 +1,27 @@
+services:
+  metalops:
+    image: ghcr.io/adrianvillanueva997/adrianvillanueva.com:latest
+    networks:
+      - proxy
+      - otlp
+    restart: unless-stopped
+    ports:
+      - 80
+    labels:
+      - traefik.enable=true
+      - traefik.http.middlewares.metalops-redirect-https.redirectscheme.scheme=https
+      - traefik.http.middlewares.metalops-redirect-https.redirectscheme.permanent=true
+      - traefik.http.routers.metalops-http.middlewares=metalops-redirect-https
+      - traefik.http.routers.metalops-http.rule=Host(`metalops.com`)
+      - traefik.http.routers.metalops-http.entrypoints=http
+      - traefik.http.routers.metalops-https.rule=Host(`metalops.dev`)
+      - traefik.http.routers.metalops-https.tls.certresolver=letsencrypt
+      - traefik.http.routers.metalops-https.tls=true
+      - traefik.http.routers.metalops-https.entrypoints=https
+      - "traefik.http.services.metalops.loadbalancer.server.port=80"
+      - traefik.docker.network=proxy
+
+
+networks:
+  proxy:
+    external: true

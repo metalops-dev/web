@@ -1,0 +1,106 @@
+---
+title: 'Kubernetes Deep Dive: Introduction'
+description: 'Part 1 of the Kubernetes Deep Dive series - Understanding the fundamentals'
+pubDate: 2024-12-20
+draft: true
+tags: ['kubernetes', 'devops', 'containers']
+series: 'Kubernetes Deep Dive'
+seriesPart: 1
+---
+
+import SeriesBanner from '../../components/SeriesBanner.astro';
+
+<SeriesBanner
+  series="Kubernetes Deep Dive"
+  part={1}
+  totalParts={3}
+  posts={[
+    { title: "Introduction", slug: "k8s-deep-dive-1-intro", part: 1 },
+    { title: "Pods and Deployments", slug: "k8s-deep-dive-2-pods", part: 2 },
+    { title: "Services and Networking", slug: "k8s-deep-dive-3-networking", part: 3 },
+  ]}
+/>
+
+Welcome to the Kubernetes Deep Dive series! In this multi-part guide, we'll explore Kubernetes from the ground up.
+
+## What is Kubernetes?
+
+Kubernetes (K8s) is an open-source container orchestration platform that automates the deployment, scaling, and management of containerized applications.
+
+## Why Kubernetes?
+
+- **Scalability** — Automatically scale your applications based on demand
+- **Self-healing** — Restart failed containers, replace and reschedule them
+- **Service discovery** — Expose containers using DNS or their own IP addresses
+- **Automated rollouts** — Deploy changes gradually without downtime
+
+## Core Concepts
+
+### Cluster Architecture
+
+```d2
+direction: right
+
+control: Control Plane {
+  api: API Server
+  etcd: etcd
+  sched: Scheduler
+  cm: Controller Manager
+
+  api -> etcd
+  api -> sched
+  api -> cm
+}
+
+nodes: Worker Nodes {
+  node1: Node 1 {
+    kubelet: Kubelet
+    proxy: Kube Proxy
+    runtime: Container Runtime
+  }
+  node2: Node 2 {
+    kubelet: Kubelet
+    proxy: Kube Proxy
+    runtime: Container Runtime
+  }
+}
+
+control.api -> nodes.node1.kubelet
+control.api -> nodes.node2.kubelet
+```
+
+### Key Components
+
+1. **Control Plane** — The brain of the cluster
+2. **Nodes** — Worker machines that run containers
+3. **Pods** — The smallest deployable units
+4. **Services** — Network abstraction for pods
+
+## Prerequisites
+
+Before diving deeper, make sure you have:
+
+- Basic understanding of containers (Docker)
+- A local Kubernetes cluster (minikube, kind, or Docker Desktop)
+- `kubectl` CLI installed
+
+```bash
+# Check your kubectl installation
+kubectl version --client
+
+# Verify cluster connection
+kubectl cluster-info
+```
+
+## What's Next?
+
+In **Part 2**, we'll explore Pods and Deployments in detail, including:
+
+- Pod lifecycle and states
+- Creating and managing Deployments
+- Rolling updates and rollbacks
+- Resource limits and requests
+
+---
+
+*Continue to [Part 2: Pods and Deployments](/blog/k8s-deep-dive-2-pods/)*
