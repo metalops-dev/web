@@ -14,17 +14,17 @@ export default new Map([
 			),
 	],
 	[
-		"src/content/blog/mdx-components-guide.mdx",
-		() =>
-			import(
-				"astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fblog%2Fmdx-components-guide.mdx&astroContentModuleFlag=true"
-			),
-	],
-	[
 		"src/content/blog/k8s-deep-dive-3-networking.mdx",
 		() =>
 			import(
 				"astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fblog%2Fk8s-deep-dive-3-networking.mdx&astroContentModuleFlag=true"
+			),
+	],
+	[
+		"src/content/blog/mdx-components-guide.mdx",
+		() =>
+			import(
+				"astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fblog%2Fmdx-components-guide.mdx&astroContentModuleFlag=true"
 			),
 	],
 	[
