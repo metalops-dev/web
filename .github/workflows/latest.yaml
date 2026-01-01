@@ -12,11 +12,20 @@ env:
 jobs:
     build-docker:
         runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            packages: write
         strategy:
             matrix:
                 architectures:
                     - linux/amd64
         steps:
+            - name: Generate token
+              id: app-token
+              uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
+              with:
+                  app-id: ${{ secrets.METALOPS_REGISTRY_APP_ID }}
+                  private-key: ${{ secrets.METALOPS_REGISTRY_APP_KEY }}
             - name: Set up CD
               uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
               with:
@@ -30,7 +39,7 @@ jobs:
               with:
                   registry: ${{ env.REGISTRY }}
                   username: ${{ github.actor }}
-                  password: ${{ secrets.GITHUB_TOKEN }}
+                  password: ${{ steps.app-token.outputs.token }}
             - name: Cache Docker layers
               uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4
               with:
