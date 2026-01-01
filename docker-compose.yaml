@@ -3,7 +3,6 @@ services:
     image: ghcr.io/metalops-dev/web:latest
     networks:
       - proxy
-      - otlp
     restart: unless-stopped
     ports:
       - 80
