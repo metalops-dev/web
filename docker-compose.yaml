@@ -1,6 +1,6 @@
 services:
   metalops:
-    image: ghcr.io/adrianvillanueva997/adrianvillanueva.com:latest
+    image: ghcr.io/metalops-dev/web:latest
     networks:
       - proxy
       - otlp
