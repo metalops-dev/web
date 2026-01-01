@@ -1,0 +1,61 @@
+---
+interface Props {
+	href: string;
+	title: string;
+	description?: string;
+}
+
+const { href, title, description } = Astro.props;
+const isExternal = href.startsWith("http");
+---
+
+<a href={href} class="link-card" target={isExternal ? '_blank' : undefined} rel={isExternal ? 'noopener noreferrer' : undefined}>
+	<span class="link-card-title">
+		{title}
+		{isExternal && <span class="external">↗</span>}
+	</span>
+	{description && <span class="link-card-description">{description}</span>}
+	<span class="link-card-url">{href}</span>
+</a>
+
+<style>
+	.link-card {
+		display: block;
+		padding: 1rem;
+		margin: 1.5rem 0;
+		border: 1px solid var(--border);
+		text-decoration: none;
+		color: inherit;
+		transition: border-color 0.15s, background-color 0.15s;
+	}
+	.link-card:hover {
+		border-color: var(--fg);
+		background: var(--code-bg);
+		color: inherit;
+	}
+	.link-card-title {
+		display: block;
+		font-weight: 700;
+		margin-bottom: 0.25rem;
+	}
+	.link-card:hover .link-card-title {
+		color: var(--fg);
+	}
+	.external {
+		font-size: 0.75em;
+		margin-left: 0.25rem;
+		opacity: 0.6;
+	}
+	.link-card-description {
+		display: block;
+		color: var(--muted);
+		font-size: 0.875rem;
+		margin-bottom: 0.5rem;
+	}
+	.link-card-url {
+		display: block;
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		color: var(--muted);
+	}
+</style>

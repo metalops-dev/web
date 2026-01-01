@@ -1,0 +1,120 @@
+---
+// Import the global.css file here so that it is included on
+// all pages through the use of the <BaseHead /> component.
+import "../styles/global.css";
+import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
+
+interface Props {
+	title: string;
+	description: string;
+	image?: string;
+	type?: "website" | "article";
+	publishedTime?: Date;
+	modifiedTime?: Date;
+	tags?: string[];
+}
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const {
+	title,
+	description,
+	image,
+	type = "website",
+	publishedTime,
+	modifiedTime,
+	tags = [],
+} = Astro.props;
+
+// Generate OG image URL - use provided or generate from slug
+const ogImageURL = image
+	? new URL(image, Astro.site).toString()
+	: new URL(
+			`/og${Astro.url.pathname.replace(/\/$/, "")}.png`,
+			Astro.site,
+		).toString();
+
+// JSON-LD structured data
+const jsonLd =
+	type === "article"
+		? {
+				"@context": "https://schema.org",
+				"@type": "Article",
+				headline: title,
+				description: description,
+				image: ogImageURL,
+				url: canonicalURL,
+				datePublished: publishedTime?.toISOString(),
+				dateModified:
+					modifiedTime?.toISOString() || publishedTime?.toISOString(),
+				author: {
+					"@type": "Person",
+					name: "Adrian Villanueva",
+					url: "https://adrianvillanueva.com",
+				},
+				publisher: {
+					"@type": "Organization",
+					name: SITE_TITLE,
+					url: Astro.site,
+				},
+				keywords: tags.join(", "),
+				mainEntityOfPage: {
+					"@type": "WebPage",
+					"@id": canonicalURL,
+				},
+			}
+		: {
+				"@context": "https://schema.org",
+				"@type": "WebSite",
+				name: SITE_TITLE,
+				description: SITE_DESCRIPTION,
+				url: Astro.site,
+			};
+---
+
+<!-- Global Metadata -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="sitemap" href="/sitemap-index.xml" />
+<link
+	rel="alternate"
+	type="application/rss+xml"
+	title={SITE_TITLE}
+	href={new URL('rss.xml', Astro.site)}
+/>
+<meta name="generator" content={Astro.generator} />
+
+<!-- Canonical URL -->
+<link rel="canonical" href={canonicalURL} />
+
+<!-- Primary Meta Tags -->
+<title>{title}</title>
+<meta name="title" content={title} />
+<meta name="description" content={description} />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content={type} />
+<meta property="og:url" content={Astro.url} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={ogImageURL} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+{publishedTime && <meta property="article:published_time" content={publishedTime.toISOString()} />}
+{modifiedTime && <meta property="article:modified_time" content={modifiedTime.toISOString()} />}
+{tags && tags.map(tag => <meta property="article:tag" content={tag} />)}
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content={Astro.url} />
+<meta property="twitter:title" content={title} />
+<meta property="twitter:description" content={description} />
+<meta property="twitter:image" content={ogImageURL} />
+
+<!-- JSON-LD Structured Data -->
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+<!-- Analytics -->
+<script defer data-domain="metalops.dev" src="https://analytics.thexiao77.com/js/script.file-downloads.hash.outbound-links.js"></script>
+<script>window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }</script>

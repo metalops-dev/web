@@ -1,0 +1,123 @@
+---
+import { getCollection } from "astro:content";
+import BaseHead from "../../components/BaseHead.astro";
+import Footer from "../../components/Footer.astro";
+import FormattedDate from "../../components/FormattedDate.astro";
+import Header from "../../components/Header.astro";
+import { SITE_DESCRIPTION, SITE_TITLE } from "../../consts";
+
+const allPosts = await getCollection("blog");
+const posts = (
+	import.meta.env.PROD ? allPosts.filter((post) => !post.data.draft) : allPosts
+).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`Blog | ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<div class="blog-header">
+				<h1>Blog</h1>
+				<p class="series-link"><a href="/series">view series</a></p>
+			</div>
+			<ul class="posts">
+				{
+					posts.map((post) => (
+						<li class={post.data.draft ? 'draft' : ''}>
+							<a href={`/blog/${post.id}/`}>
+								<span class="title">
+									{post.data.draft && <span class="draft-indicator">◇</span>}
+									{post.data.title}
+								</span>
+								<span class="date"><FormattedDate date={post.data.pubDate} /></span>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.blog-header {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		margin-bottom: 1rem;
+	}
+	.blog-header h1 {
+		margin: 0;
+	}
+	.series-link {
+		font-size: 0.85rem;
+		margin: 0;
+		color: var(--muted);
+	}
+	.series-link a {
+		color: var(--muted);
+		text-decoration: underline;
+		text-decoration-color: var(--border);
+	}
+	.series-link a:hover {
+		background: transparent;
+		color: var(--muted);
+	}
+	.posts {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+	.posts li {
+		border-bottom: 1px solid var(--border);
+		margin: 0;
+	}
+	.posts li:first-child {
+		border-top: 1px solid var(--border);
+	}
+	.posts a {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 1rem;
+		padding: 0.75rem 0;
+		text-decoration: none;
+	}
+	.posts a:hover {
+		background: var(--fg);
+		color: var(--bg);
+		padding-left: 0.5rem;
+		padding-right: 0.5rem;
+		margin-left: -0.5rem;
+		margin-right: -0.5rem;
+	}
+	.posts .title {
+		font-weight: 500;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+	.posts .date {
+		font-size: 0.85rem;
+		color: var(--muted);
+		flex-shrink: 0;
+	}
+	.posts a:hover .date {
+		color: var(--bg);
+	}
+	.posts li.draft {
+		opacity: 0.7;
+	}
+	.draft-indicator {
+		color: #f59e0b;
+		font-size: 0.9em;
+	}
+	.posts a:hover .draft-indicator {
+		color: var(--bg);
+	}
+</style>

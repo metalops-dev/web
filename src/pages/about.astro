@@ -1,0 +1,39 @@
+---
+import BaseHead from "../components/BaseHead.astro";
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import { SITE_TITLE } from "../consts";
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`About | ${SITE_TITLE}`} description="About metalops.dev" />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<h1>About</h1>
+			<p>
+				This is <strong>metalops.dev</strong>, a technical blog focused on infrastructure,
+				DevOps, systems engineering, and building reliable software.
+			</p>
+			<p>
+				Topics covered include:
+			</p>
+			<ul>
+				<li>Infrastructure as Code</li>
+				<li>Kubernetes & Container Orchestration</li>
+				<li>CI/CD Pipelines</li>
+				<li>Cloud Architecture</li>
+				<li>Monitoring & Observability</li>
+				<li>Systems Programming</li>
+			</ul>
+			<hr />
+			<p>
+				Find me on <a href="https://adrianvillanueva.com" target="_blank" rel="noopener">my personal website</a>.
+			</p>
+		</main>
+		<Footer />
+	</body>
+</html>

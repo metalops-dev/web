@@ -1,0 +1,114 @@
+---
+import BaseHead from "../components/BaseHead.astro";
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import talksData from "../data/talks.js";
+
+const title = "Talks";
+const description = "Presentations and conference talks";
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={title} description={description} />
+	</head>
+
+	<body>
+		<Header />
+		<main>
+			<article class="page-article">
+				<header>
+					<h1>{title}</h1>
+					<p class="subtitle">{description}</p>
+				</header>
+
+				<div class="content">
+					<p>
+						A collection of my conference talks, presentations, and speaking engagements.
+					</p>
+
+					<h2>Upcoming</h2>
+					{talksData.upcoming.length === 0 ? (
+						<p class="muted">No upcoming talks scheduled at the moment. Check back later!</p>
+					) : (
+						<ul>
+							{talksData.upcoming.map((talk) => (
+								<li>{talk.title}</li>
+							))}
+						</ul>
+					)}
+
+					<h2>Past Talks</h2>
+					{talksData.past.length === 0 ? (
+						<p class="muted">
+							Speaking history and slides coming soon. If you're interested in having me speak at your event, feel free to reach out.
+						</p>
+					) : (
+						<ul>
+							{talksData.past.map((talk) => (
+								<li>{talk.title}</li>
+							))}
+						</ul>
+					)}
+
+					<div style="margin-top: 2rem; padding: 1rem; border-left: 2px solid var(--border);">
+						<p style="margin: 0;">
+							Interested in speaking opportunities? <a href={talksData.contactUrl} target="_blank" rel="noopener">Get in touch</a>
+						</p>
+					</div>
+				</div>
+			</article>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	main {
+		max-width: 680px;
+		margin: 0 auto;
+		padding: 2rem 1.5rem;
+	}
+
+	.page-article header {
+		margin-bottom: 2rem;
+	}
+
+	.page-article h1 {
+		margin: 0 0 0.5rem 0;
+	}
+
+	.subtitle {
+		color: var(--muted);
+		margin: 0;
+	}
+
+	.content {
+		line-height: 1.8;
+		color: var(--fg);
+	}
+
+	.content h2 {
+		margin-top: 2rem;
+		margin-bottom: 1rem;
+		border-bottom: 1px solid var(--border);
+		padding-bottom: 0.5rem;
+	}
+
+	.content a {
+		color: var(--fg);
+		text-decoration: underline;
+		text-decoration-color: var(--border);
+	}
+
+	.content a:hover {
+		color: var(--bg);
+		background: var(--fg);
+		text-decoration: none;
+	}
+
+	.muted {
+		color: var(--muted);
+	}
+</style>

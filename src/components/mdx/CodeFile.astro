@@ -1,0 +1,48 @@
+---
+interface Props {
+	filename: string;
+	lang?: string;
+}
+
+const { filename, lang } = Astro.props;
+---
+
+<figure class="code-file">
+	<figcaption>
+		<span class="filename">{filename}</span>
+		{lang && <span class="lang">{lang}</span>}
+	</figcaption>
+	<div class="code-content">
+		<slot />
+	</div>
+</figure>
+
+<style>
+	.code-file {
+		margin: 1.5rem 0;
+		border: 1px solid var(--border);
+	}
+	figcaption {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 0.5rem 1rem;
+		background: var(--code-bg);
+		border-bottom: 1px solid var(--border);
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+	}
+	.filename {
+		font-weight: 700;
+	}
+	.lang {
+		color: var(--muted);
+		text-transform: uppercase;
+		font-size: 0.7rem;
+		letter-spacing: 0.05em;
+	}
+	.code-content :global(pre) {
+		margin: 0;
+		border: none;
+	}
+</style>

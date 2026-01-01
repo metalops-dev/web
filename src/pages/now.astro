@@ -1,0 +1,117 @@
+---
+import BaseHead from "../components/BaseHead.astro";
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import nowData from "../data/now.js";
+
+const title = "Now";
+const description = "What I'm working on right now";
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={title} description={description} />
+	</head>
+
+	<body>
+		<Header />
+		<main>
+			<article class="page-article">
+				<header>
+					<h1>{title}</h1>
+					<p class="subtitle">{description}</p>
+				</header>
+
+				<div class="content">
+					<p>
+						This is a <a href="https://nownownow.com" target="_blank" rel="noopener">now page</a> — a snapshot of what I'm currently focused on.
+					</p>
+
+					{nowData.sections.map((section) => (
+						<>
+							<h2>{section.title}</h2>
+							<ul>
+								{section.items.map((item) => (
+									<li>{item}</li>
+								))}
+							</ul>
+						</>
+					))}
+
+					<p class="muted" style="margin-top: 3rem; font-size: 0.85rem;">
+						Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+					</p>
+				</div>
+			</article>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	main {
+		max-width: 680px;
+		margin: 0 auto;
+		padding: 2rem 1.5rem;
+	}
+
+	.page-article header {
+		margin-bottom: 2rem;
+	}
+
+	.page-article h1 {
+		margin: 0 0 0.5rem 0;
+	}
+
+	.subtitle {
+		color: var(--muted);
+		margin: 0;
+	}
+
+	.content {
+		line-height: 1.8;
+		color: var(--fg);
+	}
+
+	.content h2 {
+		margin-top: 2rem;
+		margin-bottom: 1rem;
+		border-bottom: 1px solid var(--border);
+		padding-bottom: 0.5rem;
+	}
+
+	.content ul {
+		list-style: none;
+		padding: 0;
+	}
+
+	.content li {
+		margin-bottom: 0.75rem;
+		padding-left: 1.5rem;
+		position: relative;
+	}
+
+	.content li:before {
+		content: '→';
+		position: absolute;
+		left: 0;
+		color: var(--muted);
+	}
+
+	.content a {
+		color: var(--fg);
+		text-decoration: underline;
+		text-decoration-color: var(--border);
+	}
+
+	.content a:hover {
+		color: var(--bg);
+		background: var(--fg);
+		text-decoration: none;
+	}
+
+	.muted {
+		color: var(--muted);
+	}
+</style>

@@ -1,0 +1,66 @@
+---
+import BaseHead from "../components/BaseHead.astro";
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import { SITE_TITLE } from "../consts";
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`404 | ${SITE_TITLE}`} description="Page not found" />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<div class="error-page">
+				<h1>404</h1>
+				<p class="message">Page not found.</p>
+				<p class="hint">
+					The page you're looking for doesn't exist or has been moved.
+				</p>
+				<div class="actions">
+					<a href="/">← back to home</a>
+					<a href="/blog">browse posts</a>
+				</div>
+			</div>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.error-page {
+		text-align: center;
+		padding: 4rem 0;
+	}
+	.error-page h1 {
+		font-size: 6rem;
+		margin: 0;
+		border: none;
+		line-height: 1;
+	}
+	.message {
+		font-size: 1.5rem;
+		font-weight: 700;
+		margin: 1rem 0;
+	}
+	.hint {
+		color: var(--muted);
+		margin-bottom: 2rem;
+	}
+	.actions {
+		display: flex;
+		justify-content: center;
+		gap: 1.5rem;
+	}
+	.actions a {
+		padding: 0.75rem 1.5rem;
+		border: 2px solid var(--border);
+		text-decoration: none;
+	}
+	.actions a:hover {
+		background: var(--fg);
+		color: var(--bg);
+	}
+</style>

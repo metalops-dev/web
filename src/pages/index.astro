@@ -1,0 +1,114 @@
+---
+import { getCollection } from "astro:content";
+import BaseHead from "../components/BaseHead.astro";
+import Footer from "../components/Footer.astro";
+import FormattedDate from "../components/FormattedDate.astro";
+import Header from "../components/Header.astro";
+import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
+
+const allPosts = await getCollection("blog");
+const posts = (
+	import.meta.env.PROD ? allPosts.filter((post) => !post.data.draft) : allPosts
+)
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+	.slice(0, 5);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<section class="intro">
+				<h1>metalops.dev</h1>
+				<p>
+					A technical blog about infrastructure, DevOps, systems engineering,
+					and building reliable software.
+				</p>
+			</section>
+
+			<section class="posts">
+				<h2>Recent Posts</h2>
+				<ul>
+					{
+						posts.map((post) => (
+							<li>
+								<a href={`/blog/${post.id}/`}>
+									<span class="title">{post.data.title}</span>
+									<span class="date"><FormattedDate date={post.data.pubDate} /></span>
+								</a>
+							</li>
+						))
+					}
+				</ul>
+				<a href="/blog" class="all-posts">all posts →</a>
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.intro {
+		margin-bottom: 3rem;
+	}
+	.intro p {
+		color: var(--muted);
+		margin: 0;
+	}
+	.posts h2 {
+		font-size: 1rem;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--muted);
+		margin-bottom: 1rem;
+		border: none;
+	}
+	.posts ul {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+	.posts li {
+		border-bottom: 1px solid var(--border);
+		margin: 0;
+	}
+	.posts li:first-child {
+		border-top: 1px solid var(--border);
+	}
+	.posts a {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 1rem;
+		padding: 0.75rem 0;
+		text-decoration: none;
+	}
+	.posts a:hover {
+		background: var(--fg);
+		color: var(--bg);
+		padding-left: 0.5rem;
+		padding-right: 0.5rem;
+		margin-left: -0.5rem;
+		margin-right: -0.5rem;
+	}
+	.posts .title {
+		font-weight: 500;
+	}
+	.posts .date {
+		font-size: 0.85rem;
+		color: var(--muted);
+		flex-shrink: 0;
+	}
+	.posts a:hover .date {
+		color: var(--bg);
+	}
+	.all-posts {
+		display: inline-block;
+		margin-top: 1rem;
+		font-size: 0.9rem;
+	}
+</style>

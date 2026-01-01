@@ -1,0 +1,200 @@
+---
+import { SITE_TITLE } from "../consts";
+---
+
+<header>
+	<nav>
+		<a href="/" class="logo">{SITE_TITLE}</a>
+		<div class="nav-links">
+			<a href="/blog">blog</a>
+			<a href="/tags">tags</a>
+			<div class="dropdown">
+				<button class="dropdown-toggle">pages</button>
+				<div class="dropdown-menu">
+					<a href="/archive">archive</a>
+					<a href="/bookmarks">bookmarks</a>
+					<a href="/now">now</a>
+					<a href="/reading">reading</a>
+					<a href="/talks">talks</a>
+					<a href="/uses">uses</a>
+				</div>
+			</div>
+			<a href="/about">about</a>
+			<button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+				<span class="theme-icon">◐</span>
+			</button>
+			<a href="https://github.com/metalops-dev" target="_blank" rel="noopener" class="github-link" aria-label="GitHub" title="GitHub">
+				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+				</svg>
+			</a>
+		</div>
+	</nav>
+</header>
+<style>
+	header {
+		border-bottom: 2px solid var(--border);
+	}
+	nav {
+		max-width: 680px;
+		margin: 0 auto;
+		padding: 1rem 1.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+	.logo {
+		font-weight: 700;
+		font-size: 1.1rem;
+		text-decoration: none;
+		letter-spacing: -0.02em;
+	}
+	.logo:hover {
+		background: var(--fg);
+		color: var(--bg);
+	}
+	.nav-links {
+		display: flex;
+		gap: 1.5rem;
+		align-items: center;
+	}
+	.nav-links a {
+		font-size: 0.9rem;
+		text-decoration: none;
+		color: var(--muted);
+	}
+	.nav-links a:hover {
+		color: var(--bg);
+		background: var(--fg);
+	}
+	.nav-links a.github-link:hover {
+		background: transparent;
+		color: var(--muted);
+	}
+	.dropdown {
+		position: relative;
+	}
+	.dropdown-toggle {
+		font-size: 0.9rem;
+		background: none;
+		border: none;
+		color: var(--muted);
+		cursor: pointer;
+		padding: 0;
+		font-family: inherit;
+		font-weight: inherit;
+	}
+	.dropdown-toggle:hover {
+		color: var(--bg);
+		background: var(--fg);
+	}
+	.dropdown-menu {
+		display: none;
+		position: absolute;
+		top: 100%;
+		left: 0;
+		background: var(--bg);
+		border: 1px solid var(--border);
+		border-top: none;
+		flex-direction: column;
+		min-width: 150px;
+		z-index: 10;
+		margin-top: -2px;
+	}
+	.dropdown:hover .dropdown-menu {
+		display: flex;
+	}
+	.dropdown-menu a {
+		padding: 0.75rem 1rem;
+		color: var(--muted);
+		text-decoration: none;
+		border-bottom: 1px solid var(--border);
+		font-size: 0.9rem;
+	}
+	.dropdown-menu a:last-child {
+		border-bottom: none;
+	}
+	.dropdown-menu a:hover {
+		color: var(--bg);
+		background: var(--fg);
+	}
+	.theme-toggle {
+		background: none;
+		border: none;
+		color: var(--muted);
+		cursor: pointer;
+		font-size: 0.9rem;
+		padding: 0;
+		font-family: inherit;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	.theme-icon {
+		display: inline-block;
+		transition: transform 0.3s ease;
+	}
+	.github-link {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: var(--muted);
+		text-decoration: none;
+		width: 20px;
+		height: 20px;
+	}
+	.github-link svg {
+		width: 20px;
+		height: 20px;
+	}
+	@media (max-width: 600px) {
+		nav {
+			padding: 1rem;
+		}
+		.nav-links {
+			gap: 1rem;
+		}
+	}
+</style>
+
+<script>
+	function initThemeToggle() {
+		const toggle = document.getElementById('theme-toggle');
+		const html = document.documentElement;
+		const icon = toggle?.querySelector('.theme-icon');
+
+		// Check for saved theme or system preference
+		const savedTheme = localStorage.getItem('theme');
+		const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+		const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+
+		// Apply initial theme
+		html.style.colorScheme = initialTheme;
+		if (initialTheme === 'dark') {
+			html.classList.add('dark-mode');
+		} else {
+			html.classList.remove('dark-mode');
+		}
+
+		// Toggle theme on button click
+		toggle?.addEventListener('click', () => {
+			const isDark = html.classList.toggle('dark-mode');
+			html.style.colorScheme = isDark ? 'dark' : 'light';
+			localStorage.setItem('theme', isDark ? 'dark' : 'light');
+
+			if (icon) {
+				icon.style.transform = isDark ? 'rotate(180deg)' : 'rotate(0deg)';
+			}
+		});
+
+		// Rotate icon if in dark mode
+		if (html.classList.contains('dark-mode') && icon) {
+			icon.style.transform = 'rotate(180deg)';
+		}
+	}
+
+	// Initialize on page load and listen for astro navigation
+	initThemeToggle();
+	document.addEventListener('astro:after-swap', initThemeToggle);
+</script>

@@ -1,0 +1,146 @@
+---
+title: 'Using MDX Components'
+description: 'A showcase of all available MDX components for enriching blog posts'
+pubDate: 2024-12-21
+draft: true
+tags: ['mdx', 'components', 'guide']
+---
+
+import Callout from '../../components/mdx/Callout.astro';
+import CodeFile from '../../components/mdx/CodeFile.astro';
+import FileTree from '../../components/mdx/FileTree.astro';
+import Steps from '../../components/mdx/Steps.astro';
+import Badge from '../../components/mdx/Badge.astro';
+import Details from '../../components/mdx/Details.astro';
+import LinkCard from '../../components/mdx/LinkCard.astro';
+import Kbd from '../../components/mdx/Kbd.astro';
+
+This guide showcases all the MDX components available for enriching your blog posts.
+
+## Callout
+
+Use callouts to highlight important information.
+
+<Callout type="note">
+This is a note callout for general information.
+</Callout>
+
+<Callout type="tip" title="Pro Tip">
+Tips highlight useful suggestions or best practices.
+</Callout>
+
+<Callout type="warning">
+Warnings alert readers to potential issues.
+</Callout>
+
+<Callout type="error" title="Critical">
+Error callouts for critical warnings.
+</Callout>
+
+## Badge
+
+<Badge>default</Badge> <Badge type="success">success</Badge> <Badge type="warning">warning</Badge> <Badge type="error">error</Badge> <Badge type="info">info</Badge>
+
+Use badges for versions: <Badge type="info">v2.0.0</Badge> or status: <Badge type="success">stable</Badge>
+
+## CodeFile
+
+Wrap code blocks with filenames:
+
+<CodeFile filename="config.yaml" lang="yaml">
+```yaml
+server:
+  port: 3000
+  host: localhost
+```
+</CodeFile>
+
+## FileTree
+
+Display directory structures:
+
+<FileTree title="project structure">
+- src/
+  - components/
+    - **Header.astro**
+    - **Footer.astro**
+  - pages/
+    - index.astro
+    - about.astro
+- package.json
+- astro.config.mjs
+</FileTree>
+
+## Steps
+
+<Steps title="Getting Started">
+
+<div>
+### Install dependencies
+
+```bash
+npm install
+```
+
+</div>
+
+<div>
+### Configure your project
+
+Edit the `astro.config.mjs` file.
+</div>
+
+<div>
+### Start development server
+
+```bash
+npm run dev
+```
+
+</div>
+
+</Steps>
+
+## Details
+
+<Details summary="Click to expand">
+This content is hidden by default. Use details for optional information,
+lengthy explanations, or spoilers.
+</Details>
+
+<Details summary="Advanced configuration" open>
+This section starts expanded because we passed `open={true}`.
+</Details>
+
+## LinkCard
+
+<LinkCard
+  href="https://astro.build"
+  title="Astro"
+  description="The web framework for content-driven websites"
+/>
+
+<LinkCard
+  href="/about"
+  title="About"
+  description="Learn more about this site"
+/>
+
+## Kbd (Keyboard)
+
+Press <Kbd>Cmd</Kbd> + <Kbd>K</Kbd> to open the command palette.
+
+Use <Kbd>Ctrl</Kbd> + <Kbd>C</Kbd> to copy and <Kbd>Ctrl</Kbd> + <Kbd>V</Kbd> to paste.
+
+---
+
+## Usage
+
+Import the components you need at the top of your MDX file:
+
+```mdx
+import Callout from '../../components/mdx/Callout.astro';
+import Badge from '../../components/mdx/Badge.astro';
+```
+
+Then use them anywhere in your content.

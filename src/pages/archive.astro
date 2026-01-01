@@ -1,0 +1,172 @@
+---
+import { getCollection } from "astro:content";
+import BaseHead from "../components/BaseHead.astro";
+import Footer from "../components/Footer.astro";
+import FormattedDate from "../components/FormattedDate.astro";
+import Header from "../components/Header.astro";
+
+const allPosts = await getCollection("blog");
+const posts = (
+	import.meta.env.PROD ? allPosts.filter((post) => !post.data.draft) : allPosts
+).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// Group posts by year
+const postsByYear = new Map<number, typeof posts>();
+posts.forEach((post) => {
+	const year = post.data.pubDate.getFullYear();
+	if (!postsByYear.has(year)) {
+		postsByYear.set(year, []);
+	}
+	postsByYear.get(year)!.push(post);
+});
+
+// Sort years descending
+const yearsList = Array.from(postsByYear.entries())
+	.sort((a, b) => b[0] - a[0])
+	.map(([year, yearPosts]) => ({
+		year,
+		posts: yearPosts.sort(
+			(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+		),
+	}));
+
+const title = "Archive";
+const description = "Browse posts by year";
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={title} description={description} />
+	</head>
+
+	<body>
+		<Header />
+		<main>
+			<article class="page-article">
+				<header>
+					<h1>{title}</h1>
+					<p class="subtitle">{description}</p>
+				</header>
+
+				<div class="content">
+					{yearsList.length === 0 ? (
+						<p class="muted">No posts yet.</p>
+					) : (
+						<div class="archive-list">
+							{yearsList.map((yearGroup) => (
+								<div class="year-section">
+									<h2 class="year-heading">{yearGroup.year}</h2>
+									<ul class="year-posts">
+										{yearGroup.posts.map((post) => (
+											<li>
+												<a href={`/blog/${post.id}/`}>
+													<span class="title">{post.data.title}</span>
+													<span class="date"><FormattedDate date={post.data.pubDate} /></span>
+												</a>
+											</li>
+										))}
+									</ul>
+								</div>
+							))}
+						</div>
+					)}
+				</div>
+			</article>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	main {
+		max-width: 680px;
+		margin: 0 auto;
+		padding: 2rem 1.5rem;
+	}
+
+	.page-article header {
+		margin-bottom: 2rem;
+	}
+
+	.page-article h1 {
+		margin: 0 0 0.5rem 0;
+	}
+
+	.subtitle {
+		color: var(--muted);
+		margin: 0;
+	}
+
+	.content {
+		line-height: 1.8;
+		color: var(--fg);
+	}
+
+	.archive-list {
+		display: flex;
+		flex-direction: column;
+		gap: 2.5rem;
+	}
+
+	.year-section {
+		border-left: 2px solid var(--border);
+		padding-left: 1.5rem;
+	}
+
+	.year-heading {
+		font-size: 1.3rem;
+		margin: 0 0 1rem 0;
+		color: var(--fg);
+	}
+
+	.year-posts {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.year-posts li {
+		margin: 0;
+	}
+
+	.year-posts a {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 1rem;
+		padding: 0.5rem 0;
+		text-decoration: none;
+		color: var(--fg);
+	}
+
+	.year-posts a:hover {
+		background: var(--fg);
+		color: var(--bg);
+		padding-left: 0.5rem;
+		padding-right: 0.5rem;
+		margin-left: -0.5rem;
+		margin-right: -0.5rem;
+	}
+
+	.year-posts .title {
+		font-weight: 500;
+	}
+
+	.year-posts .date {
+		font-size: 0.85rem;
+		color: var(--muted);
+		flex-shrink: 0;
+	}
+
+	.year-posts a:hover .date {
+		color: var(--bg);
+	}
+
+	.muted {
+		color: var(--muted);
+	}
+</style>

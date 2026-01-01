@@ -1,0 +1,307 @@
+/*
+  Minimal Brutalist Theme for metalops.dev
+ */
+
+:root {
+	--bg: #ffffff;
+	--fg: #000000;
+	--accent: #000000;
+	--border: #000000;
+	--muted: #666666;
+	--code-bg: #f0f0f0;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bg: #0a0a0a;
+		--fg: #ffffff;
+		--accent: #ffffff;
+		--border: #ffffff;
+		--muted: #999999;
+		--code-bg: #1a1a1a;
+	}
+}
+
+html.dark-mode {
+	--bg: #0a0a0a;
+	--fg: #ffffff;
+	--accent: #ffffff;
+	--border: #ffffff;
+	--muted: #999999;
+	--code-bg: #1a1a1a;
+	color-scheme: dark;
+}
+
+html:not(.dark-mode) {
+	--bg: #ffffff;
+	--fg: #000000;
+	--accent: #000000;
+	--border: #000000;
+	--muted: #666666;
+	--code-bg: #f0f0f0;
+	color-scheme: light;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	font-family: "JetBrains Mono", "SF Mono", "Fira Code", "Consolas", monospace;
+	margin: 0;
+	padding: 0;
+	background: var(--bg);
+	color: var(--fg);
+	font-size: 16px;
+	line-height: 1.6;
+	-webkit-font-smoothing: antialiased;
+}
+
+main {
+	max-width: 680px;
+	margin: 0 auto;
+	padding: 2rem 1.5rem 4rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	margin: 0 0 1rem 0;
+	font-weight: 700;
+	letter-spacing: -0.02em;
+	line-height: 1.2;
+}
+
+h1 {
+	font-size: 2rem;
+	border-bottom: 3px solid var(--border);
+	padding-bottom: 0.5rem;
+	margin-bottom: 1.5rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 2.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 2rem;
+}
+
+h4 {
+	font-size: 1.1rem;
+}
+
+strong,
+b {
+	font-weight: 700;
+}
+
+a {
+	color: var(--fg);
+	text-decoration: underline;
+	text-underline-offset: 3px;
+	text-decoration-thickness: 2px;
+}
+
+a:hover {
+	background: var(--fg);
+	color: var(--bg);
+	text-decoration: none;
+}
+
+p {
+	margin: 0 0 1.5rem 0;
+}
+
+.prose p {
+	margin-bottom: 1.5rem;
+}
+
+ul,
+ol {
+	padding-left: 1.5rem;
+	margin: 0 0 1.5rem 0;
+}
+
+li {
+	margin-bottom: 0.5rem;
+}
+
+textarea,
+input {
+	font-family: inherit;
+	font-size: 16px;
+	border: 2px solid var(--border);
+	background: var(--bg);
+	color: var(--fg);
+	padding: 0.5rem;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 1.5rem 0;
+}
+
+th,
+td {
+	border: 2px solid var(--border);
+	padding: 0.75rem;
+	text-align: left;
+}
+
+th {
+	font-weight: 700;
+	background: var(--fg);
+	color: var(--bg);
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+	border: 2px solid var(--border);
+}
+
+code {
+	font-family: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
+	padding: 0.2em 0.4em;
+	background-color: var(--code-bg);
+	font-size: 0.9em;
+}
+
+pre {
+	background: var(--code-bg);
+	padding: 1.5rem;
+	overflow-x: auto;
+	border: 2px solid var(--border);
+	margin: 1.5rem 0;
+}
+
+pre > code {
+	padding: 0;
+	background: none;
+}
+
+blockquote {
+	border-left: 4px solid var(--border);
+	padding: 0 0 0 1.5rem;
+	margin: 1.5rem 0;
+	font-style: italic;
+	color: var(--muted);
+}
+
+hr {
+	border: none;
+	border-top: 2px solid var(--border);
+	margin: 2rem 0;
+}
+
+@media (max-width: 600px) {
+	body {
+		font-size: 15px;
+	}
+
+	main {
+		padding: 1.5rem 1rem 3rem;
+	}
+
+	h1 {
+		font-size: 1.5rem;
+	}
+}
+
+/* External link indicator */
+.prose a[href^="http"]:not([href*="metalops.dev"])::after,
+.prose a[target="_blank"]::after {
+	content: " ↗";
+	font-size: 0.8em;
+}
+
+/* Command/terminal output styling - Retro CRT vibe */
+pre[data-language="bash"],
+pre[data-language="shell"],
+pre[data-language="sh"],
+pre[data-language="zsh"],
+pre[data-language="terminal"] {
+	--terminal-green: #4ade80;
+	--terminal-bg: #0c0c0c;
+	background: var(--terminal-bg);
+	border: 1px solid #4ade8050;
+	color: var(--terminal-green);
+	position: relative;
+	font-size: 0.9em;
+	line-height: 1.5;
+}
+
+pre[data-language="bash"]::before,
+pre[data-language="shell"]::before,
+pre[data-language="sh"]::before,
+pre[data-language="zsh"]::before,
+pre[data-language="terminal"]::before {
+	content: "$ terminal";
+	display: block;
+	font-size: 0.7rem;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	color: #4ade8080;
+	margin-bottom: 0.75rem;
+	padding-bottom: 0.5rem;
+	border-bottom: 1px solid #4ade8030;
+}
+
+pre[data-language="bash"] code,
+pre[data-language="shell"] code,
+pre[data-language="sh"] code,
+pre[data-language="zsh"] code,
+pre[data-language="terminal"] code {
+	color: var(--terminal-green);
+}
+
+/* Output blocks - use ```output or add data-output attribute */
+pre[data-language="output"],
+pre.output {
+	--terminal-text: #a1a1aa;
+	--terminal-bg: #0c0c0c;
+	background: var(--terminal-bg);
+	border: 1px dashed #a1a1aa40;
+	color: var(--terminal-text);
+	font-size: 0.9em;
+	line-height: 1.5;
+}
+
+pre[data-language="output"]::before,
+pre.output::before {
+	content: "> output";
+	display: block;
+	font-size: 0.7rem;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	color: #a1a1aa80;
+	margin-bottom: 0.75rem;
+	padding-bottom: 0.5rem;
+	border-bottom: 1px dashed #a1a1aa30;
+}
+
+pre[data-language="output"] code,
+pre.output code {
+	color: var(--terminal-text);
+}
+
+.sr-only {
+	border: 0;
+	padding: 0;
+	margin: 0;
+	position: absolute;
+	height: 1px;
+	width: 1px;
+	overflow: hidden;
+	clip: rect(1px 1px 1px 1px);
+	clip: rect(1px, 1px, 1px, 1px);
+	clip-path: inset(50%);
+	white-space: nowrap;
+}

@@ -1,0 +1,16 @@
+sections:
+  - title: Current Projects
+    items:
+      - Building metalops.dev — a technical blog about DevOps, Kubernetes, and infrastructure
+      - Exploring Kubernetes patterns and cloud-native technologies
+      - Contributing to open-source infrastructure tools
+  - title: Learning
+    items:
+      - Advanced Kubernetes networking and service mesh architecture
+      - Platform engineering and developer experience
+      - Infrastructure as Code best practices
+  - title: Reading
+    items:
+      - Technical documentation and RFCs
+      - Blog posts on distributed systems
+      - Industry news and trends in cloud infrastructure

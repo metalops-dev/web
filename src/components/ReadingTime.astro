@@ -1,0 +1,31 @@
+---
+interface Props {
+	content: string;
+}
+
+const { content } = Astro.props;
+
+// Average reading speed: 200 words per minute
+const WORDS_PER_MINUTE = 200;
+
+// Strip HTML/markdown and count words
+const plainText = content
+	.replace(/<[^>]*>/g, "") // Remove HTML tags
+	.replace(/```[\s\S]*?```/g, "") // Remove code blocks
+	.replace(/`[^`]*`/g, "") // Remove inline code
+	.replace(/\[([^\]]*)\]\([^)]*\)/g, "$1") // Convert links to text
+	.replace(/[#*_~>`]/g, "") // Remove markdown symbols
+	.trim();
+
+const wordCount = plainText.split(/\s+/).filter(Boolean).length;
+const minutes = Math.ceil(wordCount / WORDS_PER_MINUTE);
+---
+
+<span class="reading-time">{minutes} min read</span>
+
+<style>
+	.reading-time {
+		color: var(--muted);
+		font-size: 0.9rem;
+	}
+</style>
