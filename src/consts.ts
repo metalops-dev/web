@@ -3,4 +3,4 @@
 
 export const SITE_TITLE = "metalops.dev";
 export const SITE_DESCRIPTION =
-	"A technical blog about infrastructure, DevOps, and systems engineering.";
+	"A technical blog about Software, Systems, Infrastructure, Devops and engineering.";
