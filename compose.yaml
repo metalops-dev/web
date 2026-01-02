@@ -7,8 +7,7 @@ services:
       - proxy
     ports:
       - target: 80
-        published: 80
-        mode: host
+        mode: ingress
     labels:
       - traefik.enable=true
       - traefik.http.middlewares.metalops-redirect-https.redirectscheme.scheme=https
