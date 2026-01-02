@@ -26,20 +26,20 @@
 		"astro-d2": "0.8.1",
 		"astro-expressive-code": "0.41.3",
 		"astro-icon": "1.1.5",
-		"astro-og-canvas": "^0.7.2",
+		"astro-og-canvas": "0.7.2",
 		"astro-robots-txt": "1.0.0",
-		"canvaskit-wasm": "^0.40.0",
-		"expressive-code-language-badge": "^1.1.0",
+		"canvaskit-wasm": "0.40.0",
+		"expressive-code-language-badge": "1.1.0",
 		"js-yaml": "4.1.1",
 		"sharp": "0.34.4",
 		"tailwindcss": "4.1.14"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.10",
-		"@rollup/plugin-yaml": "^4.1.2",
+		"@rollup/plugin-yaml": "4.1.2",
 		"@types/js-yaml": "^4.0.9",
 		"typescript": "^5.9.3",
 		"vitest": "^4.0.16",
-		"yaml": "^2.8.2"
+		"yaml": "2.8.2"
 	}
 }
