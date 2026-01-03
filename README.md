@@ -30,5 +30,3 @@ src/
 ├── pages/          # Routes
 └── styles/         # Global CSS
 ```
-
-test
