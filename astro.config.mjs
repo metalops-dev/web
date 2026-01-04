@@ -9,6 +9,8 @@ import expressiveCode from "astro-expressive-code";
 import icon from "astro-icon";
 import robotsTxt from "astro-robots-txt";
 import { pluginLanguageBadge } from "expressive-code-language-badge";
+import compression from "vite-plugin-compression";
+import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 
 // https://astro.build/config
 export default defineConfig({
@@ -33,12 +35,24 @@ export default defineConfig({
 		robotsTxt(),
 		icon(),
 	],
+
 	vite: {
 		plugins: [
-			tailwindcss(),
-			pluginLineNumbers(),
-			pluginLanguageBadge(),
 			yaml(),
+			compression({
+				verbose: true,
+				disable: false,
+				threshold: 1024,
+				algorithm: "gzip",
+				ext: ".gz",
+			}),
 		],
 	},
+
+	plugins: [
+		tailwindcss(),
+		pluginLineNumbers(),
+		pluginLanguageBadge(),
+		ViteImageOptimizer(),
+	],
 });
