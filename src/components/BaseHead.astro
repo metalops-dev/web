@@ -115,6 +115,20 @@ const jsonLd =
 <!-- JSON-LD Structured Data -->
 <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
+<!-- Theme initialization - runs before page renders to prevent flash -->
+<script is:inline>
+	(function() {
+		const savedTheme = localStorage.getItem('theme');
+		const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+		const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+
+		if (theme === 'dark') {
+			document.documentElement.classList.add('dark-mode');
+		}
+		document.documentElement.style.colorScheme = theme;
+	})();
+</script>
+
 <!-- Analytics -->
 <script
     src="https://analytics.thexiao77.com/api/script.js"
