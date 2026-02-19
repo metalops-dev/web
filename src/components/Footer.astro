@@ -42,13 +42,14 @@ const today = new Date();
 </script>
 <style>
 	footer {
-		border-top: 2px solid var(--border);
-		margin-top: 4rem;
+		border-top: 1px solid var(--border);
+		margin-top: 5rem;
+		background: var(--surface);
 	}
 	.footer-main {
-		max-width: 680px;
+		max-width: 700px;
 		margin: 0 auto;
-		padding: 1.5rem;
+		padding: 2rem 1.5rem;
 	}
 	.footer-content {
 		display: flex;
@@ -56,7 +57,7 @@ const today = new Date();
 		justify-content: center;
 		flex-wrap: wrap;
 		gap: 0.5rem;
-		font-size: 0.85rem;
+		font-size: 0.8rem;
 		color: var(--muted);
 	}
 	.sep {
@@ -65,16 +66,18 @@ const today = new Date();
 	footer a {
 		color: var(--muted);
 		text-decoration: none;
+		border-bottom: 1px solid transparent;
+		transition: color 0.2s, border-color 0.2s;
 	}
 	footer a:hover {
-		color: var(--fg);
+		color: var(--accent);
 		background: transparent;
-		text-decoration: underline;
+		border-bottom-color: var(--accent);
 	}
 	.footer-badges {
-		max-width: 680px;
+		max-width: 700px;
 		margin: 0 auto;
-		padding: 0 1.5rem 2rem;
+		padding: 0 1.5rem 2.5rem;
 		display: flex;
 		align-items: flex-end;
 		justify-content: center;
@@ -87,17 +90,24 @@ const today = new Date();
 		align-items: flex-start;
 		text-decoration: none;
 		gap: 0.375rem;
+		border-bottom: none;
 	}
 	.badge-link:hover {
 		background: transparent !important;
 		color: inherit !important;
+		border-bottom: none;
 	}
 	.badge-link img {
 		max-width: 280px;
 		width: 100%;
 		height: auto;
 		border: 1px solid var(--border);
-		opacity: 0.7;
+		opacity: 0.6;
+		transition: opacity 0.2s;
+		border-radius: var(--radius, 6px);
+	}
+	.badge-link:hover img {
+		opacity: 0.9;
 	}
 	.badge-label {
 		font-size: 0.7rem;
@@ -113,7 +123,12 @@ const today = new Date();
 	.badge-item img {
 		height: 3rem;
 		width: auto;
-		opacity: 0.5;
+		opacity: 0.4;
+		transition: opacity 0.2s;
+		border: none;
+	}
+	.badge-item img:hover {
+		opacity: 0.7;
 	}
 	@media (max-width: 500px) {
 		.footer-badges {

@@ -21,17 +21,21 @@ const isExternal = href.startsWith("http");
 <style>
 	.link-card {
 		display: block;
-		padding: 1rem;
+		padding: 1.25rem;
 		margin: 1.5rem 0;
 		border: 1px solid var(--border);
 		text-decoration: none;
 		color: inherit;
-		transition: border-color 0.15s, background-color 0.15s;
+		transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s, transform 0.15s;
+		border-radius: var(--radius, 6px);
+		border-bottom: 1px solid var(--border);
 	}
 	.link-card:hover {
-		border-color: var(--fg);
-		background: var(--code-bg);
+		border-color: var(--accent);
+		background: var(--surface);
 		color: inherit;
+		box-shadow: var(--shadow);
+		transform: translateY(-1px);
 	}
 	.link-card-title {
 		display: block;

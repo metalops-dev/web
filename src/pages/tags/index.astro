@@ -68,23 +68,27 @@ const sortedTags = [...tagCounts.entries()].sort((a, b) =>
 		padding: 0.5rem 1rem;
 		border: 1px solid var(--border);
 		text-decoration: none;
-		transition: all 0.2s ease-in-out;
-		border-radius: 2px;
+		transition: all 0.2s ease;
+		border-radius: var(--radius, 6px);
+		color: var(--fg);
+		border-bottom: 1px solid var(--border);
 	}
 	.tags-list a:hover {
-		background: var(--fg);
-		color: var(--bg);
+		background: var(--accent-muted, rgba(13,148,136,0.1));
+		color: var(--accent);
+		border-color: var(--accent);
 		box-shadow: var(--shadow);
 	}
 	.tag-name {
 		font-weight: 500;
 	}
 	.tag-count {
-		font-size: 0.85rem;
+		font-size: 0.8rem;
 		color: var(--muted);
+		font-family: "JetBrains Mono", "SF Mono", monospace;
 	}
 	.tags-list a:hover .tag-count {
-		color: var(--bg);
+		color: var(--accent);
 	}
 	.empty {
 		color: var(--muted);

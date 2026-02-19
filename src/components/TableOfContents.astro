@@ -78,19 +78,19 @@ const filteredHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
 		width: 12px;
 		height: 2px;
 		background: var(--muted);
-		opacity: 0.3;
-		transition: opacity 0.2s, width 0.2s;
+		opacity: 0.25;
+		transition: opacity 0.2s, width 0.2s, background 0.2s;
 	}
 
 	.toc-link:hover {
-		opacity: 0.6;
-		background: var(--muted);
+		opacity: 0.5;
+		background: var(--accent);
 	}
 
 	.toc-link.is-active {
 		opacity: 1;
-		background: var(--fg);
-		width: 20px;
+		background: var(--accent);
+		width: 24px;
 	}
 
 	.toc-link.depth-3 {

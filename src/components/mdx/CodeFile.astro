@@ -21,19 +21,22 @@ const { filename, lang } = Astro.props;
 	.code-file {
 		margin: 1.5rem 0;
 		border: 1px solid var(--border);
+		border-radius: var(--radius, 6px);
+		overflow: hidden;
 	}
 	figcaption {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 		padding: 0.5rem 1rem;
-		background: var(--code-bg);
+		background: var(--surface);
 		border-bottom: 1px solid var(--border);
 		font-family: var(--font-mono);
 		font-size: 0.8rem;
 	}
 	.filename {
 		font-weight: 700;
+		color: var(--accent);
 	}
 	.lang {
 		color: var(--muted);
