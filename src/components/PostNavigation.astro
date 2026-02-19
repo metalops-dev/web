@@ -52,24 +52,29 @@ const { prev, next } = Astro.props;
 		text-decoration: none;
 		padding: 1rem;
 		border: 1px solid var(--border);
-		transition: all 0.2s ease-in-out;
-		border-radius: 2px;
+		transition: all 0.2s ease;
+		border-radius: var(--radius, 6px);
+		border-bottom: 1px solid var(--border);
+		color: var(--fg);
 	}
 	.post-nav-item a:hover {
-		background: var(--fg);
-		color: var(--bg);
+		background: var(--surface);
+		color: var(--fg);
+		border-color: var(--accent);
 		box-shadow: var(--shadow);
+		transform: translateY(-1px);
 	}
 	.label {
 		display: block;
-		font-size: 0.8rem;
+		font-size: 0.75rem;
 		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		color: var(--muted);
+		letter-spacing: 0.06em;
+		color: var(--accent);
 		margin-bottom: 0.25rem;
+		font-family: "JetBrains Mono", "SF Mono", monospace;
 	}
 	.post-nav-item a:hover .label {
-		color: var(--bg);
+		color: var(--accent);
 	}
 	.title {
 		font-weight: 500;

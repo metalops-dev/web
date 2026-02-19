@@ -4,12 +4,15 @@ import { SITE_TITLE } from "../consts";
 
 <header>
 	<nav>
-		<a href="/" class="logo">{SITE_TITLE}</a>
+		<a href="/" class="logo">
+			<span class="logo-symbol">&gt;_</span>
+			{SITE_TITLE}
+		</a>
 		<div class="nav-links">
 			<a href="/blog">blog</a>
 			<a href="/tags">tags</a>
 			<div class="dropdown">
-				<button class="dropdown-toggle">pages</button>
+				<button class="dropdown-toggle">pages <span class="chevron">▾</span></button>
 				<div class="dropdown-menu">
 					<a href="/archive">archive</a>
 					<a href="/bookmarks">bookmarks</a>
@@ -20,11 +23,12 @@ import { SITE_TITLE } from "../consts";
 				</div>
 			</div>
 			<a href="/about">about</a>
+			<div class="nav-separator"></div>
 			<button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
 				<span class="theme-icon">◐</span>
 			</button>
 			<a href="https://github.com/metalops-dev" target="_blank" rel="noopener" class="github-link" aria-label="GitHub" title="GitHub">
-				<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 					<path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
 				</svg>
 			</a>
@@ -33,13 +37,18 @@ import { SITE_TITLE } from "../consts";
 </header>
 <style>
 	header {
+		position: sticky;
+		top: 0;
+		z-index: 50;
+		background: color-mix(in srgb, var(--bg) 85%, transparent);
+		backdrop-filter: blur(12px) saturate(150%);
+		-webkit-backdrop-filter: blur(12px) saturate(150%);
 		border-bottom: 1px solid var(--border);
-		box-shadow: var(--shadow);
 	}
 	nav {
-		max-width: 680px;
+		max-width: 700px;
 		margin: 0 auto;
-		padding: 1rem 1.5rem;
+		padding: 0.875rem 1.5rem;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
@@ -47,39 +56,72 @@ import { SITE_TITLE } from "../consts";
 	}
 	.logo {
 		font-weight: 700;
-		font-size: 1.1rem;
+		font-size: 1rem;
 		text-decoration: none;
 		letter-spacing: -0.02em;
 		font-family: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
+		color: var(--fg);
+		border-bottom: none;
+		display: flex;
+		align-items: center;
+		gap: 0.35rem;
+		transition: color 0.2s;
+	}
+	.logo-symbol {
+		color: var(--accent);
+		font-weight: 700;
 	}
 	.logo:hover {
-		background: var(--fg);
-		color: var(--bg);
+		color: var(--accent);
+		background: none;
 	}
 	.nav-links {
 		display: flex;
-		gap: 1.5rem;
+		gap: 1.25rem;
 		align-items: center;
 	}
+	.nav-separator {
+		width: 1px;
+		height: 16px;
+		background: var(--border);
+	}
 	.nav-links a {
-		font-size: 0.9rem;
+		font-size: 0.875rem;
 		text-decoration: none;
 		color: var(--muted);
-		transition: all 0.2s ease-in-out;
+		border-bottom: none;
+		transition: color 0.2s;
+		position: relative;
+	}
+	.nav-links a::after {
+		content: "";
+		position: absolute;
+		bottom: -2px;
+		left: 0;
+		width: 0;
+		height: 1.5px;
+		background: var(--accent);
+		transition: width 0.2s ease;
 	}
 	.nav-links a:hover {
-		color: var(--bg);
-		background: var(--fg);
+		color: var(--fg);
+		background: none;
+	}
+	.nav-links a:hover::after {
+		width: 100%;
+	}
+	.nav-links a.github-link::after {
+		display: none;
 	}
 	.nav-links a.github-link:hover {
 		background: transparent;
-		color: var(--muted);
+		color: var(--accent);
 	}
 	.dropdown {
 		position: relative;
 	}
 	.dropdown-toggle {
-		font-size: 0.9rem;
+		font-size: 0.875rem;
 		background: none;
 		border: none;
 		color: var(--muted);
@@ -87,53 +129,99 @@ import { SITE_TITLE } from "../consts";
 		padding: 0;
 		font-family: inherit;
 		font-weight: inherit;
-		transition: all 0.2s ease-in-out;
+		transition: color 0.2s;
+		display: flex;
+		align-items: center;
+		gap: 0.2rem;
+	}
+	.chevron {
+		font-size: 0.7em;
+		transition: transform 0.2s;
+	}
+	.dropdown:hover .chevron {
+		transform: rotate(180deg);
 	}
 	.dropdown-toggle:hover {
-		color: var(--bg);
-		background: var(--fg);
+		color: var(--fg);
+		background: none;
 	}
 	.dropdown-menu {
 		display: none;
 		position: absolute;
-		top: 100%;
-		left: 0;
+		top: calc(100% + 8px);
+		left: 50%;
+		transform: translateX(-50%);
 		background: var(--bg);
 		border: 1px solid var(--border);
-		border-top: none;
 		flex-direction: column;
 		min-width: 150px;
 		z-index: 10;
-		margin-top: -2px;
+		border-radius: var(--radius, 6px);
+		box-shadow: var(--shadow-lg, 0 4px 16px rgba(0,0,0,0.1));
+		animation: dropdownFade 0.15s ease-out;
+	}
+	/* Invisible bridge so mouse doesn't lose hover crossing the gap */
+	.dropdown-menu::before {
+		content: "";
+		position: absolute;
+		top: -12px;
+		left: 0;
+		right: 0;
+		height: 12px;
+	}
+	.dropdown-menu a:first-child {
+		border-radius: var(--radius, 6px) var(--radius, 6px) 0 0;
+	}
+	.dropdown-menu a:last-child {
+		border-radius: 0 0 var(--radius, 6px) var(--radius, 6px);
+	}
+	@keyframes dropdownFade {
+		from {
+			opacity: 0;
+			transform: translateX(-50%) translateY(-4px);
+		}
+		to {
+			opacity: 1;
+			transform: translateX(-50%) translateY(0);
+		}
 	}
 	.dropdown:hover .dropdown-menu {
 		display: flex;
 	}
 	.dropdown-menu a {
-		padding: 0.75rem 1rem;
+		padding: 0.625rem 1rem;
 		color: var(--muted);
 		text-decoration: none;
 		border-bottom: 1px solid var(--border);
-		font-size: 0.9rem;
+		font-size: 0.85rem;
+		transition: all 0.15s;
+	}
+	.dropdown-menu a::after {
+		display: none;
 	}
 	.dropdown-menu a:last-child {
 		border-bottom: none;
 	}
 	.dropdown-menu a:hover {
-		color: var(--bg);
-		background: var(--fg);
+		color: var(--accent);
+		background: var(--accent-muted, rgba(13,148,136,0.1));
+		padding-left: 1.25rem;
 	}
 	.theme-toggle {
 		background: none;
 		border: none;
 		color: var(--muted);
 		cursor: pointer;
-		font-size: 0.9rem;
+		font-size: 1rem;
 		padding: 0;
 		font-family: inherit;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		transition: color 0.2s;
+	}
+	.theme-toggle:hover {
+		color: var(--accent);
 	}
 	.theme-icon {
 		display: inline-block;
@@ -145,19 +233,23 @@ import { SITE_TITLE } from "../consts";
 		justify-content: center;
 		color: var(--muted);
 		text-decoration: none;
-		width: 20px;
-		height: 20px;
+		width: 18px;
+		height: 18px;
+		transition: color 0.2s;
 	}
 	.github-link svg {
-		width: 20px;
-		height: 20px;
+		width: 18px;
+		height: 18px;
 	}
 	@media (max-width: 600px) {
 		nav {
-			padding: 1rem;
+			padding: 0.75rem 1rem;
 		}
 		.nav-links {
-			gap: 1rem;
+			gap: 0.875rem;
+		}
+		.nav-separator {
+			display: none;
 		}
 	}
 </style>

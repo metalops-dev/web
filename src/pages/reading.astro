@@ -94,7 +94,9 @@ const description = "Books, articles, and papers I'm reading";
 	.reading-list li {
 		margin-bottom: 1rem;
 		padding: 1rem;
-		border-left: 2px solid var(--border);
+		border-left: 2px solid var(--accent);
+		background: var(--surface);
+		border-radius: 0 var(--radius, 6px) var(--radius, 6px) 0;
 		display: flex;
 		flex-direction: column;
 		gap: 0.25rem;
@@ -111,18 +113,13 @@ const description = "Books, articles, and papers I'm reading";
 	}
 
 	.content a {
-		color: var(--fg);
-		text-decoration: underline;
-		text-decoration-color: var(--border);
+		color: var(--accent);
+		text-decoration: none;
+		border-bottom: 1px solid var(--accent-muted, rgba(13,148,136,0.3));
 	}
 
 	.content a:hover {
-		color: var(--bg);
-		background: var(--fg);
-		text-decoration: none;
+		color: var(--accent-light, #14b8a6);
+		background: transparent;
+		border-bottom-color: var(--accent);
 	}
-
-	.muted {
-		color: var(--muted);
-	}
-</style>

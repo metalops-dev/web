@@ -43,18 +43,20 @@ const sortedPosts = posts.sort((a, b) => a.part - b.part);
 		margin: 2rem 0;
 		border: 1px solid var(--border);
 		box-shadow: var(--shadow);
-		border-radius: 2px;
+		border-radius: var(--radius, 6px);
+		overflow: hidden;
 	}
 	.series-header {
-		padding: 1rem;
-		background: var(--code-bg);
+		padding: 1rem 1.25rem;
+		background: var(--surface);
 		border-bottom: 1px solid var(--border);
 	}
 	.series-label {
 		font-size: 0.7rem;
 		text-transform: uppercase;
 		letter-spacing: 0.1em;
-		color: var(--muted);
+		color: var(--accent);
+		font-family: "JetBrains Mono", "SF Mono", monospace;
 	}
 	.series-header h3 {
 		margin: 0.25rem 0;
@@ -65,7 +67,7 @@ const sortedPosts = posts.sort((a, b) => a.part - b.part);
 		color: var(--muted);
 	}
 	.series-nav {
-		padding: 1rem;
+		padding: 1rem 1.25rem;
 	}
 	.series-nav ol {
 		list-style: none;
@@ -75,7 +77,7 @@ const sortedPosts = posts.sort((a, b) => a.part - b.part);
 	.series-nav li {
 		padding: 0.375rem 0;
 		font-size: 0.9rem;
-		border-bottom: 1px solid var(--code-bg);
+		border-bottom: 1px solid var(--border);
 	}
 	.series-nav li:last-child {
 		border-bottom: none;
@@ -92,9 +94,11 @@ const sortedPosts = posts.sort((a, b) => a.part - b.part);
 		gap: 0.5rem;
 		color: var(--muted);
 		text-decoration: none;
+		border-bottom: none;
+		transition: color 0.15s;
 	}
 	.series-nav a:hover {
-		color: var(--fg);
+		color: var(--accent);
 		background: transparent;
 	}
 	.series-nav a:focus-visible {
@@ -106,6 +110,6 @@ const sortedPosts = posts.sort((a, b) => a.part - b.part);
 		color: var(--muted);
 	}
 	.series-nav li.current .part-number {
-		color: var(--fg);
+		color: var(--accent);
 	}
 </style>

@@ -18,33 +18,54 @@ const { substackUrl = "https://metalops.substack.com" } = Astro.props;
 <style>
 	.newsletter {
 		margin: 3rem 0;
-		padding: 1.5rem;
+		padding: 1.75rem;
 		border: 1px solid var(--border);
-		background: var(--code-bg);
+		background: var(--surface);
 		box-shadow: var(--shadow);
-		border-radius: 2px;
+		border-radius: var(--radius, 6px);
+		position: relative;
+		overflow: hidden;
+	}
+	.newsletter::before {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 2px;
+		background: linear-gradient(90deg, var(--accent), var(--accent-light, #14b8a6));
 	}
 	.newsletter h3 {
 		margin: 0 0 0.5rem 0;
 		font-size: 1rem;
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
+		color: var(--fg);
 	}
 	.newsletter p {
-		margin: 0 0 1rem 0;
+		margin: 0 0 1.25rem 0;
 		color: var(--muted);
 		font-size: 0.9rem;
 	}
 	.subscribe-btn {
-		display: inline-block;
-		padding: 0.5rem 1rem;
-		background: var(--fg);
-		color: var(--bg);
+		display: inline-flex;
+		align-items: center;
+		gap: 0.375rem;
+		padding: 0.6rem 1.25rem;
+		background: var(--accent);
+		color: white;
 		text-decoration: none;
-		font-weight: 700;
-		font-size: 0.875rem;
+		font-weight: 600;
+		font-size: 0.85rem;
+		border-radius: var(--radius, 6px);
+		border: none;
+		border-bottom: none;
+		transition: background 0.2s, transform 0.15s;
 	}
 	.subscribe-btn:hover {
-		background: var(--muted);
+		background: var(--accent-light, #14b8a6);
+		color: white;
+		transform: translateY(-1px);
+		border-bottom: none;
 	}
 </style>

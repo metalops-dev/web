@@ -96,19 +96,19 @@ const description = "What I'm working on right now";
 		content: '→';
 		position: absolute;
 		left: 0;
-		color: var(--muted);
+		color: var(--accent);
 	}
 
 	.content a {
-		color: var(--fg);
-		text-decoration: underline;
-		text-decoration-color: var(--border);
+		color: var(--accent);
+		text-decoration: none;
+		border-bottom: 1px solid var(--accent-muted, rgba(13,148,136,0.3));
 	}
 
 	.content a:hover {
-		color: var(--bg);
-		background: var(--fg);
-		text-decoration: none;
+		color: var(--accent-light, #14b8a6);
+		background: transparent;
+		border-bottom-color: var(--accent);
 	}
 
 	.muted {

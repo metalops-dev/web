@@ -18,10 +18,12 @@ const { summary, open = false } = Astro.props;
 	.details {
 		margin: 1.5rem 0;
 		border: 1px solid var(--border);
+		border-radius: var(--radius, 6px);
+		overflow: hidden;
 	}
 	summary {
 		padding: 0.75rem 1rem;
-		background: var(--code-bg);
+		background: var(--surface);
 		cursor: pointer;
 		font-weight: 700;
 		font-family: var(--font-mono);
@@ -31,6 +33,7 @@ const { summary, open = false } = Astro.props;
 		display: flex;
 		align-items: center;
 		gap: 0.5rem;
+		transition: background 0.15s;
 	}
 	summary::-webkit-details-marker {
 		display: none;
@@ -43,7 +46,7 @@ const { summary, open = false } = Astro.props;
 		content: '−';
 	}
 	summary:hover {
-		background: var(--border);
+		background: var(--accent-muted, rgba(13,148,136,0.1));
 	}
 	.details-content {
 		padding: 1rem;
