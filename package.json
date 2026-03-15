@@ -39,9 +39,10 @@
 		"@rollup/plugin-yaml": "4.1.2",
 		"@types/js-yaml": "4.0.9",
 		"typescript": "5.9.3",
-		"vitest": "4.0.16",
-		"yaml": "2.8.2",
+		"vite": "^8.0.0",
 		"vite-plugin-compression": "0.5.1",
-		"vite-plugin-image-optimizer": "2.0.3"
+		"vite-plugin-image-optimizer": "2.0.3",
+		"vitest": "4.0.16",
+		"yaml": "2.8.2"
 	}
 }
