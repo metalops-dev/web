@@ -11,6 +11,7 @@ export async function GET(context) {
 		site: context.site,
 		items: publishedPosts.map((post) => ({
 			...post.data,
+			description: post.data.description?.slice(0, 500),
 			link: `/blog/${post.id}/`,
 		})),
 	});
