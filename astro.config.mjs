@@ -14,6 +14,7 @@ import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 
 // https://astro.build/config
 export default defineConfig({
+	output: "static",
 	build: {
 		assets: "static/assets",
 	},
