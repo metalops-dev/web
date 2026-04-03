@@ -14,7 +14,11 @@ export async function GET() {
 	if (publishedPosts.length === 0) {
 		return new Response(JSON.stringify({ error: "No published posts found" }), {
 			status: 404,
-			headers: { "Content-Type": "application/json" },
+			headers: {
+				"Content-Type": "application/json",
+				"Access-Control-Allow-Origin": "*",
+				"Access-Control-Allow-Methods": "GET",
+			},
 		});
 	}
 
@@ -26,6 +30,13 @@ export async function GET() {
 			pubDate: new Date(latestPost.data.pubDate).toISOString(),
 			description: latestPost.data.description,
 		}),
-		{ status: 200, headers: { "Content-Type": "application/json" } },
+		{
+			status: 200,
+			headers: {
+				"Content-Type": "application/json",
+				"Access-Control-Allow-Origin": "*",
+				"Access-Control-Allow-Methods": "GET",
+			},
+		},
 	);
 }
