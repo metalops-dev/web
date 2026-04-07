@@ -1,16 +1,11 @@
 ---
-// Substack newsletter signup component
-interface Props {
-	substackUrl?: string;
-}
-
-const { substackUrl = "https://metalops.substack.com" } = Astro.props;
+import { siteConfig } from "../config/site";
 ---
 
 <aside class="newsletter">
 	<h3>Newsletter</h3>
 	<p>Get notified when I publish new posts. No spam.</p>
-	<a href={substackUrl} target="_blank" rel="noopener noreferrer" class="subscribe-btn">
+	<a href={siteConfig.substack.url} target="_blank" rel="noopener noreferrer" class="subscribe-btn">
 		Subscribe on Substack →
 	</a>
 </aside>

@@ -1,7 +1,6 @@
 ---
-// Import the global.css file here so that it is included on
-// all pages through the use of the <BaseHead /> component.
 import "../styles/global.css";
+import { siteConfig } from "../config/site";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
 
 interface Props {
@@ -26,7 +25,6 @@ const {
 	tags = [],
 } = Astro.props;
 
-// Generate OG image URL - use provided or generate from slug
 const ogImageURL = image
 	? new URL(image, Astro.site).toString()
 	: new URL(
@@ -34,7 +32,6 @@ const ogImageURL = image
 			Astro.site,
 		).toString();
 
-// JSON-LD structured data
 const jsonLd =
 	type === "article"
 		? {
@@ -49,12 +46,12 @@ const jsonLd =
 					modifiedTime?.toISOString() || publishedTime?.toISOString(),
 				author: {
 					"@type": "Person",
-					name: "Adrian Villanueva",
-					url: "https://adrianvillanueva.com",
+					name: siteConfig.author.name,
+					url: siteConfig.author.url,
 				},
 				publisher: {
 					"@type": "Organization",
-					name: SITE_TITLE,
+					name: siteConfig.name,
 					url: Astro.site,
 				},
 				keywords: tags.join(", "),
@@ -66,7 +63,7 @@ const jsonLd =
 		: {
 				"@context": "https://schema.org",
 				"@type": "WebSite",
-				name: SITE_TITLE,
+				name: siteConfig.name,
 				description: SITE_DESCRIPTION,
 				url: Astro.site,
 			};
@@ -84,6 +81,9 @@ const jsonLd =
 	href={new URL('rss.xml', Astro.site)}
 />
 <meta name="generator" content={Astro.generator} />
+
+<!-- Skip to content link -->
+<a href="#main-content" class="skip-link">Skip to main content</a>
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
@@ -129,9 +129,22 @@ const jsonLd =
 	})();
 </script>
 
+<!-- Suppress WebGL debug renderer info deprecation warning -->
+<script is:inline>
+	(function() {
+		const originalWarn = console.warn.bind(console);
+		console.warn = function(...args) {
+			if (args[0] && typeof args[0] === 'string' && args[0].includes('WEBGL_debug_renderer_info')) {
+				return;
+			}
+			originalWarn.apply(console, args);
+		};
+	})();
+</script>
+
 <!-- Analytics -->
 <script
-    src="https://analytics.thexiao77.com/api/script.js"
-    data-site-id="5f5a32bb6aa9"
+    src={siteConfig.analytics.url}
+    data-site-id={siteConfig.analytics.siteId}
     defer
 ></script>

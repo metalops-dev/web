@@ -1,19 +1,5 @@
 ---
-// Giscus comments component
-// Configure at https://giscus.app
-interface Props {
-	repo?: string;
-	repoId?: string;
-	category?: string;
-	categoryId?: string;
-}
-
-const {
-	repo = "metalops-dev/web",
-	repoId = "R_kgDOQwHTmg",
-	category = "General",
-	categoryId = "DIC_kwDOQwHTms4C2MB-",
-} = Astro.props;
+import { siteConfig } from "../config/site";
 ---
 
 <section class="comments">
@@ -23,17 +9,17 @@ const {
 
 <script
 	src="https://giscus.app/client.js"
-	data-repo={repo}
-	data-repo-id={repoId}
-	data-category={category}
-	data-category-id={categoryId}
-	data-mapping="title"
-	data-strict="0"
-	data-reactions-enabled="1"
-	data-emit-metadata="0"
-	data-input-position="bottom"
-	data-theme="preferred_color_scheme"
-	data-lang="en"
+	data-repo={siteConfig.giscus.repo}
+	data-repo-id={siteConfig.giscus.repoId}
+	data-category={siteConfig.giscus.category}
+	data-category-id={siteConfig.giscus.categoryId}
+	data-mapping={siteConfig.giscus.mapping}
+	data-strict={siteConfig.giscus.strict}
+	data-reactions-enabled={siteConfig.giscus.reactionsEnabled}
+	data-emit-metadata={siteConfig.giscus.emitMetadata}
+	data-input-position={siteConfig.giscus.inputPosition}
+	data-theme={siteConfig.giscus.theme}
+	data-lang={siteConfig.giscus.lang}
 	data-loading="lazy"
 	crossorigin="anonymous"
 	async
