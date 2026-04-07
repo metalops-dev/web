@@ -2,8 +2,8 @@
 import { getCollection } from "astro:content";
 import BaseHead from "../../components/BaseHead.astro";
 import Footer from "../../components/Footer.astro";
-import FormattedDate from "../../components/FormattedDate.astro";
 import Header from "../../components/Header.astro";
+import PostList from "../../components/PostList.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../../consts";
 
 const allPosts = await getCollection("blog");
@@ -19,26 +19,12 @@ const posts = (
 	</head>
 	<body>
 		<Header />
-		<main>
+		<main id="main-content">
 			<div class="blog-header">
 				<h1>Blog</h1>
 				<p class="series-link"><a href="/series">view series</a></p>
 			</div>
-			<ul class="posts">
-				{
-					posts.map((post) => (
-						<li class={post.data.draft ? 'draft' : ''}>
-							<a href={`/blog/${post.id}/`}>
-								<span class="title">
-									{post.data.draft && <span class="draft-indicator">◇</span>}
-									{post.data.title}
-								</span>
-								<span class="date"><FormattedDate date={post.data.pubDate} /></span>
-							</a>
-						</li>
-					))
-				}
-			</ul>
+			<PostList posts={posts} />
 		</main>
 		<Footer />
 	</body>
@@ -68,58 +54,5 @@ const posts = (
 		background: transparent;
 		color: var(--accent-light, #14b8a6);
 		border-bottom-color: var(--accent);
-	}
-	.posts {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-	}
-	.posts li {
-		margin: 0;
-	}
-	.posts li:first-child {
-	}
-	.posts a {
-		display: flex;
-		justify-content: space-between;
-		align-items: baseline;
-		gap: 1rem;
-		padding: 0.875rem 0.75rem;
-		text-decoration: none;
-		color: var(--fg);
-		border-bottom: none;
-		border-radius: var(--radius, 6px);
-		transition: background 0.15s, transform 0.15s;
-		margin: 0 -0.75rem;
-	}
-	.posts a:hover {
-		background: var(--surface);
-		transform: translateX(4px);
-		color: var(--fg);
-	}
-	.posts .title {
-		font-weight: 500;
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-	}
-	.posts .date {
-		font-size: 0.75rem;
-		color: var(--muted);
-		flex-shrink: 0;
-		font-family: "JetBrains Mono", "SF Mono", monospace;
-	}
-	.posts a:hover .date {
-		color: var(--muted);
-	}
-	.posts li.draft {
-		opacity: 0.7;
-	}
-	.draft-indicator {
-		color: #f59e0b;
-		font-size: 0.9em;
-	}
-	.posts a:hover .draft-indicator {
-		color: #f59e0b;
 	}
 </style>

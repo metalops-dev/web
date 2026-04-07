@@ -1,0 +1,132 @@
+---
+interface TabPanel {
+	label?: string;
+}
+
+interface Props {
+	beforeLabel?: string;
+	afterLabel?: string;
+}
+
+const { beforeLabel = "Before", afterLabel = "After" } = Astro.props;
+---
+
+<div class="comparison">
+	<div class="comparison-pane comparison-before">
+		<div class="comparison-header">
+			<span class="comparison-label">{beforeLabel}</span>
+		</div>
+		<div class="comparison-content">
+			<slot name="before" />
+		</div>
+	</div>
+	<div class="comparison-divider">
+		<span class="comparison-arrow">→</span>
+	</div>
+	<div class="comparison-pane comparison-after">
+		<div class="comparison-header">
+			<span class="comparison-label">{afterLabel}</span>
+		</div>
+		<div class="comparison-content">
+			<slot name="after" />
+		</div>
+	</div>
+</div>
+
+<style>
+	.comparison {
+		display: grid;
+		grid-template-columns: 1fr auto 1fr;
+		gap: 0;
+		margin: 1.5rem 0;
+		border: 1px solid var(--border);
+		border-radius: var(--radius);
+		overflow: hidden;
+	}
+
+	.comparison-pane {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.comparison-header {
+		padding: 0.5rem 1rem;
+		background: var(--surface);
+		border-bottom: 1px solid var(--border);
+	}
+
+	.comparison-before .comparison-header {
+		border-right: 1px solid var(--border);
+	}
+
+	.comparison-label {
+		font-size: 0.75rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--muted);
+	}
+
+	.comparison-before .comparison-label {
+		color: #ef4444;
+	}
+
+	.comparison-after .comparison-label {
+		color: #22c55e;
+	}
+
+	.comparison-content {
+		padding: 1rem;
+		flex: 1;
+	}
+
+	.comparison-content :global(*:first-child) {
+		margin-top: 0;
+	}
+
+	.comparison-content :global(*:last-child) {
+		margin-bottom: 0;
+	}
+
+	.comparison-divider {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0 0.5rem;
+		background: var(--surface);
+		border-left: 1px solid var(--border);
+		border-right: 1px solid var(--border);
+	}
+
+	.comparison-arrow {
+		color: var(--accent);
+		font-size: 1.25rem;
+		font-weight: 700;
+	}
+
+	@media (max-width: 640px) {
+		.comparison {
+			grid-template-columns: 1fr;
+			grid-template-rows: auto auto auto;
+		}
+
+		.comparison-before {
+			border-bottom: 1px solid var(--border);
+		}
+
+		.comparison-before .comparison-header {
+			border-right: none;
+		}
+
+		.comparison-divider {
+			padding: 0.5rem;
+			border-left: none;
+			border-right: none;
+			border-bottom: 1px solid var(--border);
+		}
+
+		.comparison-divider .comparison-arrow {
+			transform: rotate(90deg);
+		}
+	}
+</style>

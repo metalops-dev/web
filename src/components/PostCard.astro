@@ -1,0 +1,101 @@
+---
+import FormattedDate from "./FormattedDate.astro";
+
+interface Props {
+	title: string;
+	slug: string;
+	pubDate: Date;
+	description?: string;
+	tags?: string[];
+	draft?: boolean;
+}
+
+const { title, slug, pubDate, description, draft = false } = Astro.props;
+---
+
+<li class:list={["post-card", { draft }]}>
+	<a href={`/blog/${slug}/`}>
+		<span class="post-card-title">
+			{draft && <span class="draft-indicator" title="Draft">◇</span>}
+			{title}
+		</span>
+		<span class="post-card-meta">
+			<span class="post-card-date">
+				<FormattedDate date={pubDate} />
+			</span>
+			{description && <span class="post-card-description">{description}</span>}
+		</span>
+	</a>
+</li>
+
+<style>
+	.post-card {
+		margin: 0;
+		list-style: none;
+	}
+
+	.post-card a {
+		display: flex;
+		flex-direction: column;
+		gap: 0.375rem;
+		padding: 0.875rem 0.75rem;
+		text-decoration: none;
+		color: var(--fg);
+		border-bottom: none;
+		border-radius: var(--radius);
+		transition:
+			background 0.15s,
+			transform 0.15s;
+		margin: 0 -0.75rem;
+	}
+
+	.post-card a:hover {
+		background: var(--surface);
+		transform: translateX(4px);
+		color: var(--fg);
+	}
+
+	.post-card.draft {
+		opacity: 0.7;
+	}
+
+	.post-card-title {
+		font-weight: 500;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.draft-indicator {
+		color: #f59e0b;
+		font-size: 0.9em;
+	}
+
+	.post-card-meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.85rem;
+		color: var(--muted);
+	}
+
+	.post-card-date {
+		font-family: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
+		font-size: 0.75rem;
+		flex-shrink: 0;
+	}
+
+	.post-card-description {
+		color: var(--muted);
+		font-size: 0.85rem;
+		display: -webkit-box;
+		-webkit-line-clamp: 1;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	.post-card a:hover .date {
+		color: var(--muted);
+	}
+</style>

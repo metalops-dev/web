@@ -1,0 +1,141 @@
+---
+interface Props {
+	titles: string[];
+}
+
+const { titles } = Astro.props;
+const tabId = `tabs-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<div class="tabs" data-tabs-id={tabId}>
+	<div class="tabs-nav" role="tablist">
+		{titles.map((title, index) => (
+			<button
+				role="tab"
+				aria-selected={index === 0 ? "true" : "false"}
+				aria-controls={`${tabId}-panel-${index}`}
+				id={`${tabId}-tab-${index}`}
+				class:list={["tab-button", { active: index === 0 }]}
+			>
+				{title}
+			</button>
+		))}
+	</div>
+	<div class="tabs-content">
+		<slot />
+	</div>
+</div>
+
+<style>
+	.tabs {
+		margin: 1.5rem 0;
+		border: 1px solid var(--border);
+		border-radius: var(--radius);
+		overflow: hidden;
+	}
+
+	.tabs-nav {
+		display: flex;
+		flex-wrap: wrap;
+		border-bottom: 1px solid var(--border);
+		background: var(--surface);
+	}
+
+	.tab-button {
+		padding: 0.75rem 1.25rem;
+		background: none;
+		border: none;
+		color: var(--muted);
+		font-size: 0.875rem;
+		font-weight: 500;
+		cursor: pointer;
+		transition: color 0.2s, background 0.2s;
+		font-family: inherit;
+		position: relative;
+	}
+
+	.tab-button:hover {
+		color: var(--fg);
+		background: var(--accent-muted);
+	}
+
+	.tab-button.active {
+		color: var(--accent);
+		background: var(--bg);
+	}
+
+	.tab-button.active::after {
+		content: "";
+		position: absolute;
+		bottom: -1px;
+		left: 0;
+		right: 0;
+		height: 2px;
+		background: var(--accent);
+	}
+
+	.tab-button:focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: -2px;
+	}
+
+	.tabs-content {
+		background: var(--bg);
+	}
+
+	.tabs-content :global(.tab-panel) {
+		display: none;
+		padding: 1.25rem;
+	}
+
+	.tabs-content :global(.tab-panel:first-child) {
+		display: block;
+	}
+
+	.tabs-content :global(.tab-panel p:first-child) {
+		margin-top: 0;
+	}
+
+	.tabs-content :global(.tab-panel p:last-child) {
+		margin-bottom: 0;
+	}
+</style>
+
+<script>
+	function initTabs() {
+		document.querySelectorAll(".tabs").forEach((tabs) => {
+			const buttons = tabs.querySelectorAll<HTMLButtonElement>(".tab-button");
+			const tabId = tabs.getAttribute("data-tabs-id");
+			if (!tabId) return;
+
+			buttons.forEach((button, index) => {
+				button.addEventListener("click", () => {
+					buttons.forEach((btn, i) => {
+						btn.classList.toggle("active", i === index);
+						btn.setAttribute("aria-selected", i === index ? "true" : "false");
+					});
+
+					const panels = tabs.querySelectorAll(".tab-panel");
+					panels.forEach((panel, i) => {
+						(panel as HTMLElement).style.display = i === index ? "block" : "none";
+					});
+				});
+
+				button.addEventListener("keydown", (e) => {
+					if (e.key === "ArrowRight") {
+						const next = buttons[(index + 1) % buttons.length];
+						next.focus();
+						next.click();
+					} else if (e.key === "ArrowLeft") {
+						const prev = buttons[(index - 1 + buttons.length) % buttons.length];
+						prev.focus();
+						prev.click();
+					}
+				});
+			});
+		});
+	}
+
+	initTabs();
+	document.addEventListener("astro:after-swap", initTabs);
+</script>

@@ -1,17 +1,19 @@
 ---
+import { siteConfig } from "../config/site";
+
 const today = new Date();
 ---
 
 <footer>
 	<div class="footer-main">
 		<div class="footer-content">
-			<span>&copy; {today.getFullYear()} metalops.dev</span>
+			<span>&copy; {today.getFullYear()} {siteConfig.name}</span>
 			<span class="sep">·</span>
 			<a href="/rss.xml">rss</a>
 			<span class="sep">·</span>
-			<a href="https://adrianvillanueva.com" target="_blank" rel="noopener">adrian villanueva</a>
+			<a href={siteConfig.author.url} target="_blank" rel="noopener">{siteConfig.author.name}</a>
 			<span class="sep">·</span>
-			<a href="https://resume.adrianvillanueva.com" target="_blank" rel="noopener">resume</a>
+			<a href={siteConfig.social.resume} target="_blank" rel="noopener">resume</a>
 		</div>
 	</div>
 	<div class="footer-badges">
@@ -40,6 +42,7 @@ const today = new Date();
 		img.src = isSpanish ? '/bloqueo.png' : '/blocked.png';
 	}
 </script>
+
 <style>
 	footer {
 		border-top: 1px solid var(--border);

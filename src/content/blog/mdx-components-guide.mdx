@@ -14,6 +14,12 @@ import Badge from '../../components/mdx/Badge.astro';
 import Details from '../../components/mdx/Details.astro';
 import LinkCard from '../../components/mdx/LinkCard.astro';
 import Kbd from '../../components/mdx/Kbd.astro';
+import Tabs from '../../components/mdx/Tabs.astro';
+import Comparison from '../../components/mdx/Comparison.astro';
+import Timeline from '../../components/mdx/Timeline.astro';
+import TimelineItem from '../../components/mdx/TimelineItem.astro';
+import StatCard from '../../components/mdx/StatCard.astro';
+import VideoEmbed from '../../components/mdx/VideoEmbed.astro';
 
 This guide showcases all the MDX components available for enriching your blog posts.
 
@@ -134,13 +140,124 @@ Use <Kbd>Ctrl</Kbd> + <Kbd>C</Kbd> to copy and <Kbd>Ctrl</Kbd> + <Kbd>V</Kbd> to
 
 ---
 
+## New Components
+
+## Tabs
+
+Use tabs to show different options side by side.
+
+<Tabs titles={["Docker", "Kubernetes", "Helm"]}>
+  <div label="Docker">
+    ```dockerfile
+    FROM node:20-alpine
+    WORKDIR /app
+    COPY package*.json ./
+    RUN npm ci --only=production
+    COPY . .
+    EXPOSE 3000
+    CMD ["node", "server.js"]
+    ```
+  </div>
+  <div label="Kubernetes">
+    ```yaml
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: my-app
+    spec:
+      replicas: 3
+      selector:
+        matchLabels:
+          app: my-app
+    ```
+  </div>
+  <div label="Helm">
+    ```yaml
+    replicaCount: 3
+    image:
+      repository: my-app
+      tag: latest
+    service:
+      type: ClusterIP
+      port: 3000
+    ```
+  </div>
+</Tabs>
+
+## Comparison
+
+Show before/after or side-by-side comparisons.
+
+<Comparison beforeLabel="Before" afterLabel="After">
+
+<Fragment slot="before">
+```yaml
+# Traditional config
+server:
+  port: 3000
+  host: 0.0.0.0
+  timeout: 30s
+```
+</Fragment>
+
+<Fragment slot="after">
+```yaml
+# Optimized config
+server:
+  port: 3000
+  host: 127.0.0.1
+  timeout: 5s
+  keepAlive: true
+```
+</Fragment>
+
+</Comparison>
+
+## Timeline
+
+Display chronological events or history.
+
+<Timeline>
+  <TimelineItem date="Jan 2024" title="Project Started">
+    Initial planning and architecture design. Set up the project repository and defined core requirements.
+  </TimelineItem>
+  <TimelineItem date="Mar 2024" title="Beta Release">
+    Released beta version to select users for feedback. Gained valuable insights from early adopters.
+  </TimelineItem>
+  <TimelineItem date="Jun 2024" title="v1.0 Launch" last>
+    Official v1.0 release with all planned features. Started building community around the project.
+  </TimelineItem>
+</Timeline>
+
+## StatCard
+
+Display metrics, benchmarks, or key statistics.
+
+<div style={{display: 'flex', gap: '1rem', flexWrap: 'wrap'}}>
+  <StatCard label="Build Time" value="1.2s" change="-15%" changeType="positive" />
+  <StatCard label="Bundle Size" value="42kb" change="-8%" changeType="positive" />
+  <StatCard label="Lighthouse" value="98" change="+12" changeType="positive" />
+</div>
+
+## VideoEmbed
+
+Embed YouTube or Vimeo videos with lazy loading.
+
+<VideoEmbed
+  url="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+  title="Example Video"
+/>
+
+---
+
 ## Usage
 
 Import the components you need at the top of your MDX file:
 
 ```mdx
 import Callout from '../../components/mdx/Callout.astro';
-import Badge from '../../components/mdx/Badge.astro';
+import Tabs from '../../components/mdx/Tabs.astro';
+import Comparison from '../../components/mdx/Comparison.astro';
 ```
 
 Then use them anywhere in your content.

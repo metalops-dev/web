@@ -1,0 +1,68 @@
+---
+interface Props {
+	label: string;
+	value: string;
+	change?: string;
+	changeType?: "positive" | "negative" | "neutral";
+}
+
+const { label, value, change, changeType = "neutral" } = Astro.props;
+
+const changeColors = {
+	positive: "#22c55e",
+	negative: "#ef4444",
+	neutral: "var(--muted)",
+};
+
+const changeLabel = change?.startsWith("+")
+	? "increase"
+	: change?.startsWith("-")
+		? "decrease"
+		: "change";
+---
+
+<div class="stat-card">
+	<span class="stat-label">{label}</span>
+	<span class="stat-value">{value}</span>
+	{change && (
+		<span class="stat-change" style={`color: ${changeColors[changeType]}`}>
+			{change} {changeLabel}
+		</span>
+	)}
+</div>
+
+<style>
+	.stat-card {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 1.5rem;
+		background: var(--surface);
+		border: 1px solid var(--border);
+		border-radius: var(--radius);
+		text-align: center;
+		min-width: 120px;
+	}
+
+	.stat-label {
+		font-size: 0.8rem;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--muted);
+		margin-bottom: 0.5rem;
+	}
+
+	.stat-value {
+		font-size: 2rem;
+		font-weight: 700;
+		font-family: "JetBrains Mono", monospace;
+		color: var(--fg);
+		line-height: 1;
+	}
+
+	.stat-change {
+		font-size: 0.8rem;
+		margin-top: 0.5rem;
+	}
+</style>

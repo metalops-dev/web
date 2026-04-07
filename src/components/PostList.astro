@@ -1,0 +1,42 @@
+---
+import type { CollectionEntry } from "astro:content";
+import PostCard from "./PostCard.astro";
+
+interface Post {
+	id: string;
+	data: {
+		title: string;
+		pubDate: Date;
+		description?: string;
+		tags?: string[];
+		draft?: boolean;
+	};
+}
+
+interface Props {
+	posts: Post[];
+	showDescription?: boolean;
+}
+
+const { posts, showDescription = false } = Astro.props;
+---
+
+<ul class="post-list">
+	{posts.map((post) => (
+		<PostCard
+			title={post.data.title}
+			slug={post.id}
+			pubDate={post.data.pubDate}
+			description={showDescription ? post.data.description : undefined}
+			draft={post.data.draft}
+		/>
+	))}
+</ul>
+
+<style>
+	.post-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+</style>
