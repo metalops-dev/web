@@ -126,7 +126,7 @@ ollama: Ollama
 
 obsidian: Obsidian + Git
 
-sqlite: SQLite
+Postgres: Postgres
 
 telegram -> vps
 vps -> git
@@ -134,7 +134,7 @@ vps -> tailscale: routes
 tailscale -> ollama: inference
 git -> obsidian: sync
 ollama -> obsidian: RAG
-ollama -> sqlite: logs
+ollama -> Postgres: logs
 ```
 
 ### Ollama
