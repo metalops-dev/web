@@ -1,0 +1,224 @@
+---
+title: 'Building a Private AI Workstation in a mini pc without GPU'
+description: 'How a $500 mini PC became a fully self-hosted AI stack capable of running 30B+ parameter models with a Telegram interface, Git-synced knowledge base, and zero cloud dependency.'
+pubDate: 2026-04-08
+editedDate: 2026-04-08
+draft: false
+tags: ['ai', 'llm', 'homelab', 'self-hosting']
+---
+
+import Callout from '../../components/mdx/Callout.astro';
+
+## Why Bother Running AI Locally?
+
+Most developers reach for the OpenAI API without a second thought. It's convenient, capable, and cheap enough for light use. But there's a class of problems it doesn't solve well:
+
+- You can't send proprietary code to an external API
+- Your personal notes, health logs, and journal entries shouldn't leave your machine
+- API costs accumulate at scale
+- You have no control over model availability, rate limits, or pricing changes
+- Latency depends on someone else's infrastructure
+
+A local LLM stack solves all of these. The tradeoff used to be prohibitive hardware requirements. That's changed.
+
+---
+
+## The Hardware: MINISFORUM UM780 Pro
+
+**Specs:**
+- AMD Ryzen 7 7840HS (8 cores / 16 threads)
+- Radeon 780M iGPU (gfx1103, 12 CUs)
+- 64GB DDR5 RAM
+- 1TB NVMe SSD
+
+The 7840HS is a Phoenix architecture APU. What makes it interesting for local LLM inference is the combination of a capable iGPU with a large shared memory pool. With ROCm configured and BIOS UMA allocation set to 8GB, [llmfit](https://github.com/tmank/llmfit) reports **8GB of ROCm-accessible VRAM** backed by over 30GB of GTT (GPU-accessible system RAM). That's enough to offload substantial model layers to the GPU.
+
+This isn't a workstation GPU. But it's enough to run 30B MoE models at 50-60 tok/s which is faster than most people read.
+
+---
+
+## OS Choice: Arch Linux (Minimal, Headless)
+
+For a machine that functions primarily as a server, a minimal Arch install is the right call:
+
+- Rolling release means recent kernel and Mesa/ROCm updates
+- Arch repositories covers the entire stack: Ollama, Tailscale, ROCm
+- No desktop environment nor extra services wastes RAM you want for inference
+- `archinstall` makes the initial setup straightforward
+
+Post-install essentials:
+
+```bash
+pacman -Syu
+pacman -S git curl base-devel docker docker-compose python python-pip btop tmux
+yay -S tailscale zram-generator rocm-gfx110x-bin
+```
+
+### zram Configuration
+
+With 64GB RAM and models that can push close to that limit, zram swap is worth configuring:
+
+```bash
+cat > /etc/systemd/zram-generator.conf << EOF
+[zram0]
+zram-size = ram / 2
+compression-algorithm = zstd
+EOF
+
+echo 'vm.swappiness=10' > /etc/sysctl.d/99-swap.conf
+```
+
+zstd compression at `swappiness=10` means the kernel holds as much as possible in real RAM and only compresses overflow as a last resort.
+
+---
+
+## ROCm Setup for gfx1103
+
+The 780M (gfx1103) isn't on ROCm's official support list, but it works well with the GFX version override:
+
+```bash
+yay -S rocm-gfx110x-bin
+sudo usermod -aG video,render $USER
+```
+
+Then configure Ollama to use ROCm:
+
+```bash
+# /etc/systemd/system/ollama.service.d/override.conf
+[Service]
+Environment="HSA_OVERRIDE_GFX_VERSION=11.0.0"
+Environment="ROCR_VISIBLE_DEVICES=0"
+```
+
+After restarting Ollama, `rocm-smi` should show GPU memory climbing during inference. With the BIOS UMA frame buffer set to 8GB and ~30GB of GTT available, layer offloading is substantial.
+
+---
+
+## Model Selection
+
+With 64GB RAM and 8GB ROCm VRAM, the sweet spot models are:
+
+| Model | Params | Score | Throughput (tok/s) | Quant | Mem% | CtxFit | Use Case |
+|---|---|---|---|---|---|---|---|
+| Qwen3-Coder-Next | 79.7B | 96 | 60.7 tok/s | Q4_K_M | 26% | 262k | Coding |
+| Qwen3-Coder-30B | 30.5B | 95 | 54.5 tok/s | Q4_K_M | 45% | 262k | Coding |
+| Qwen3.5-35B-A3B | 36.0B | 92 | 60.7 tok/s | Q4_K_M | 40% | 262k | General |
+
+---
+
+## The Stack
+
+```d2
+direction: right
+
+telegram: Telegram
+
+vps: VPS (Bot Server)
+
+git: Git Repo
+
+tailscale: Tailscale {
+  shape: rectangle
+  border-style: dashed
+}
+
+ollama: Ollama
+
+obsidian: Obsidian + Git
+
+Postgres: Postgres
+
+telegram -> vps
+vps -> git
+vps -> tailscale: routes
+tailscale -> ollama: inference
+git -> obsidian: sync
+ollama -> obsidian: RAG
+ollama -> Postgres: logs
+```
+
+### Ollama
+
+The inference backend. Exposes a REST API on port 11434. Configure it to listen on all interfaces for Tailscale access:
+
+```bash
+# /etc/systemd/system/ollama.service.d/override.conf
+[Service]
+Environment="OLLAMA_HOST=0.0.0.0"
+Environment="HSA_OVERRIDE_GFX_VERSION=11.0.0"
+```
+
+### Open WebUI
+
+Browser-based chat frontend with built-in RAG support. Run via Docker:
+
+Point it at your Obsidian vault's markdown files and it handles chunking, embedding, and retrieval automatically.
+
+### Obsidian + Git Sync
+
+Obsidian stores notes as plain markdown files which means Git is a natural sync layer. The **Obsidian Git** community plugin handles auto-commit and push on a configurable interval. Every note change is versioned and synced to a private repo.
+
+The bot server on the VPS can write directly to this repo, and Obsidian Git pulls those changes downstream to keep your vault in sync across devices.
+
+### Tailscale
+
+WireGuard-based mesh VPN. Install on the UM780, VPS, phone, and any other device. The UM780 gets a stable address that works from anywhere. No port forwarding, no public exposure, end-to-end encrypted.
+
+```bash
+systemctl enable --now tailscaled
+tailscale up
+```
+
+---
+
+## Use Cases
+
+With this stack running, the practical applications are:
+
+**Development**
+- Codebase Q&A paste context, ask architecture questions
+- No proprietary code ever leaves the machine
+
+**Knowledge management**
+- Query your entire Obsidian vault in natural language
+- *"What have I written about X? What gaps remain?"*
+- Longitudinal context the system knows your thinking over time
+
+**Health and fitness tracking**
+- Log workouts, meals, sleep, mood via Telegram
+- *"How has my training correlated with sleep quality this month?"*
+- Weekly summaries pushed to you automatically
+
+**Personal finance**
+- Expense logging via natural language
+- Monthly analysis without sending financial data to a third party
+
+**Learning**
+- Socratic tutor with a persistent system prompt
+- Feynman loop explain concepts back, get gaps identified
+- Quiz generation from your own notes
+
+---
+
+<Callout type="warning" title="Limitations Worth Acknowledging">
+This setup has real tradeoffs:
+
+- **Speed**: 54-61 tok/s is fast enough for interactive use but not for batch processing large documents quickly
+- **Model quality**: 30B models are excellent but not GPT-4 class on every benchmark
+- **Maintenance**: Rolling release means occasional breakage snapshots with Timeshift are worth setting up
+- **No proactive push**: The LLM is reactive. It won't remind you to log unless you build that scheduler explicitly
+
+None of these are dealbreakers for a personal assistant workload. They're just honest constraints.
+</Callout>
+
+---
+
+## Conclusion
+
+A mini PC running Arch, Ollama, and a small Python bot is enough to build a genuinely capable private AI stack. The 780M iGPU with ROCm acceleration, 64GB of shared memory, and modern models make inference fast enough for interactive use on 30B+ parameter models.
+
+The result is a personal assistant that knows your codebase, your notes, your habits, and your history and keeps all of it entirely under your control.
+
+The cloud AI services are convenient. But convenience has a cost beyond the API bill. This stack trades some setup complexity for permanent ownership of both the compute and the data.
+
+For a developer who values that tradeoff, it's worth every hour of the weekend it takes to set up.
