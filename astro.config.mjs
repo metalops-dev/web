@@ -9,6 +9,7 @@ import expressiveCode from "astro-expressive-code";
 import icon from "astro-icon";
 import robotsTxt from "astro-robots-txt";
 import { pluginLanguageBadge } from "expressive-code-language-badge";
+import { visualizer } from "rollup-plugin-visualizer";
 import compression from "vite-plugin-compression";
 import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 
@@ -46,6 +47,12 @@ export default defineConfig({
 				threshold: 1024,
 				algorithm: "gzip",
 				ext: ".gz",
+			}),
+			visualizer({
+				filename: "dist/stats.html",
+				open: false,
+				gzipSize: true,
+				brotliSize: true,
 			}),
 		],
 	},
