@@ -9,7 +9,6 @@ export const siteConfig = {
 		url: "https://adrianvillanueva.com",
 		email: "av@metalops.dev",
 		github: "metalops-dev",
-		twitter: "metalops_dev",
 	},
 	analytics: {
 		siteId: "5f5a32bb6aa9",

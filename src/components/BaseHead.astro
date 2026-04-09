@@ -67,6 +67,81 @@ const jsonLd =
 				description: SITE_DESCRIPTION,
 				url: Astro.site,
 			};
+
+const pathSegments = Astro.url.pathname.split("/").filter(Boolean);
+let breadcrumbJsonLd = null;
+
+if (pathSegments.length > 0) {
+	const items = [
+		{
+			"@type": "ListItem",
+			position: 1,
+			name: "Home",
+			item: Astro.site?.toString(),
+		},
+	];
+
+	if (pathSegments[0] === "blog" && pathSegments.length > 1) {
+		items.push({
+			"@type": "ListItem",
+			position: 2,
+			name: "Blog",
+			item: new URL("/blog/", Astro.site).toString(),
+		});
+		items.push({
+			"@type": "ListItem",
+			position: 3,
+			name: title,
+			item: canonicalURL.toString(),
+		});
+	} else if (pathSegments[0] === "blog") {
+		items.push({
+			"@type": "ListItem",
+			position: 2,
+			name: "Blog",
+			item: canonicalURL.toString(),
+		});
+	} else if (pathSegments[0] === "tags" && pathSegments.length > 1) {
+		items.push({
+			"@type": "ListItem",
+			position: 2,
+			name: "Tags",
+			item: new URL("/tags/", Astro.site).toString(),
+		});
+		items.push({
+			"@type": "ListItem",
+			position: 3,
+			name: pathSegments[1],
+			item: canonicalURL.toString(),
+		});
+	} else if (pathSegments[0] === "tags") {
+		items.push({
+			"@type": "ListItem",
+			position: 2,
+			name: "Tags",
+			item: canonicalURL.toString(),
+		});
+	} else if (
+		["archive", "about", "series", "reading", "uses", "now", "talks"].includes(
+			pathSegments[0],
+		)
+	) {
+		items.push({
+			"@type": "ListItem",
+			position: 2,
+			name: pathSegments[0].charAt(0).toUpperCase() + pathSegments[0].slice(1),
+			item: canonicalURL.toString(),
+		});
+	}
+
+	if (items.length > 1) {
+		breadcrumbJsonLd = {
+			"@context": "https://schema.org",
+			"@type": "BreadcrumbList",
+			itemListElement: items,
+		};
+	}
+}
 ---
 
 <!-- Global Metadata -->
@@ -113,6 +188,7 @@ const jsonLd =
 <meta property="twitter:image" content={ogImageURL} />
 
 <!-- JSON-LD Structured Data -->
+{breadcrumbJsonLd && <script type="application/ld+json" set:html={JSON.stringify(breadcrumbJsonLd)} />}
 <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
 <!-- Theme initialization - runs before page renders to prevent flash -->
