@@ -3,7 +3,7 @@ export const siteConfig = {
 	name: "metalops.dev",
 	title: "metalops.dev",
 	description:
-		"A technical blog about Software, Systems, Infrastructure, Devops and engineering.",
+		"A technical blog about software, systems, infrastructure and DevOps. Deep dives on Rust, infrastructure automation, and building resilient production systems.",
 	author: {
 		name: "Adrian Villanueva",
 		url: "https://adrianvillanueva.com",
