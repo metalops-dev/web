@@ -45,6 +45,6 @@
 		"vite-plugin-compression": "0.5.1",
 		"vite-plugin-image-optimizer": "2.0.3",
 		"vitest": "4.0.16",
-		"yaml": "2.8.2"
+		"yaml": "2.8.3"
 	}
 }
