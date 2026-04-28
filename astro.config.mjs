@@ -33,7 +33,13 @@ export default defineConfig({
 				return item;
 			},
 		}),
-		d2({ output: "static/diagrams" }),
+		d2({
+			output: "static/diagrams",
+			theme: {
+				default: "0",
+				dark: "200",
+			},
+		}),
 		robotsTxt(),
 		icon(),
 	],
