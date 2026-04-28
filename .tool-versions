@@ -1,4 +1,5 @@
-node 22.21.1
+nodejs     22.21.1
 pre-commit 4.2.0
-pnpm latest
-typos latest
+pnpm       latest
+typos      latest
+d2         latest
