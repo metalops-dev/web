@@ -31,7 +31,7 @@
 		"canvaskit-wasm": "0.40.0",
 		"expressive-code-language-badge": "1.1.0",
 		"js-yaml": "4.1.1",
-		"sharp": "0.34.4",
+		"sharp": "0.34.5",
 		"tailwindcss": "4.1.14"
 	},
 	"devDependencies": {
