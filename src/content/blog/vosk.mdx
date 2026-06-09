@@ -1,0 +1,236 @@
+---
+title: 'Building a Spanish Voice Transcription Telegram Bot with Vosk and Rate Limiting'
+description: 'Build a Telegram bot that transcribes Spanish voice messages offline using Vosk speech recognition, with rate limiting and observability built in.'
+pubDate: 2026-06-01
+tags: ['python', 'telegram', 'vosk', 'speech-recognition', 'rate-limiting', 'docker']
+---
+
+import Callout from '../../components/mdx/Callout.astro';
+import LinkCard from '../../components/mdx/LinkCard.astro';
+
+Voice messages are everywhere on Telegram, but finding the right tool to transcribe them—especially in Spanish—can be tricky. Cloud-based APIs work, but they cost money, have latency, and ship your audio off-device.
+
+This post walks through building a Telegram bot that transcribes Spanish voice messages using [Vosk](https://alphacephei.com/vosk/), an offline speech recognition engine. No cloud dependency, no API keys, no monthly bills.
+
+<Callout type="warning">
+We'll also cover a critical piece often overlooked in bot tutorials: **rate limiting**. Without it, a sudden burst of voice messages can overwhelm your process (and get you rate-limited by Telegram).
+</Callout>
+
+---
+
+## The Architecture
+
+The bot is a single-file Python application that:
+
+1. Listens for voice messages via Telegram's Bot API (long-polling)
+2. Downloads the `.ogg` audio file
+3. Normalizes it to 16kHz mono PCM (what Vosk expects)
+4. Feeds it to Vosk's Spanish model
+5. Replies with the transcribed text
+
+```
+Telegram ──► Download .ogg ──► pydub normalize ──► Vosk ASR ──► Reply with text
+```
+
+The entire production code is ~150 lines. Let's break down the interesting parts.
+
+---
+
+## Transcribing with Vosk
+
+Vosk is a wrapper around Kaldi's speech recognition engine. It works offline, supports multiple languages, and is lightweight enough to run in a Docker container.
+
+```python
+class Audio:
+    _model: ClassVar[Model | None] = None
+    _model_lock: ClassVar[Lock] = Lock()
+
+    @classmethod
+    def _get_model(cls) -> Model:
+        if cls._model is None:
+            with cls._model_lock:
+                if cls._model is None:
+                    cls._model = Model(lang="es")
+        return cls._model
+```
+
+The model is loaded once and shared across all transcription requests. The double-checked locking pattern ensures thread-safe lazy initialization—important because Vosk's `Model(lang="es")` downloads and loads a ~50MB model on first call.
+
+### Audio Processing Pipeline
+
+```python
+def _run() -> str:
+    audio = AudioSegment.from_file(self.name, format=self.EXTENSION)
+    audio = audio.set_frame_rate(16000).set_channels(1).set_sample_width(2)
+    raw_data = audio.raw_data
+
+    model = self._get_model()
+    rec = KaldiRecognizer(model, 16000.0)
+    rec.SetWords(True)
+
+    results = []
+    offset = 0
+    chunk_size = 4000
+    while offset < len(raw_data):
+        chunk = raw_data[offset : offset + chunk_size]
+        offset += chunk_size
+        if rec.AcceptWaveform(chunk):
+            part = json.loads(rec.Result())
+            results.append(part)
+    final = json.loads(rec.FinalResult())
+    results.append(final)
+
+    return "\n".join(part["text"] for part in results if part.get("text"))
+```
+
+Key steps:
+
+- **pydub** loads the `.ogg` and normalizes to 16kHz mono, 16-bit—the exact format Vosk requires.
+- **KaldiRecognizer** processes audio in 4KB chunks, collecting intermediate results.
+- **`SetWords(True)`** enables word-level timestamps (useful if you want to add timestamps to transcriptions later).
+- Partial results are accumulated and joined into the final transcript.
+
+---
+
+## Rate Limiting with `asyncio.Semaphore`
+
+Telegram bots can receive many voice messages in quick succession—especially in group chats. Without rate limiting, you'll hit two problems:
+
+1. **CPU/memory exhaustion** — Vosk transcription is CPU-bound. Running 20 transcriptions in parallel will swamp your process.
+2. **Telegram rate limits** — If you don't reply fast enough, Telegram starts dropping your requests or temporarily blocks your bot.
+
+The fix is a simple semaphore:
+
+```python
+_transcribe_semaphore = asyncio.Semaphore(4)
+```
+
+This ensures no more than **4 transcriptions run concurrently**. Any additional requests queue up and are processed as slots free up.
+
+We also add a **120-second timeout** per transcription so a stuck audio file doesn't hang the bot forever:
+
+```python
+async def transcribe(self) -> str:
+    async with _transcribe_semaphore:
+        return await asyncio.wait_for(
+            asyncio.to_thread(_run),
+            timeout=self.TIMEOUT,
+        )
+```
+
+The CPU-bound `_run()` is offloaded to a thread with `asyncio.to_thread` so it doesn't block the event loop. The semaphore + timeout combo gives us:
+
+| Mechanism           | Purpose                                     |
+| ------------------- | ------------------------------------------- |
+| `Semaphore(4)`      | Limits concurrent transcriptions to 4       |
+| `wait_for(120s)`    | Prevents hung transcriptions from leaking   |
+| `asyncio.to_thread` | Keeps event loop responsive during CPU work |
+
+---
+
+## Download with Retry Logic
+
+Network failures happen. The bot implements exponential backoff when downloading voice files from Telegram:
+
+```python
+for attempt in range(3):
+    try:
+        await voice_file.download_to_drive(audio.name)
+        break
+    except Exception as e:
+        logger.warning(f"Download attempt {attempt + 1} failed: {e}")
+        if attempt < 2:
+            await asyncio.sleep(2**attempt)  # 1s, 2s
+```
+
+Three attempts with backoff (1s, 2s) before giving up. This handles transient network hiccups without failing the entire request.
+
+---
+
+## Observability Built In
+
+The bot exposes a Prometheus `/metrics` endpoint on port 2112:
+
+```python
+from prometheus_client import start_http_server
+
+def main() -> None:
+    start_http_server(2112)
+```
+
+This gives you visibility into:
+
+- Request counts and durations
+- Python GC stats
+- Custom metrics if you add them later
+
+Combined with structured logging via **loguru**, you get enough observability to debug issues in production without third-party services.
+
+---
+
+## Putting It All Together
+
+The `main()` function wires everything up:
+
+```python
+def main() -> None:
+    start_http_server(2112)
+    application = Application.builder().token(os.environ["BOT_TOKEN"]).build()
+    application.add_handler(CommandHandler("help", help_command))
+    application.add_handler(MessageHandler(~filters.COMMAND, transcribe))
+    application.run_polling()
+```
+
+That's it. A single environment variable (`BOT_TOKEN`), one command to run, and you have a fully functional Spanish transcription bot.
+
+---
+
+## Deployment
+
+The bot ships as a Docker image (multi-stage build for `linux/amd64`):
+
+```dockerfile
+FROM python:3.12.13-slim-bookworm AS builder
+# ... install uv, sync deps
+
+FROM python:3.12.13-slim-bookworm
+# ... install ffmpeg + curl, copy source
+```
+
+Run it with Docker Compose:
+
+```yaml
+services:
+  bot:
+    image: ghcr.io/adrianvillanueva997/telegrambot_transcriber
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+    ports:
+      - "2112:2112"
+```
+
+<Callout type="tip">
+
+The image is built for `linux/amd64`, but Vosk also ships native binaries for ARM—the project supports both `darwin/arm64` and `linux/x86_64` environments. You can run it natively on Apple Silicon during development.
+
+</Callout>
+
+---
+
+## Limitations
+
+- **Spanish only** — `Model(lang="es")`. Switching languages means changing one line.
+- **Offline quality** — Vosk is good but not cloud-grade. Expect higher WER than Google/Whisper APIs.
+- **x86 only in Docker** — ARM builds aren't available due to Vosk binary distribution constraints.
+
+---
+
+## Code
+
+<LinkCard
+  href="https://github.com/adrianvillanueva997/telegrambot_transcriber"
+  title="telegrambot_transcriber"
+  description="~150 lines of Python, GPLv3-licensed, and ready to fork."
+/>
+
+Happy transcribing!
