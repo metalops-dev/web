@@ -14,14 +14,21 @@ import { SITE_TITLE } from "../consts";
 		<Header />
 		<main id="main-content">
 			<div class="error-page">
+				<pre class="skull" aria-hidden="true">
+   .-.
+  /   \
+ | o o |
+ |  _  |
+ |     |
+  `---'</pre>
 				<h1>404</h1>
-				<p class="message">Page not found.</p>
+				<p class="message">LOST IN THE VOID</p>
 				<p class="hint">
-					The page you're looking for doesn't exist or has been moved.
+					The page you seek lies beyond this realm.
 				</p>
 				<div class="actions">
-					<a href="/">← back to home</a>
-					<a href="/blog">browse posts</a>
+					<a href="/">← return home</a>
+					<a href="/blog">enter the archives</a>
 				</div>
 			</div>
 		</main>
@@ -34,8 +41,21 @@ import { SITE_TITLE } from "../consts";
 		text-align: center;
 		padding: 4rem 0;
 	}
+	.skull {
+		display: inline-block;
+		margin: 0 auto 2.5rem;
+		font-size: 0.85rem;
+		line-height: 1.25;
+		color: var(--accent);
+		opacity: 0.3;
+		background: none;
+		border: none;
+		padding: 0;
+		box-shadow: none;
+		font-family: "JetBrains Mono", "SF Mono", monospace;
+	}
 	.error-page h1 {
-		font-size: 6rem;
+		font-size: 7rem;
 		margin: 0;
 		border: none;
 		line-height: 1;
@@ -43,15 +63,21 @@ import { SITE_TITLE } from "../consts";
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
 		background-clip: text;
+		letter-spacing: -0.04em;
 	}
 	.message {
-		font-size: 1.5rem;
+		font-size: 1.25rem;
 		font-weight: 700;
-		margin: 1rem 0;
+		margin: 1.25rem 0 0.75rem;
+		text-transform: uppercase;
+		letter-spacing: 0.25em;
+		font-family: "Cinzel", "Georgia", "Times New Roman", serif;
+		color: var(--muted);
 	}
 	.hint {
 		color: var(--muted);
-		margin-bottom: 2rem;
+		margin-bottom: 2.5rem;
+		font-size: 0.95rem;
 	}
 	.actions {
 		display: flex;
@@ -66,6 +92,7 @@ import { SITE_TITLE } from "../consts";
 		border-radius: var(--radius, 6px);
 		color: var(--fg);
 		border-bottom: 1px solid var(--border);
+		font-size: 0.9rem;
 	}
 	.actions a:hover {
 		background: var(--accent);

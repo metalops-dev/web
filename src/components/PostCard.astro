@@ -47,12 +47,31 @@ const { title, slug, pubDate, description, draft = false } = Astro.props;
 			background 0.15s,
 			transform 0.15s;
 		margin: 0 -0.75rem;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.post-card a::before {
+		content: "";
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		width: 3px;
+		background: var(--accent);
+		transform: translateX(-100%);
+		transition: transform 0.2s ease;
+		border-radius: 0 2px 2px 0;
 	}
 
 	.post-card a:hover {
 		background: var(--surface);
 		transform: translateX(4px);
 		color: var(--fg);
+	}
+
+	.post-card a:hover::before {
+		transform: translateX(0);
 	}
 
 	.post-card.draft {
