@@ -28,6 +28,7 @@ const { posts, showDescription = false } = Astro.props;
 			slug={post.id}
 			pubDate={post.data.pubDate}
 			description={showDescription ? post.data.description : undefined}
+			tags={post.data.tags}
 			draft={post.data.draft}
 		/>
 	))}

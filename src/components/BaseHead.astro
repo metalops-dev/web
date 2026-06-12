@@ -160,9 +160,6 @@ if (pathSegments.length > 0) {
 />
 <meta name="generator" content={Astro.generator} />
 
-<!-- Skip to content link -->
-<a href="#main-content" class="skip-link">Skip to main content</a>
-
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
 
@@ -173,7 +170,7 @@ if (pathSegments.length > 0) {
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content={type} />
-<meta property="og:url" content={Astro.url} />
+<meta property="og:url" content={canonicalURL} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={ogImageURL} />
@@ -185,7 +182,7 @@ if (pathSegments.length > 0) {
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:url" content={Astro.url} />
+<meta property="twitter:url" content={canonicalURL} />
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={ogImageURL} />
@@ -205,19 +202,6 @@ if (pathSegments.length > 0) {
 			document.documentElement.classList.add('dark-mode');
 		}
 		document.documentElement.style.colorScheme = theme;
-	})();
-</script>
-
-<!-- Suppress WebGL debug renderer info deprecation warning -->
-<script is:inline>
-	(function() {
-		const originalWarn = console.warn.bind(console);
-		console.warn = function(...args) {
-			if (args[0] && typeof args[0] === 'string' && args[0].includes('WEBGL_debug_renderer_info')) {
-				return;
-			}
-			originalWarn.apply(console, args);
-		};
 	})();
 </script>
 

@@ -11,6 +11,7 @@ import { SITE_TITLE } from "../consts";
 		<BaseHead title={`404 | ${SITE_TITLE}`} description="Page not found" />
 	</head>
 	<body>
+		<a href="#main-content" class="skip-link">Skip to main content</a>
 		<Header />
 		<main id="main-content">
 			<div class="error-page">
@@ -53,6 +54,12 @@ import { SITE_TITLE } from "../consts";
 		padding: 0;
 		box-shadow: none;
 		font-family: "JetBrains Mono", "SF Mono", monospace;
+		animation: skullGlow 3s ease-in-out infinite;
+	}
+
+	@keyframes skullGlow {
+		0%, 100% { opacity: 0.3; filter: drop-shadow(0 0 4px var(--accent-muted)); }
+		50% { opacity: 0.6; filter: drop-shadow(0 0 12px var(--accent)); }
 	}
 	.error-page h1 {
 		font-size: 7rem;

@@ -41,6 +41,7 @@ const description = "Browse posts by year";
 	</head>
 
 	<body>
+		<a href="#main-content" class="skip-link">Skip to main content</a>
 		<Header />
 		<main id="main-content">
 			<article class="page-article">
@@ -80,7 +81,7 @@ const description = "Browse posts by year";
 
 <style>
 	main {
-		max-width: 680px;
+		max-width: 700px;
 		margin: 0 auto;
 		padding: 2rem 1.5rem;
 	}
@@ -152,13 +153,36 @@ const description = "Browse posts by year";
 		color: var(--fg);
 	}
 
+	.year-posts a {
+		position: relative;
+		transition: background 0.15s, transform 0.15s;
+		border-radius: var(--radius);
+		margin: 0 -0.5rem;
+		padding: 0.5rem;
+	}
+
 	.year-posts a:hover {
-		background: var(--fg);
-		color: var(--bg);
-		padding-left: 0.5rem;
-		padding-right: 0.5rem;
-		margin-left: -0.5rem;
-		margin-right: -0.5rem;
+		background: var(--surface);
+		transform: translateX(4px);
+	}
+
+	.year-posts a::before {
+		content: "";
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		width: 2px;
+		background: var(--accent);
+		transform: translateX(-100%);
+		opacity: 0;
+		transition: transform 0.2s ease, opacity 0.2s ease;
+		border-radius: 0 1px 1px 0;
+	}
+
+	.year-posts a:hover::before {
+		transform: translateX(0);
+		opacity: 1;
 	}
 
 	.year-posts .title {
@@ -172,7 +196,7 @@ const description = "Browse posts by year";
 	}
 
 	.year-posts a:hover .date {
-		color: var(--bg);
+		color: var(--muted);
 	}
 
 	.muted {

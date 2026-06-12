@@ -13,6 +13,8 @@ const today = new Date();
 			<span class="sep">·</span>
 			<a href={siteConfig.author.url} target="_blank" rel="noopener">{siteConfig.author.name}</a>
 			<span class="sep">·</span>
+			<a href="https://adrianvillanueva.com" target="_blank" rel="noopener" class="portfolio-link">portfolio</a>
+			<span class="sep">·</span>
 			<a href="https://www.linkedin.com/in/adrian-villanueva-martinez/" target="_blank" rel="noopener">LinkedIn</a>
 			<span class="sep">·</span>
 			<a href={siteConfig.social.resume} target="_blank" rel="noopener">resume</a>
@@ -87,6 +89,11 @@ const today = new Date();
 		color: var(--accent);
 		background: transparent;
 		border-bottom-color: var(--accent);
+	}
+
+	.portfolio-link:hover {
+		color: var(--accent-portfolio);
+		border-bottom-color: var(--accent-portfolio);
 	}
 	.footer-badges {
 		max-width: 700px;

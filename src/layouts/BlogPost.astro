@@ -70,6 +70,8 @@ const wordCountDisplay =
 	</head>
 
 	<body>
+		<div class="reading-progress" aria-hidden="true"></div>
+		<a href="#main-content" class="skip-link">Skip to main content</a>
 		<Header />
 		<TableOfContents headings={headings} />
 		<main id="main-content">
@@ -111,11 +113,25 @@ const wordCountDisplay =
 		padding-bottom: 1.5rem;
 		border-bottom: 1px solid var(--accent);
 	}
+	.post-header {
+		position: relative;
+	}
+
+	.post-header::before {
+		content: "";
+		position: absolute;
+		top: -1px;
+		left: 0;
+		width: 60px;
+		height: 3px;
+		background: linear-gradient(90deg, var(--accent), transparent);
+	}
+
 	.post-header h1 {
 		margin-top: 0.75rem;
 		margin-bottom: 0.75rem;
-		font-size: 2rem;
-		line-height: 1.2;
+		font-size: 2.5rem;
+		line-height: 1.15;
 		background: linear-gradient(135deg, var(--fg) 0%, var(--accent) 100%);
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
@@ -145,4 +161,46 @@ const wordCountDisplay =
 	.prose :global(img) {
 		margin: 1.5rem 0;
 	}
+
+	/* Hide duplicate h1 from MDX content since layout already renders it */
+	.prose :global(h1:first-child) {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+	}
+
+	/* Reading progress bar */
+	.reading-progress {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 0;
+		height: 2px;
+		background: linear-gradient(90deg, var(--accent), var(--accent-light));
+		z-index: 10000;
+		transition: width 0.1s linear;
+	}
 </style>
+
+<script>
+	function initProgressBar() {
+		const bar = document.querySelector('.reading-progress') as HTMLElement | null;
+		if (!bar) return;
+
+		function update() {
+			const scrollTop = window.scrollY;
+			const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+			const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+			bar.style.width = progress + '%';
+		}
+
+		window.addEventListener('scroll', update, { passive: true });
+		update();
+	}
+
+	initProgressBar();
+	document.addEventListener('astro:after-swap', initProgressBar);
+</script>

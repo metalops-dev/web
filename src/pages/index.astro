@@ -2,8 +2,8 @@
 import { getCollection } from "astro:content";
 import BaseHead from "../components/BaseHead.astro";
 import Footer from "../components/Footer.astro";
-import FormattedDate from "../components/FormattedDate.astro";
 import Header from "../components/Header.astro";
+import PostList from "../components/PostList.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
 
 const allPosts = await getCollection("blog");
@@ -20,6 +20,7 @@ const posts = (
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
 	</head>
 	<body>
+		<a href="#main-content" class="skip-link">Skip to main content</a>
 		<Header />
 		<main id="main-content">
 			<section class="intro">
@@ -35,18 +36,7 @@ const posts = (
 					<h2>Recent Posts</h2>
 					<a href="/blog" class="all-posts">view all &rarr;</a>
 				</div>
-				<ul>
-					{
-						posts.map((post, i) => (
-							<li style={`animation-delay: ${i * 60}ms`}>
-								<a href={`/blog/${post.id}/`}>
-									<span class="title">{post.data.title}</span>
-									<span class="date"><FormattedDate date={post.data.pubDate} /></span>
-								</a>
-							</li>
-						))
-					}
-				</ul>
+				<PostList posts={posts} showDescription={true} />
 			</section>
 		</main>
 		<Footer />
@@ -58,6 +48,31 @@ const posts = (
 		margin-bottom: 4rem;
 		padding-bottom: 2rem;
 		border-bottom: 1px solid var(--accent);
+		position: relative;
+	}
+
+	.intro::before {
+		content: "†";
+		position: absolute;
+		right: 0;
+		top: -0.5rem;
+		font-size: 8rem;
+		color: var(--accent);
+		opacity: 0.04;
+		line-height: 1;
+		font-family: "Cinzel", "Georgia", "Times New Roman", serif;
+		pointer-events: none;
+		user-select: none;
+	}
+
+	.intro::after {
+		content: "";
+		position: absolute;
+		bottom: -1px;
+		left: 0;
+		right: 0;
+		height: 1px;
+		background: linear-gradient(90deg, var(--accent), transparent 80%);
 	}
 	.eyebrow {
 		font-family: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
@@ -75,6 +90,13 @@ const posts = (
 	}
 	.dot {
 		color: var(--accent);
+		text-shadow: 0 0 20px var(--accent-muted);
+		animation: dotPulse 3s ease-in-out infinite;
+	}
+
+	@keyframes dotPulse {
+		0%, 100% { opacity: 1; text-shadow: 0 0 20px var(--accent-muted); }
+		50% { opacity: 0.6; text-shadow: 0 0 40px var(--accent-muted), 0 0 60px var(--accent-muted); }
 	}
 	.tagline {
 		color: var(--muted);
@@ -100,53 +122,6 @@ const posts = (
 	}
 	.posts h2::before {
 		display: none;
-	}
-	.posts ul {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-	}
-	@keyframes slideIn {
-		from {
-			opacity: 0;
-			transform: translateY(8px);
-		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
-	.posts li {
-		margin: 0;
-		animation: slideIn 0.35s ease-out both;
-	}
-	.posts a {
-		display: flex;
-		justify-content: space-between;
-		align-items: baseline;
-		gap: 1rem;
-		padding: 0.875rem 0.75rem;
-		text-decoration: none;
-		color: var(--fg);
-		border-bottom: none;
-		border-radius: var(--radius, 6px);
-		transition: background 0.15s, transform 0.15s;
-		margin: 0 -0.75rem;
-	}
-	.posts a:hover {
-		background: var(--surface);
-		transform: translateX(4px);
-		color: var(--fg);
-	}
-	.posts .title {
-		font-weight: 500;
-	}
-	.posts .date {
-		font-size: 0.8rem;
-		color: var(--muted);
-		flex-shrink: 0;
-		font-family: "JetBrains Mono", "SF Mono", monospace;
-		font-size: 0.75rem;
 	}
 	.all-posts {
 		display: inline-block;

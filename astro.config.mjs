@@ -26,13 +26,7 @@ export default defineConfig({
 			themes: ["catppuccin-mocha", "catppuccin-latte"],
 		}), // https://shiki.style/languages
 		mdx(),
-		sitemap({
-			serialize(item) {
-				// Add lastmod to all pages
-				item.lastmod = new Date().toISOString();
-				return item;
-			},
-		}),
+		sitemap(),
 		d2({
 			output: "static/diagrams",
 			theme: {
@@ -53,6 +47,13 @@ export default defineConfig({
 				threshold: 1024,
 				algorithm: "gzip",
 				ext: ".gz",
+			}),
+			compression({
+				verbose: false,
+				disable: false,
+				threshold: 1024,
+				algorithm: "brotliCompress",
+				ext: ".br",
 			}),
 			visualizer({
 				filename: "dist/stats.html",

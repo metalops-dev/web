@@ -13,14 +13,14 @@ import { SITE_TITLE } from "../consts";
 			<a href="/blog">blog</a>
 			<a href="/tags">tags</a>
 			<div class="dropdown">
-				<button class="dropdown-toggle">pages <span class="chevron">▾</span></button>
-				<div class="dropdown-menu">
-					<a href="/archive">archive</a>
-					<a href="/bookmarks">bookmarks</a>
-					<a href="/now">now</a>
-					<a href="/reading">reading</a>
-					<a href="/talks">talks</a>
-					<a href="/uses">uses</a>
+				<button class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">pages <span class="chevron">▾</span></button>
+				<div class="dropdown-menu" role="menu">
+					<a href="/archive" role="menuitem">archive</a>
+					<a href="/bookmarks" role="menuitem">bookmarks</a>
+					<a href="/now" role="menuitem">now</a>
+					<a href="/reading" role="menuitem">reading</a>
+					<a href="/talks" role="menuitem">talks</a>
+					<a href="/uses" role="menuitem">uses</a>
 				</div>
 			</div>
 			<a href="/about">about</a>
@@ -187,7 +187,8 @@ import { SITE_TITLE } from "../consts";
 			transform: translateX(-50%) translateY(0);
 		}
 	}
-	.dropdown:hover .dropdown-menu {
+	.dropdown:hover .dropdown-menu,
+	.dropdown.open .dropdown-menu {
 		display: flex;
 	}
 	.dropdown-menu a {
@@ -262,17 +263,6 @@ import { SITE_TITLE } from "../consts";
 		const html = document.documentElement;
 		const icon = toggle?.querySelector('.theme-icon') as HTMLElement | null;
 
-		const savedTheme = localStorage.getItem('theme');
-		const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-		const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
-
-		html.style.colorScheme = initialTheme;
-		if (initialTheme === 'dark') {
-			html.classList.add('dark-mode');
-		} else {
-			html.classList.remove('dark-mode');
-		}
-
 		toggle?.addEventListener('click', () => {
 			const isDark = html.classList.toggle('dark-mode');
 			html.style.colorScheme = isDark ? 'dark' : 'light';
@@ -288,6 +278,68 @@ import { SITE_TITLE } from "../consts";
 		}
 	}
 
+	function initDropdown() {
+		const dropdown = document.querySelector('.dropdown');
+		const toggle = dropdown?.querySelector('.dropdown-toggle') as HTMLElement | null;
+		const menu = dropdown?.querySelector('.dropdown-menu') as HTMLElement | null;
+		if (!dropdown || !toggle || !menu) return;
+
+		toggle.addEventListener('click', (e) => {
+			e.stopPropagation();
+			const isOpen = dropdown.classList.toggle('open');
+			toggle.setAttribute('aria-expanded', String(isOpen));
+		});
+
+		document.addEventListener('click', (e) => {
+			if (!dropdown.contains(e.target as Node)) {
+				dropdown.classList.remove('open');
+				toggle.setAttribute('aria-expanded', 'false');
+			}
+		});
+
+		dropdown.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape') {
+				dropdown.classList.remove('open');
+				toggle.setAttribute('aria-expanded', 'false');
+				toggle.focus();
+			}
+		});
+
+		const items = menu.querySelectorAll('a');
+		const first = items[0] as HTMLElement | undefined;
+		const last = items[items.length - 1] as HTMLElement | undefined;
+
+		toggle.addEventListener('keydown', (e) => {
+			if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
+				e.preventDefault();
+				dropdown.classList.add('open');
+				toggle.setAttribute('aria-expanded', 'true');
+				first?.focus();
+			}
+		});
+
+		menu.addEventListener('keydown', (e) => {
+			if (e.key === 'ArrowDown') {
+				e.preventDefault();
+				const current = document.activeElement;
+				const next = current?.nextElementSibling as HTMLElement | null;
+				if (next) next.focus();
+				else first?.focus();
+			}
+			if (e.key === 'ArrowUp') {
+				e.preventDefault();
+				const current = document.activeElement;
+				const prev = current?.previousElementSibling as HTMLElement | null;
+				if (prev) prev.focus();
+				else last?.focus();
+			}
+		});
+	}
+
 	initThemeToggle();
-	document.addEventListener('astro:after-swap', initThemeToggle);
+	initDropdown();
+	document.addEventListener('astro:after-swap', () => {
+		initThemeToggle();
+		initDropdown();
+	});
 </script>

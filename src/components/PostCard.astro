@@ -10,10 +10,17 @@ interface Props {
 	draft?: boolean;
 }
 
-const { title, slug, pubDate, description, draft = false } = Astro.props;
+const {
+	title,
+	slug,
+	pubDate,
+	description,
+	tags = [],
+	draft = false,
+} = Astro.props;
 ---
 
-<li class:list={["post-card", { draft }]}>
+	<li class:list={["post-card", { draft }]}>
 	<a href={`/blog/${slug}/`}>
 		<span class="post-card-title">
 			{draft && <span class="draft-indicator" title="Draft">◇</span>}
@@ -25,6 +32,14 @@ const { title, slug, pubDate, description, draft = false } = Astro.props;
 			</span>
 			{description && <span class="post-card-description">{description}</span>}
 		</span>
+		{tags && tags.length > 0 && (
+			<span class="post-card-tags">
+				{tags.slice(0, 3).map((tag) => (
+					<span class="post-card-tag">{tag}</span>
+				))}
+			</span>
+		)}
+		<span class="read-arrow" aria-hidden="true">→</span>
 	</a>
 </li>
 
@@ -59,8 +74,9 @@ const { title, slug, pubDate, description, draft = false } = Astro.props;
 		bottom: 0;
 		width: 3px;
 		background: var(--accent);
-		transform: translateX(-100%);
+		transform: translateX(-70%);
 		transition: transform 0.2s ease;
+		opacity: 0.3;
 		border-radius: 0 2px 2px 0;
 	}
 
@@ -72,6 +88,7 @@ const { title, slug, pubDate, description, draft = false } = Astro.props;
 
 	.post-card a:hover::before {
 		transform: translateX(0);
+		opacity: 1;
 	}
 
 	.post-card.draft {
@@ -116,5 +133,38 @@ const { title, slug, pubDate, description, draft = false } = Astro.props;
 
 	.post-card a:hover .date {
 		color: var(--muted);
+	}
+
+	.post-card-tags {
+		display: flex;
+		gap: 0.375rem;
+		flex-wrap: wrap;
+	}
+
+	.post-card-tag {
+		font-size: 0.65rem;
+		padding: 0.15rem 0.45rem;
+		border-radius: 3px;
+		background: var(--accent-muted);
+		color: var(--accent);
+		font-family: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+	}
+
+	.read-arrow {
+		position: absolute;
+		right: 0.75rem;
+		top: 50%;
+		transform: translateY(-50%);
+		color: var(--accent);
+		font-size: 1rem;
+		opacity: 0;
+		transition: opacity 0.15s, transform 0.15s;
+	}
+
+	.post-card a:hover .read-arrow {
+		opacity: 1;
+		transform: translateY(-50%) translateX(4px);
 	}
 </style>
