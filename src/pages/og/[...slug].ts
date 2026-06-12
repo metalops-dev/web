@@ -21,12 +21,15 @@ export const { getStaticPaths, GET } = OGImageRoute({
 		description: page.description,
 		logo: {
 			path: "./public/favicon.svg",
-			size: [80, 80],
+			size: [100, 100],
 		},
-		bgGradient: [[0, 0, 0]],
+		bgGradient: [
+			[20, 8, 28],
+			[5, 2, 8],
+		],
 		border: {
-			color: [255, 255, 255],
-			width: 10,
+			color: [123, 45, 142],
+			width: 16,
 			side: "inline-start",
 		},
 		font: {
@@ -38,7 +41,7 @@ export const { getStaticPaths, GET } = OGImageRoute({
 			},
 			description: {
 				families: ["JetBrains Mono", "monospace"],
-				color: [170, 170, 170],
+				color: [180, 160, 200],
 				size: 36,
 			},
 		},

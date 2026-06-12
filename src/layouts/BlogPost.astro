@@ -80,12 +80,12 @@ const wordCountDisplay =
 						<FormattedDate date={pubDate} />
 						{updatedDate && (
 							<span class="updated">
-								· updated <FormattedDate date={updatedDate} />
+								 † updated <FormattedDate date={updatedDate} />
 							</span>
 						)}
-						<span class="sep">·</span>
+						<span class="sep"> † </span>
 						<ReadingTime content={content} />
-						<span class="sep">·</span>
+						<span class="sep"> † </span>
 						<span class="word-count">{wordCountDisplay}</span>
 					</div>
 					<h1>{title}</h1>
@@ -109,7 +109,7 @@ const wordCountDisplay =
 	.post-header {
 		margin-bottom: 2.5rem;
 		padding-bottom: 1.5rem;
-		border-bottom: 1px solid var(--border);
+		border-bottom: 1px solid var(--accent);
 	}
 	.post-header h1 {
 		margin-top: 0.75rem;

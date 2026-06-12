@@ -74,13 +74,26 @@ const sortedTags = [...tagCounts.entries()].sort((a, b) =>
 		border-bottom: 1px solid var(--border);
 	}
 	.tags-list a:hover {
-		background: var(--accent-muted, rgba(13,148,136,0.1));
+		background: var(--accent-muted);
 		color: var(--accent);
 		border-color: var(--accent);
 		box-shadow: var(--shadow);
 	}
 	.tag-name {
 		font-weight: 500;
+	}
+
+	.tag-name::before {
+		content: "⛧";
+		color: var(--accent);
+		font-size: 0.65rem;
+		opacity: 0.4;
+		margin-right: 0.25rem;
+		transition: opacity 0.2s;
+	}
+
+	.tags-list a:hover .tag-name::before {
+		opacity: 0.8;
 	}
 	.tag-count {
 		font-size: 0.8rem;

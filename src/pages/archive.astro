@@ -56,7 +56,7 @@ const description = "Browse posts by year";
 						<div class="archive-list">
 							{yearsList.map((yearGroup) => (
 								<div class="year-section">
-									<h2 class="year-heading">{yearGroup.year}</h2>
+									<h2 class="year-heading"><span class="year-symbol">⛧</span> {yearGroup.year}</h2>
 									<ul class="year-posts">
 										{yearGroup.posts.map((post) => (
 											<li>
@@ -118,6 +118,15 @@ const description = "Browse posts by year";
 		font-size: 1.3rem;
 		margin: 0 0 1rem 0;
 		color: var(--fg);
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.year-symbol {
+		color: var(--accent);
+		font-size: 0.85rem;
+		opacity: 0.5;
 	}
 
 	.year-posts {

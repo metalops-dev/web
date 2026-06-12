@@ -57,6 +57,16 @@ const { items } = Astro.props;
 		border: 2px solid var(--bg);
 		box-shadow: 0 0 0 2px var(--accent);
 		z-index: 1;
+		animation: timelinePulse 3s ease-in-out infinite;
+	}
+
+	@keyframes timelinePulse {
+		0%, 100% {
+			box-shadow: 0 0 0 2px var(--accent);
+		}
+		50% {
+			box-shadow: 0 0 0 4px var(--accent), 0 0 8px var(--accent-muted);
+		}
 	}
 
 	.timeline-line {
