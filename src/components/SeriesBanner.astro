@@ -15,7 +15,7 @@ const sortedPosts = posts.sort((a, b) => a.part - b.part);
 	<header class="series-header">
 		<span class="series-label" aria-label="Content type">Series</span>
 		<h3 id="series-title">{series}</h3>
-		<span class="series-part" aria-current="page">Part {part}{totalParts ? ` of ${totalParts}` : ''}</span>
+		<span class="series-part" aria-current="page">† Part {part}{totalParts ? ` of ${totalParts}` : ''}</span>
 	</header>
 	<nav class="series-nav" aria-labelledby="series-title">
 		<ol>

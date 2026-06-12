@@ -13,27 +13,170 @@ import { SITE_TITLE } from "../consts";
 	<body>
 		<Header />
 		<main id="main-content">
-			<h1>About</h1>
-			<p>
-			This is <strong>metalops.dev</strong>, a technical blog focused on software and systems engineering,
-				DevOps, infrastructure and building reliable software.
-			</p>
-			<p>
-				Topics covered include:
-			</p>
-			<ul>
-				<li>Building software</li>
-				<li>Systems Programming</li>
-				<li>Infrastructure as Code</li>
-				<li>Kubernetes & Container Orchestration</li>
-				<li>Monitoring & Observability</li>
-				<li>Selfhosting and baremetal deployments</li>
-			</ul>
-			<hr />
-			<p>
-				Find me on <a href="https://adrianvillanueva.com" target="_blank" rel="noopener">my personal website</a>.
-			</p>
+			<article class="page-article">
+				<header>
+					<p class="eyebrow">M/ about</p>
+					<h1>metalops<span class="dot">.</span>dev</h1>
+					<p class="subtitle">
+						A technical blog rooted in systems engineering, infrastructure, and the craft of building software that endures.
+					</p>
+				</header>
+
+				<div class="content">
+					<div class="manifesto">
+						<p>
+							This is <strong>metalops.dev</strong> a space for deep dives into software and systems engineering,
+							DevOps, infrastructure automation, and the art of building reliable production systems.
+							Just the craft.
+						</p>
+					</div>
+
+					<h2>▸ realms of focus</h2>
+					<ul class="topics">
+						<li>Systems Programming</li>
+						<li>Building Machine Learning and MLOPs systems</li>
+						<li>Infrastructure as Code</li>
+						<li>Kubernetes &amp; Container Orchestration</li>
+						<li>Monitoring &amp; Observability</li>
+						<li>Selfhosting &amp; Bare-Metal Deployments</li>
+						<li>Resilient System Design</li>
+					</ul>
+
+					<hr />
+
+					<div class="callout">
+						<p>
+							Find me on <a href="https://adrianvillanueva.com" target="_blank" rel="noopener">adrianvillanueva.com</a>
+						</p>
+					</div>
+				</div>
+			</article>
 		</main>
 		<Footer />
 	</body>
 </html>
+
+<style>
+	.page-article header {
+		margin-bottom: 2.5rem;
+	}
+
+	.eyebrow {
+		font-family: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
+		font-size: 0.8rem;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: var(--accent);
+		margin: 0 0 0.75rem 0;
+	}
+
+	h1 {
+		margin: 0 0 0.5rem 0;
+	}
+
+	.dot {
+		color: var(--accent);
+	}
+
+	.subtitle {
+		color: var(--muted);
+		margin: 0;
+		font-size: 1.05rem;
+		line-height: 1.6;
+		max-width: 520px;
+	}
+
+	.content {
+		line-height: 1.8;
+		color: var(--fg);
+	}
+
+	.manifesto {
+		padding: 1.25rem 1.5rem;
+		margin-bottom: 2rem;
+		border-left: 3px solid var(--accent);
+		background: var(--accent-muted);
+		border-radius: 0 var(--radius, 6px) var(--radius, 6px) 0;
+		position: relative;
+	}
+
+	.manifesto::after {
+		content: "";
+		position: absolute;
+		inset: 0;
+		border-radius: 0 var(--radius, 6px) var(--radius, 6px) 0;
+		background: linear-gradient(180deg, var(--accent) 0%, transparent 100%);
+		opacity: 0.04;
+		pointer-events: none;
+	}
+
+	.manifesto p {
+		margin: 0;
+	}
+
+	.manifesto strong {
+		color: var(--fg);
+	}
+
+	h2 {
+		font-size: 0.85rem;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: var(--muted);
+		margin: 0 0 1rem 0;
+		border: none;
+		padding: 0;
+		font-family: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
+	}
+
+	h2::before {
+		display: none;
+	}
+
+	.topics {
+		list-style: none;
+		padding: 0;
+		margin: 0 0 2rem 0;
+	}
+
+	.topics li {
+		margin-bottom: 0.75rem;
+		padding-left: 1.5rem;
+		position: relative;
+		font-size: 1rem;
+	}
+
+	.topics li::before {
+		content: "⛧";
+		position: absolute;
+		left: 0;
+		color: var(--accent);
+		font-size: 0.75rem;
+		opacity: 0.6;
+	}
+
+	.callout {
+		padding: 1rem 1.25rem;
+		border-left: 2px solid var(--accent);
+		background: var(--surface);
+		border-radius: 0 var(--radius, 6px) var(--radius, 6px) 0;
+		margin-top: 0.5rem;
+	}
+
+	.callout p {
+		margin: 0;
+		color: var(--muted);
+	}
+
+	.callout a {
+		color: var(--accent);
+		text-decoration: none;
+		border-bottom: 1px solid var(--accent-muted);
+	}
+
+	.callout a:hover {
+		background: transparent;
+		color: var(--accent-light);
+		border-bottom-color: var(--accent);
+	}
+</style>

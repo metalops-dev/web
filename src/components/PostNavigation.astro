@@ -17,7 +17,7 @@ const { prev, next } = Astro.props;
 		<div class="post-nav-item prev">
 			{prev && (
 				<a href={`/blog/${prev.slug}/`}>
-					<span class="label">← Previous</span>
+					<span class="label">† Previous</span>
 					<span class="title">{prev.title}</span>
 				</a>
 			)}
@@ -25,7 +25,7 @@ const { prev, next } = Astro.props;
 		<div class="post-nav-item next">
 			{next && (
 				<a href={`/blog/${next.slug}/`}>
-					<span class="label">Next →</span>
+					<span class="label">Next †</span>
 					<span class="title">{next.title}</span>
 				</a>
 			)}

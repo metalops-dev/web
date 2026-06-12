@@ -82,6 +82,19 @@ const sortedTags = [...tagCounts.entries()].sort((a, b) =>
 	.tag-name {
 		font-weight: 500;
 	}
+
+	.tag-name::before {
+		content: "⛧";
+		color: var(--accent);
+		font-size: 0.65rem;
+		opacity: 0.4;
+		margin-right: 0.25rem;
+		transition: opacity 0.2s;
+	}
+
+	.tags-list a:hover .tag-name::before {
+		opacity: 0.8;
+	}
 	.tag-count {
 		font-size: 0.8rem;
 		color: var(--muted);

@@ -19,6 +19,7 @@
 		0 4px 16px rgba(45, 31, 26, 0.08), 0 8px 32px rgba(45, 31, 26, 0.04);
 	--radius: 6px;
 	--transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+	--font-mono: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
 	color-scheme: light;
 }
 
@@ -225,6 +226,7 @@ th {
 	font-size: 0.85rem;
 	text-transform: uppercase;
 	letter-spacing: 0.04em;
+	border-bottom: 2px solid var(--accent);
 }
 
 img {
