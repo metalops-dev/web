@@ -9,7 +9,6 @@ const posts = (
 	import.meta.env.PROD ? allPosts.filter((post) => !post.data.draft) : allPosts
 ).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-// Group posts by series
 const seriesMap = new Map<string, typeof posts>();
 posts.forEach((post) => {
 	if (post.data.series) {
@@ -20,7 +19,6 @@ posts.forEach((post) => {
 	}
 });
 
-// Sort posts within each series by seriesPart
 const seriesList = Array.from(seriesMap.entries()).map(
 	([name, seriesPosts]) => {
 		const sorted = seriesPosts.sort((a, b) => {
@@ -50,7 +48,7 @@ const description = "Multi-part blog series";
 				<header>
 					<h1>{title}</h1>
 					<p class="subtitle">{description}</p>
-					<p class="series-count" aria-live="polite">{seriesList.length} {seriesList.length === 1 ? 'series' : 'series'}</p>
+					<p class="series-count" aria-live="polite">{seriesList.length} series</p>
 				</header>
 
 				<div class="content">

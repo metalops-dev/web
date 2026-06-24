@@ -1,12 +1,7 @@
-import { readFileSync } from "fs";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
 import { describe, expect, it } from "vitest";
-import { parse } from "yaml";
+import { loadYaml } from "./helpers";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const readingYaml = readFileSync(`${__dirname}/../reading.yaml`, "utf-8");
-const readingData = parse(readingYaml);
+const readingData = loadYaml("reading");
 
 describe("reading.js", () => {
 	it("exports an object with sections array", () => {

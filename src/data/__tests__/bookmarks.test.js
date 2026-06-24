@@ -1,12 +1,7 @@
-import { readFileSync } from "fs";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
 import { describe, expect, it } from "vitest";
-import { parse } from "yaml";
+import { loadYaml } from "./helpers";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const bookmarksYaml = readFileSync(`${__dirname}/../bookmarks.yaml`, "utf-8");
-const bookmarksData = parse(bookmarksYaml);
+const bookmarksData = loadYaml("bookmarks");
 
 describe("bookmarks.js", () => {
 	it("exports an object with categories array", () => {
