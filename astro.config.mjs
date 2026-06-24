@@ -9,9 +9,7 @@ import expressiveCode from "astro-expressive-code";
 import icon from "astro-icon";
 import robotsTxt from "astro-robots-txt";
 import { pluginLanguageBadge } from "expressive-code-language-badge";
-import { visualizer } from "rollup-plugin-visualizer";
 import compression from "vite-plugin-compression";
-import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 
 // https://astro.build/config
 export default defineConfig({
@@ -24,6 +22,7 @@ export default defineConfig({
 	integrations: [
 		expressiveCode({
 			themes: ["catppuccin-mocha", "catppuccin-latte"],
+			plugins: [pluginLineNumbers(), pluginLanguageBadge()],
 		}), // https://shiki.style/languages
 		mdx(),
 		sitemap(),
@@ -41,6 +40,7 @@ export default defineConfig({
 	vite: {
 		plugins: [
 			yaml(),
+			tailwindcss(),
 			compression({
 				verbose: true,
 				disable: false,
@@ -55,19 +55,6 @@ export default defineConfig({
 				algorithm: "brotliCompress",
 				ext: ".br",
 			}),
-			visualizer({
-				filename: "dist/stats.html",
-				open: false,
-				gzipSize: true,
-				brotliSize: true,
-			}),
 		],
 	},
-
-	plugins: [
-		tailwindcss(),
-		pluginLineNumbers(),
-		pluginLanguageBadge(),
-		ViteImageOptimizer(),
-	],
 });

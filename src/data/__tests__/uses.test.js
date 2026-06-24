@@ -1,12 +1,7 @@
-import { readFileSync } from "fs";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
 import { describe, expect, it } from "vitest";
-import { parse } from "yaml";
+import { loadYaml } from "./helpers";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const usesYaml = readFileSync(`${__dirname}/../uses.yaml`, "utf-8");
-const usesData = parse(usesYaml);
+const usesData = loadYaml("uses");
 
 describe("uses.js", () => {
 	it("exports an object with categories array", () => {

@@ -1,5 +1,4 @@
 ---
-import type { CollectionEntry } from "astro:content";
 import BaseHead from "../components/BaseHead.astro";
 import Comments from "../components/Comments.astro";
 import Footer from "../components/Footer.astro";
@@ -8,7 +7,6 @@ import Header from "../components/Header.astro";
 import DraftBanner from "../components/mdx/DraftBanner.astro";
 import Newsletter from "../components/Newsletter.astro";
 import PostNavigation from "../components/PostNavigation.astro";
-import ReadingTime from "../components/ReadingTime.astro";
 import TableOfContents from "../components/TableOfContents.astro";
 import Tags from "../components/Tags.astro";
 
@@ -49,12 +47,8 @@ const {
 	draft = false,
 } = Astro.props;
 
-const isDev = !import.meta.env.PROD;
-
-// Calculate word count
-const wordCount = content.trim().split(/\s+/).length;
-const wordCountDisplay =
-	wordCount > 0 ? `${wordCount.toLocaleString()} words` : "";
+const wordCount = content.trim().split(/\s+/).filter(Boolean).length;
+const readingTime = Math.ceil(wordCount / 200);
 ---
 
 <html lang="en">
@@ -86,9 +80,9 @@ const wordCountDisplay =
 							</span>
 						)}
 						<span class="sep"> † </span>
-						<ReadingTime content={content} />
+						<span class="reading-time">{readingTime} min read</span>
 						<span class="sep"> † </span>
-						<span class="word-count">{wordCountDisplay}</span>
+						<span class="word-count">{wordCount.toLocaleString()} words</span>
 					</div>
 					<h1>{title}</h1>
 					<Tags tags={tags} />
