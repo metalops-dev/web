@@ -15,8 +15,7 @@ import { SITE_TITLE } from "../consts";
 		<main id="main-content">
 			<article class="page-article">
 				<header>
-					<p class="eyebrow">M/ about</p>
-					<h1>metalops<span class="dot">.</span>dev</h1>
+					<h1>About metalops<span class="dot">.</span>dev</h1>
 					<p class="subtitle">
 						A technical blog rooted in systems engineering, infrastructure, and the craft of building software that endures.
 					</p>
@@ -61,15 +60,6 @@ import { SITE_TITLE } from "../consts";
 		margin-bottom: 2.5rem;
 	}
 
-	.eyebrow {
-		font-family: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
-		font-size: 0.8rem;
-		text-transform: uppercase;
-		letter-spacing: 0.08em;
-		color: var(--accent);
-		margin: 0 0 0.75rem 0;
-	}
-
 	h1 {
 		margin: 0 0 0.5rem 0;
 	}
@@ -94,9 +84,9 @@ import { SITE_TITLE } from "../consts";
 	.manifesto {
 		padding: 1.25rem 1.5rem;
 		margin-bottom: 2rem;
-		border-left: 3px solid var(--accent);
+		border: 1px solid var(--accent-muted);
 		background: var(--accent-muted);
-		border-radius: 0 var(--radius, 6px) var(--radius, 6px) 0;
+		border-radius: var(--radius, 6px);
 		position: relative;
 	}
 
@@ -157,9 +147,9 @@ import { SITE_TITLE } from "../consts";
 
 	.callout {
 		padding: 1rem 1.25rem;
-		border-left: 2px solid var(--accent);
+		border: 1px solid var(--border);
 		background: var(--surface);
-		border-radius: 0 var(--radius, 6px) var(--radius, 6px) 0;
+		border-radius: var(--radius, 6px);
 		margin-top: 0.5rem;
 	}
 

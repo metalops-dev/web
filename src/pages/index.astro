@@ -24,7 +24,6 @@ const posts = (
 		<Header />
 		<main id="main-content">
 			<section class="intro">
-				<p class="eyebrow">M/ systems &amp; software engineering</p>
 				<h1>metalops<span class="dot">.</span>dev</h1>
 				<p class="tagline">
 				A technical blog about software, systems engineering, infrastructure and DevOps. Deep dives on Rust, infrastructure automation, and building resilient production systems.
@@ -74,14 +73,6 @@ const posts = (
 		height: 1px;
 		background: linear-gradient(90deg, var(--accent), transparent 80%);
 	}
-	.eyebrow {
-		font-family: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
-		font-size: 0.8rem;
-		text-transform: uppercase;
-		letter-spacing: 0.08em;
-		color: var(--accent);
-		margin: 0 0 0.75rem 0;
-	}
 	.intro h1 {
 		font-size: 3rem;
 		margin: 0 0 1rem 0;
@@ -90,13 +81,6 @@ const posts = (
 	}
 	.dot {
 		color: var(--accent);
-		text-shadow: 0 0 20px var(--accent-muted);
-		animation: dotPulse 3s ease-in-out infinite;
-	}
-
-	@keyframes dotPulse {
-		0%, 100% { opacity: 1; text-shadow: 0 0 20px var(--accent-muted); }
-		50% { opacity: 0.6; text-shadow: 0 0 40px var(--accent-muted), 0 0 60px var(--accent-muted); }
 	}
 	.tagline {
 		color: var(--muted);
