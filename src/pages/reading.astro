@@ -2,10 +2,10 @@
 import BaseHead from "../components/BaseHead.astro";
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
-import readingData from "../data/reading.yaml";
+import bookmarksData from "../data/bookmarks.yaml";
 
-const title = "Reading";
-const description = "Books, articles, and papers I'm reading";
+const title = "Bookmarks";
+const description = "Curated links and resources";
 ---
 
 <!doctype html>
@@ -26,28 +26,26 @@ const description = "Books, articles, and papers I'm reading";
 
 				<div class="content">
 					<p>
-						A log of books, articles, and research papers I'm reading or have read. Notes and summaries coming soon.
+						A curated collection of articles, tools, and resources I find valuable and recommend.
 					</p>
 
-					{readingData.sections.map((section) => (
+					{bookmarksData.categories.map((category) => (
 						<>
-							<h2>{section.name}</h2>
-							<ul class="reading-list">
-								{section.books.map((book) => (
+							<h2>{category.name}</h2>
+							<ul class="link-list">
+								{category.links.map((link) => (
 									<li>
-										<span class="title">{book.title}</span>
-										<span class="author">{book.author}</span>
+										<a href={link.url} target="_blank" rel="noopener">{link.title}</a>
+										<span class="desc">{link.description}</span>
 									</li>
 								))}
 							</ul>
 						</>
 					))}
 
-					<div style="margin-top: 2rem; padding: 1rem; border-left: 2px solid var(--accent);">
-						<p style="margin: 0;">
-							Want to recommend something? <a href="https://adrianvillanueva.com" target="_blank" rel="noopener">Let me know</a>
-						</p>
-					</div>
+					<p class="muted" style="margin-top: 2rem; font-size: 0.85rem;">
+						More bookmarks coming soon. Have a suggestion? Reach out!
+					</p>
 				</div>
 			</article>
 		</main>
@@ -87,40 +85,40 @@ const description = "Books, articles, and papers I'm reading";
 		padding-bottom: 0.5rem;
 	}
 
-	.reading-list {
+	.link-list {
 		list-style: none;
 		padding: 0;
 	}
 
-	.reading-list li {
-		margin-bottom: 1rem;
+	.link-list li {
+		margin-bottom: 1.5rem;
 		padding: 1rem;
 		border-left: 2px solid var(--accent);
 		background: var(--surface);
 		border-radius: 0 var(--radius, 6px) var(--radius, 6px) 0;
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
 	}
 
-	.title {
-		font-weight: 500;
+	.link-list a {
 		color: var(--fg);
-	}
-
-	.author {
-		color: var(--muted);
-		font-size: 0.9rem;
-	}
-
-	.content a {
-		color: var(--accent);
 		text-decoration: none;
 		border-bottom: 1px solid var(--accent-muted);
+		font-weight: 500;
 	}
 
-	.content a:hover {
-		color: var(--accent-light);
+	.link-list a:hover {
+		color: var(--accent);
 		background: transparent;
 		border-bottom-color: var(--accent);
 	}
+
+	.desc {
+		display: block;
+		color: var(--muted);
+		font-size: 0.9rem;
+		margin-top: 0.25rem;
+	}
+
+	.muted {
+		color: var(--muted);
+	}
+</style>
