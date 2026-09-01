@@ -38,35 +38,28 @@ Kubernetes (K8s) is an open-source container orchestration platform that automat
 
 ### Cluster Architecture
 
-```d2
-direction: right
+```mermaid
+graph TD
+  direction TB
 
-control: Control Plane {
-  api: API Server
-  etcd: etcd
-  sched: Scheduler
-  cm: Controller Manager
+  control[Control Plane]
+  control --> api[API Server]
+  control --> etcd[etcd]
+  control --> sched[Scheduler]
+  control --> cm[Controller Manager]
 
-  api -> etcd
-  api -> sched
-  api -> cm
-}
+  node1[Node 1]
+  node1 --> kubelet1[Kubelet]
+  node1 --> proxy1[Kube Proxy]
+  node1 --> runtime1[Container Runtime]
 
-nodes: Worker Nodes {
-  node1: Node 1 {
-    kubelet: Kubelet
-    proxy: Kube Proxy
-    runtime: Container Runtime
-  }
-  node2: Node 2 {
-    kubelet: Kubelet
-    proxy: Kube Proxy
-    runtime: Container Runtime
-  }
-}
+  node2[Node 2]
+  node2 --> kubelet2[Kubelet]
+  node2 --> proxy2[Kube Proxy]
+  node2 --> runtime2[Container Runtime]
 
-control.api -> nodes.node1.kubelet
-control.api -> nodes.node2.kubelet
+  api --> kubelet1
+  api --> kubelet2
 ```
 
 ### Key Components

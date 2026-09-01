@@ -243,7 +243,7 @@ img:hover {
 	box-shadow: var(--shadow-lg);
 }
 
-code {
+.prose code:not(pre code) {
 	font-family: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
 	padding: 0.2em 0.45em;
 	background-color: var(--code-bg);
@@ -252,8 +252,7 @@ code {
 	border: 1px solid var(--border);
 }
 
-pre {
-	background: var(--code-bg);
+.prose pre {
 	padding: 1.5rem;
 	overflow-x: auto;
 	border: 1px solid var(--border);
@@ -265,16 +264,19 @@ pre {
 	transition: box-shadow var(--transition);
 }
 
-pre:hover {
+.prose pre:hover {
 	box-shadow:
 		var(--shadow),
 		0 0 20px var(--accent-muted);
 }
 
-pre > code {
+.prose pre > code {
 	padding: 0;
 	background: none;
 	border: none;
+	font-family: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
+	font-size: 0.85em;
+	line-height: 1.6;
 }
 
 blockquote {
@@ -422,76 +424,6 @@ a:focus-visible {
 ::-moz-selection {
 	background: var(--accent);
 	color: var(--bg);
-}
-
-/* Command/terminal output styling - Retro CRT vibe */
-pre[data-language="bash"],
-pre[data-language="shell"],
-pre[data-language="sh"],
-pre[data-language="zsh"],
-pre[data-language="terminal"] {
-	--terminal-green: #4ade80;
-	--terminal-bg: #0a0a0a;
-	background: var(--terminal-bg);
-	border: 1px solid #4ade8040;
-	color: var(--terminal-green);
-	position: relative;
-	font-size: 0.9em;
-	line-height: 1.5;
-}
-
-pre[data-language="bash"]::before,
-pre[data-language="shell"]::before,
-pre[data-language="sh"]::before,
-pre[data-language="zsh"]::before,
-pre[data-language="terminal"]::before {
-	content: "$ terminal";
-	display: block;
-	font-size: 0.7rem;
-	text-transform: uppercase;
-	letter-spacing: 0.1em;
-	color: #4ade8060;
-	margin-bottom: 0.75rem;
-	padding-bottom: 0.5rem;
-	border-bottom: 1px solid #4ade8020;
-}
-
-pre[data-language="bash"] code,
-pre[data-language="shell"] code,
-pre[data-language="sh"] code,
-pre[data-language="zsh"] code,
-pre[data-language="terminal"] code {
-	color: var(--terminal-green);
-}
-
-/* Output blocks - use ```output or add data-output attribute */
-pre[data-language="output"],
-pre.output {
-	--terminal-text: #a1a1aa;
-	--terminal-bg: #0a0a0a;
-	background: var(--terminal-bg);
-	border: 1px dashed #a1a1aa30;
-	color: var(--terminal-text);
-	font-size: 0.9em;
-	line-height: 1.5;
-}
-
-pre[data-language="output"]::before,
-pre.output::before {
-	content: "> output";
-	display: block;
-	font-size: 0.7rem;
-	text-transform: uppercase;
-	letter-spacing: 0.1em;
-	color: #a1a1aa60;
-	margin-bottom: 0.75rem;
-	padding-bottom: 0.5rem;
-	border-bottom: 1px dashed #a1a1aa20;
-}
-
-pre[data-language="output"] code,
-pre.output code {
-	color: var(--terminal-text);
 }
 
 /* Dark mode vignette */

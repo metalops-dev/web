@@ -29,28 +29,16 @@ A Pod is the smallest deployable unit in Kubernetes. It represents a single inst
 
 ### Pod Anatomy
 
-```d2
-pod: Pod {
-  container1: App Container {
-    shape: rectangle
-  }
-  container2: Sidecar {
-    shape: rectangle
-  }
-  volume: Shared Volume {
-    shape: cylinder
-  }
+```mermaid
+graph TD
+  pod[Pod] --> container1[App Container]
+  pod --> container2[Sidecar]
+  pod --> volume[Shared Volume]
 
-  container1 -> volume
-  container2 -> volume
-}
+  container1 --> volume
+  container2 --> volume
 
-network: localhost:port {
-  shape: cloud
-}
-
-pod.container1 -> network
-pod.container2 -> network
+  pod --> network[localhost:port]
 ```
 
 ### Creating a Pod

@@ -1,38 +1,31 @@
 ---
 title: "Securing PostgreSQL with TLS via Traefik"
-description: "How to terminate TLS for your PostgreSQL connections at Traefik, using Lets Encrypt without managing certificates inside your database container."
+description: "How to terminate TLS for PostgreSQL connections at Traefik using Let's Encrypt, without managing certificates inside your PostgreSQL container."
 pubDate: "May 08 2026"
 tags: ["postgresql", "traefik", "security", "devops"]
 draft: true
 ---
 
-Running a database publicly is generally not a great idea, and running it without encryption is worse. Credentials go over the wire in plain text, meaning anyone positioned to sniff traffic on your network path can grab them. You could configure PostgreSQL with its own TLS certificate, but if you're already using Traefik as your reverse proxy, there's a cleaner path: let Traefik handle TLS termination for your database connections the same way it handles your HTTP services.
+Running a database publicly is generally not a great idea, and running it without encryption is worse. Credentials go over the wire in plain text, meaning anyone positioned to sniff traffic on your network path can grab them. You could configure PostgreSQL with its own TLS certificate, but if you're already using Traefik as your reverse proxy, there's better way: let Traefik handle TLS termination for your database connections the same way it handles your HTTP services.
 
-This is something I set up recently and it works well, so here's how it works and how to configure it.
+This is something I set up recently and surprised me how smoothly it works.
 
 ## How It Works
 
-PostgreSQL uses a protocol called **STARTTLS** to negotiate encryption. When a client connects, it sends a special 8-byte message called an `SSLRequest` packet, asking the server if it supports TLS. The server responds with either `S` (yes) or `N` (no), and if the client gets `S`, the TLS handshake begins from there. It's the same concept as STARTTLS in email protocols, just adapted for databases.
+PostgreSQL has its own SSL negotiation mechanism, commonly referred to as PostgreSQL STARTTLS.
 
-Traefik speaks this protocol natively. When a client connects to your configured TCP entrypoint, Traefik reads those first bytes, recognises the SSLRequest packet, responds with `S`, and performs the TLS handshake using a certificate it fetches from Let's Encrypt. Once the handshake completes, Traefik decrypts the traffic and forwards plain TCP to your Postgres container on the internal Docker network.
+When a client connects, it first sends a special 8-byte SSLRequest message asking whether the server supports SSL/TLS. The server responds with either S or N. If the response is S, the client proceeds with a normal TLS handshake over the same connection.
 
-The flow looks like this:
+Traefik supports this PostgreSQL-specific negotiation natively. When a PostgreSQL client connects to a TCP entrypoint configured for TLS, Traefik recognizes the initial SSLRequest, responds appropriately, and then terminates the TLS connection using the certificate configured through its certificate resolver.
 
-```d2
-direction: right
+The architecture therefore looks like this:
 
-client: Client
-
-traefik: Traefik (:5432)
-
-postgres: PostgreSQL
-
-le: Let's Encrypt
-
-client -> traefik: TLS 1.3 (encrypted)
-traefik -> le: ACME challenge
-le -> traefik: TLS certificate
-traefik -> postgres: Plain TCP (internal)
+```mermaid
+flowchart TB
+  client["Client"] -- "TLS 1.3 / TCP 5432" --> traefik["Traefik"]
+  traefik -- "ACME HTTP/TLS challenge" --> le["Let's Encrypt"]
+  le -- "TLS certificate" --> traefik
+  traefik -- "TCP passthrough" --> postgres["PostgreSQL 5432"]
 ```
 
 From the client's perspective, it has a fully encrypted TLS 1.3 connection to your database. From Postgres's perspective, it's receiving plain TCP on an internal network and doesn't need to know anything about TLS.
