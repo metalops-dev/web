@@ -1,23 +1,27 @@
 ---
-title: 'Building a Fail2Ban log parser with rust'
-description: 'Build a high-performance Fail2Ban log parser in Rust. Parse structured data from log files with winnow parser combinators. Includes Python bindings guide.'
+title: "Building a Fail2Ban log parser with rust"
+description: "Build a high-performance Fail2Ban log parser in Rust. Parse structured data from log files with winnow parser combinators. Includes Python bindings guide."
 pubDate: 2026-04-01
 updatedDate: 2026-04-01
-tags: ['rust', 'parsing', 'fail2ban', 'parser', 'devops-tools', 'log-parsing']
-series: 'Building a Multi-Language Parser'
+tags: ["rust", "parsing", "fail2ban", "parser", "devops-tools", "log-parsing"]
+series: "Building a Multi-Language Parser"
 seriesPart: 1
 ---
 
-import SeriesBanner from '../../components/SeriesBanner.astro';
-import Callout from '../../components/mdx/Callout.astro';
-import Badge from '../../components/mdx/Badge.astro';
-import Steps from '../../components/mdx/Steps.astro';
+import SeriesBanner from "../../components/SeriesBanner.astro";
+import Callout from "../../components/mdx/Callout.astro";
+import Badge from "../../components/mdx/Badge.astro";
+import Steps from "../../components/mdx/Steps.astro";
 
 <SeriesBanner
   series="Building a Multi-Language Parser"
   part={1}
   posts={[
-    { title: "Understanding the Fail2Ban Log Parser", slug: "fail2ban-log-parser-intro", part: 1 },
+    {
+      title: "Understanding the Fail2Ban Log Parser",
+      slug: "fail2ban-log-parser-intro",
+      part: 1,
+    },
   ]}
 />
 
@@ -31,12 +35,14 @@ Raw Fail2Ban log lines look something like this:
 2024-01-01 12:00:15,789 fail2ban.actions [1] INFO [sshd] Ban 5.6.7.8
 ```
 
-It's *parsable* by a human, sure. But if you want to answer questions like "Which jail has the most bans this week?" or "What's the ban-to-unban ratio for the nginx-http-auth jail?" Now get ready to play with lots of  string splitting and regex matching pain.
+It's _parsable_ by a human, sure. But if you want to answer questions like "Which jail has the most bans this week?" or "What's the ban-to-unban ratio for the nginx-http-auth jail?" Now get ready to play with lots of string splitting and regex matching pain.
 
 That's exactly where this project comes in.
 
 <Callout type="tip" title="What we're building">
-A simple to use Rust library with bindings to python, Typescript and WebAssembly to transform unorganised text into structured and easy-to-use data structures.
+  A simple to use Rust library with bindings to python, Typescript and
+  WebAssembly to transform unorganised text into structured and easy-to-use data
+  structures.
 </Callout>
 
 ## Why Build a Parser?
@@ -53,8 +59,7 @@ You might wonder, why build this in Rust?
 
 Parsing is exactly what Rust is good at. The type system catches bugs at compile time, there's no runtime overhead, and the winnow library is very well-designed.
 
-But more importantly, Rust gives us a solid foundation for *other* languages. In upcoming parts of this series, we'll see how to generate bindings for Python, TypeScript and WebAssembly from the same core.
-
+But more importantly, Rust gives us a solid foundation for _other_ languages. In upcoming parts of this series, we'll see how to generate bindings for Python, TypeScript and WebAssembly from the same core.
 
 ## What Makes It Tick
 
@@ -78,83 +83,45 @@ pub struct Fail2BanStructuredLog<'a> {
 ```
 
 <Callout type="note" title="Design Choice">
-Each field can be optional because Fail2Ban log formats aren't perfectly consistent across versions and configurations. This design gracefully handles missing fields, it does not fail when a log line is slightly different than expected.
+  Each field can be optional because Fail2Ban log formats aren't perfectly
+  consistent across versions and configurations. This design gracefully handles
+  missing fields, it does not fail when a log line is slightly different than
+  expected.
 </Callout>
 
 ## Architecture
 
 Here's how the pieces fit together:
 
-```d2
-direction: right
+```mermaid
+flowchart TD
+  api[parse lib.rs]
+  orch[parse_log_line parser/mod.rs]
+  sub_ts[parse_timestamp timestamp.rs]
+  sub_hd[parse_header header.rs]
+  sub_pid[parse_pid pid.rs]
+  sub_lvl[parse_level level]
+  sub_jail[parse_jail jail]
+  sub_evt[parse_event event]
+  sub_ip[parse_ip ip rs]
+  output[Fail2Ban StructuredLog]
 
-# Main containers
-api: "parse()\nlib.rs" {
-  style.fill: "#e3f2fd"
-  style.stroke: "#1565c0"
-  style.stroke-width: 3
-}
+  api --> orch
+  orch --> sub_ts
+  orch --> sub_hd
+  orch --> sub_pid
+  orch --> sub_lvl
+  orch --> sub_jail
+  orch --> sub_evt
+  orch --> sub_ip
 
-orch: "parse_log_line()\nparser/mod.rs" {
-  style.fill: "#fff8e1"
-  style.stroke: "#ff8f00"
-  style.stroke-width: 3
-}
-
-subparsers: Sub-Parsers {
-  style.fill: "#e8f5e9"
-  style.stroke: "#2e7d32"
-  style.stroke-width: 3
-}
-
-output: "Fail2Ban\nStructuredLog" {
-  style.fill: "#fce4ec"
-  style.stroke: "#c2185b"
-  style.stroke-width: 3
-}
-
-# Sub-parsers
-subparsers: {
-  ts: "parse_timestamp\ntimestamp.rs" {
-    style.fill: "#b3e5fc"
-  }
-  hd: "parse_header\nheader.rs" {
-    style.fill: "#b3e5fc"
-  }
-  pid: "parse_pid\npid.rs" {
-    style.fill: "#b3e5fc"
-  }
-  lvl: "parse_level\nlevel.rs" {
-    style.fill: "#b3e5fc"
-  }
-  jail: "parse_jail\njail.rs" {
-    style.fill: "#b3e5fc"
-  }
-  evt: "parse_event\nevent.rs" {
-    style.fill: "#b3e5fc"
-  }
-  ip: "parse_ip\nip.rs" {
-    style.fill: "#b3e5fc"
-  }
-}
-
-# Connections
-api -> orch: "lines()"
-orch -> subparsers.ts: "timestamp"
-orch -> subparsers.hd: "header"
-orch -> subparsers.pid: "PID"
-orch -> subparsers.lvl: "level"
-orch -> subparsers.jail: "jail"
-orch -> subparsers.evt: "event"
-orch -> subparsers.ip: "IP"
-
-subparsers.ts -> output: "DateTime<Utc>"
-subparsers.hd -> output: "Fail2BanHeaderType"
-subparsers.pid -> output: "u32"
-subparsers.lvl -> output: "Fail2BanLevel"
-subparsers.jail -> output: "&str"
-subparsers.evt -> output: "Fail2BanEvent"
-subparsers.ip -> output: "IpAddr"
+  sub_ts --> output
+  sub_hd --> output
+  sub_pid --> output
+  sub_lvl --> output
+  sub_jail --> output
+  sub_evt --> output
+  sub_ip --> output
 ```
 
 ## Under the Hood
@@ -227,15 +194,15 @@ We're using [winnow](https://github.com/winnow-rs/winnow), a fantastic parsing c
 
 Each component has its own dedicated parser living in its own file:
 
-| Parser | File | What It Extracts |
-|--------|------|-----------------|
-| `parse_timestamp` | `timestamp.rs` | `DateTime<Utc>`: handles formats like `2024-01-01 12:00:00,123` |
-| `parse_header` | `header.rs` | `Fail2BanHeaderType`: things like `fail2ban.filter`, `fail2ban.actions` |
-| `parse_pid` | `pid.rs` | `u32`: the process ID in brackets |
-| `parse_level` | `level.rs` | `Fail2BanLevel`: DEBUG, INFO, WARNING, NOTICE, ERROR |
-| `parse_jail` | `jail.rs` | `&str`: the jail name like `sshd`, `nginx-http-auth` |
-| `parse_event` | `event.rs` | `Fail2BanEvent`: what actually happened |
-| `parse_ip` | `ip.rs` | `IpAddr`: IPv4 or IPv6 |
+| Parser            | File           | What It Extracts                                                        |
+| ----------------- | -------------- | ----------------------------------------------------------------------- |
+| `parse_timestamp` | `timestamp.rs` | `DateTime<Utc>`: handles formats like `2024-01-01 12:00:00,123`         |
+| `parse_header`    | `header.rs`    | `Fail2BanHeaderType`: things like `fail2ban.filter`, `fail2ban.actions` |
+| `parse_pid`       | `pid.rs`       | `u32`: the process ID in brackets                                       |
+| `parse_level`     | `level.rs`     | `Fail2BanLevel`: DEBUG, INFO, WARNING, NOTICE, ERROR                    |
+| `parse_jail`      | `jail.rs`      | `&str`: the jail name like `sshd`, `nginx-http-auth`                    |
+| `parse_event`     | `event.rs`     | `Fail2BanEvent`: what actually happened                                 |
+| `parse_ip`        | `ip.rs`        | `IpAddr`: IPv4 or IPv6                                                  |
 
 This modularity is intentional. Each parser is small, focused, and independently testable.
 
@@ -261,12 +228,15 @@ The `Fail2BanEvent` enum captures the type of event in each log line:
 </Steps>
 
 <Callout type="tip" title="Query-friendly">
-With structured data, questions that would require complex regex now become simple filter operations. Ban events only? Just `filter(entry.event == Some(Ban))`.
+  With structured data, questions that would require complex regex now become
+  simple filter operations. Ban events only? Just `filter(entry.event ==
+  Some(Ban))`.
 </Callout>
 
 ## A Real Example
 
 **Input:**
+
 ```
 2024-01-01 12:00:00,123 fail2ban.filter [1] INFO [sshd] Found 1.2.3.4
 2024-01-01 12:00:01,456 fail2ban.actions [1] NOTICE [sshd] Ban 1.2.3.4
@@ -274,6 +244,7 @@ With structured data, questions that would require complex regex now become simp
 ```
 
 **Parsed output:**
+
 ```rust
 // Entry 1
 Fail2BanStructuredLog {
@@ -340,6 +311,7 @@ for result in parse(log_data) {
 ```
 
 This would output something like:
+
 ```
 At 2024-01-01T12:00:00.123Z: Some(Found) in jail 'sshd'
 At 2024-01-01T12:00:01.456Z: Some(Ban) in jail 'sshd'
@@ -348,7 +320,9 @@ At 2024-01-01T12:00:15.789Z: Some(Ban) in jail 'nginx'
 
 ## The Tech Stack
 
-<div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', margin: '1rem 0' }}>
+<div
+  style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", margin: "1rem 0" }}
+>
   <Badge type="info">winnow</Badge>
   <Badge type="info">chrono</Badge>
   <Badge type="info">Rayon</Badge>
@@ -363,7 +337,10 @@ This parser wouldn't exist without some fantastic open-source libraries:
 - **[serde](https://github.com/serde-rs/serde)** Optional serialization to JSON.
 
 <Callout type="warning" title="Coming soon">
-This is just the beginning. In **Part 2**, we will explore Python bindings with PyO3. By the end of this series, you will be able to parse Fail2Ban logs from Python, TypeScript and even in the browser with WebAssembly, all from the same Rust codebase!
+  This is just the beginning. In **Part 2**, we will explore Python bindings
+  with PyO3. By the end of this series, you will be able to parse Fail2Ban logs
+  from Python, TypeScript and even in the browser with WebAssembly, all from the
+  same Rust codebase!
 </Callout>
 
-*Ready to dive deeper? Stay tuned for Part 2 where we'll explore Python bindings!*
+_Ready to dive deeper? Stay tuned for Part 2 where we'll explore Python bindings!_

@@ -1,27 +1,39 @@
 ---
-title: 'Applying data engineering for image editing'
-description: 'Build an automated Python CLI pipeline for RAW photo processing. Generate AVIF variants, extract EXIF metadata, and create YAML catalogs for Astro portfolios.'
+title: "Applying data engineering for image editing"
+description: "Build an automated Python CLI pipeline for RAW photo processing. Generate AVIF variants, extract EXIF metadata, and create YAML catalogs for Astro portfolios."
 pubDate: 2026-03-01
 updatedDate: 2026-03-01
 draft: false
-tags: ['python', 'data-engineering', 'photography', 'cli', 'avif', 'd2', 'image-processing', 'astro']
+tags:
+  [
+    "python",
+    "data-engineering",
+    "photography",
+    "cli",
+    "avif",
+    "image-processing",
+    "astro",
+  ]
 ---
 
-import Callout from '../../components/mdx/Callout.astro';
-import Badge from '../../components/mdx/Badge.astro';
-import CodeFile from '../../components/mdx/CodeFile.astro';
-import FileTree from '../../components/mdx/FileTree.astro';
-import Steps from '../../components/mdx/Steps.astro';
-import Details from '../../components/mdx/Details.astro';
-import LinkCard from '../../components/mdx/LinkCard.astro';
-import Kbd from '../../components/mdx/Kbd.astro';
+import Callout from "../../components/mdx/Callout.astro";
+import Badge from "../../components/mdx/Badge.astro";
+import CodeFile from "../../components/mdx/CodeFile.astro";
+import FileTree from "../../components/mdx/FileTree.astro";
+import Steps from "../../components/mdx/Steps.astro";
+import Details from "../../components/mdx/Details.astro";
+import LinkCard from "../../components/mdx/LinkCard.astro";
+import Kbd from "../../components/mdx/Kbd.astro";
 
 ## Building an Automated Image Processing Pipeline for My Photography Portfolio
 
 When I set out to build my photography portfolio, I quickly realized that manually resizing, converting, and cataloging photos was unsustainable. Every RAW file from my Ricoh GR III needed to become multiple AVIF variants, thumbnails for gallery grids, mid-size previews for collection pages, and full-resolution images for the lightbox, each with carefully tuned compression. On top of that, I needed structured EXIF metadata and YAML collection files for the Astro frontend to consume. So I built a CLI-driven image processing pipeline in Python to automate the entire workflow.
 
 <Callout type="note">
-**AVIF** is a modern image format offering 20-30% better compression than WebP and JPEG while maintaining superior quality, ideal for web. **EXIF** is metadata embedded in image files containing camera settings, lens info, and shot date, extracted separately here to keep image files lean.
+  **AVIF** is a modern image format offering 20-30% better compression than WebP
+  and JPEG while maintaining superior quality, ideal for web. **EXIF** is
+  metadata embedded in image files containing camera settings, lens info, and
+  shot date, extracted separately here to keep image files lean.
 </Callout>
 
 ## The Problem
@@ -33,104 +45,48 @@ A single RAW photograph needs to go through several transformations before it ca
 3. **Modern format encoding**: AVIF delivers dramatically better compression than JPEG at equivalent perceptual quality, but encoding it well requires careful tuning of quality, effort, chroma subsampling, and bit depth.
 4. **Catalog management**: The Astro frontend reads YAML collection files that reference every photo's variants, metadata, and CDN paths. Maintaining these by hand is error-prone and tedious.
 
-<Callout type="warning">
-Doing this manually is painful.
-</Callout>
+<Callout type="warning">Doing this manually is painful.</Callout>
 
 ## Architecture Overview
 
 The pipeline is a Python CLI application built with [Click](https://click.palletsprojects.com/), [pyvips](https://www.libvips.org/) for high-performance image processing, and [exifread](https://github.com/ianare/exif-py) for metadata extraction. It's structured as four distinct modules with clear responsibilities:
 
-```d2
-direction: right
+```mermaid
+flowchart TD
+  raw_photo[Raw Photo]
+  cli[CLI Orchestrator ]
+  metadata_extractor[Metadata Extractor exifread]
+  image_converter[Image Converter pyvips]
+  yaml_generator[YAML Generator pyyaml]
 
-raw_photo: Raw Photo {
-  shape: document
-  style.fill: "#f4e8c1"
-}
+  metadata_json[metadata.json]
+  thumbnail[thumbnail.avif 350px]
+  collection_img[collection.avif 700px]
+  display[display.avif 1400px]
+  collection_yaml[collection.yaml]
+  astro[Astro Frontend]
 
-metadata_extractor: Metadata Extractor {
-  shape: hexagon
-  style.fill: "#a0c4ff"
-  label: "Metadata Extractor\n(exifread)"
-}
+  raw_photo --> cli
+  cli --> metadata_extractor
+  cli --> image_converter
+  cli --> yaml_generator
 
-image_converter: Image Converter {
-  shape: hexagon
-  style.fill: "#bdb2ff"
-  label: "Image Converter\n(pyvips)"
-}
+  metadata_extractor --> metadata_json
 
-yaml_generator: YAML Generator {
-  shape: hexagon
-  style.fill: "#ffc6ff"
-  label: "YAML Generator\n(pyyaml)"
-}
+  image_converter --> thumbnail
+  image_converter --> collection_img
+  image_converter --> display
 
-cli: CLI Orchestrator {
-  shape: hexagon
-  style.fill: "#caffbf"
-  label: "CLI Orchestrator\n(Click)"
-}
+  metadata_json --> yaml_generator
+  thumbnail --> yaml_generator
+  collection_img --> yaml_generator
+  display --> yaml_generator
 
-metadata_json: metadata.json {
-  shape: document
-  style.fill: "#fdffb6"
-}
-
-thumbnail: thumbnail.avif {
-  shape: document
-  style.fill: "#ffd6a5"
-  label: "thumbnail.avif\n(350px)"
-}
-
-collection_img: collection.avif {
-  shape: document
-  style.fill: "#ffd6a5"
-  label: "collection.avif\n(700px)"
-}
-
-display: display.avif {
-  shape: document
-  style.fill: "#ffd6a5"
-  label: "display.avif\n(1400px)"
-}
-
-collection_yaml: collection.yaml {
-  shape: document
-  style.fill: "#9bf6ff"
-}
-
-astro: Astro Frontend {
-  shape: rectangle
-  style.fill: "#e2e2e2"
-  style.stroke: "#333"
-  style.bold: true
-}
-
-# Flow
-raw_photo -> cli: input
-cli -> metadata_extractor: delegates
-cli -> image_converter: delegates
-cli -> yaml_generator: delegates
-
-metadata_extractor -> metadata_json: writes EXIF data
-
-image_converter -> thumbnail: resize + encode
-image_converter -> collection_img: resize + encode
-image_converter -> display: resize + encode
-
-metadata_json -> yaml_generator: reads
-thumbnail -> yaml_generator: references
-collection_img -> yaml_generator: references
-display -> yaml_generator: references
-
-yaml_generator -> collection_yaml: generates
-
-collection_yaml -> astro: consumed by
-thumbnail -> astro: served to browser
-collection_img -> astro: served to browser
-display -> astro: served to browser
+  yaml_generator --> collection_yaml
+  collection_yaml --> astro
+  thumbnail --> astro
+  collection_img --> astro
+  display --> astro
 ```
 
 ## Module Breakdown
@@ -158,16 +114,16 @@ The `from_exif_tags()` classmethod takes the raw dictionary returned by `exifrea
 
 <Details summary="Full list of extracted EXIF fields">
 
-| Field | EXIF Tag | Example |
-|-------|----------|---------|
-| `camera_make` | `Image Make` | RICOH IMAGING COMPANY, LTD. |
-| `camera_model` | `Image Model` | RICOH GR III |
-| `lens` | `EXIF LensModel` | RICOH GR LENS 28mm F2.8 |
-| `aperture` | `EXIF FNumber` | f/4.0 |
-| `shutter_speed` | `EXIF ExposureTime` | 1/60 |
-| `iso` | `EXIF ISOSpeedRatings` | 200 |
-| `focal_length_35mm` | `EXIF FocalLengthIn35mmFilm` | 28mm |
-| `date_taken` | `EXIF DateTimeOriginal` | 2021:09:19 |
+| Field               | EXIF Tag                     | Example                     |
+| ------------------- | ---------------------------- | --------------------------- |
+| `camera_make`       | `Image Make`                 | RICOH IMAGING COMPANY, LTD. |
+| `camera_model`      | `Image Model`                | RICOH GR III                |
+| `lens`              | `EXIF LensModel`             | RICOH GR LENS 28mm F2.8     |
+| `aperture`          | `EXIF FNumber`               | f/4.0                       |
+| `shutter_speed`     | `EXIF ExposureTime`          | 1/60                        |
+| `iso`               | `EXIF ISOSpeedRatings`       | 200                         |
+| `focal_length_35mm` | `EXIF FocalLengthIn35mmFilm` | 28mm                        |
+| `date_taken`        | `EXIF DateTimeOriginal`      | 2021:09:19                  |
 
 </Details>
 
@@ -176,7 +132,9 @@ The `from_exif_tags()` classmethod takes the raw dictionary returned by `exifrea
 This is where the heavy lifting happens. The `ImageConverter` class wraps **libvips** (via pyvips) to handle image resizing and AVIF encoding:
 
 <Callout type="note" title="Why libvips?">
-Unlike Pillow or ImageMagick, libvips streams images through memory rather than loading entire files. This makes it dramatically faster and lighter for large RAW files.
+  Unlike Pillow or ImageMagick, libvips streams images through memory rather
+  than loading entire files. This makes it dramatically faster and lighter for
+  large RAW files.
 </Callout>
 
 Key design decisions:
@@ -204,7 +162,9 @@ output_files = converter.generate_responsive_sizes(
 ```
 
 <Callout type="tip">
-An optional `include_responsive_widths=True` flag generates additional <Badge>400w</Badge> <Badge>800w</Badge> <Badge>1600w</Badge> variants for use in `srcset` attributes.
+  An optional `include_responsive_widths=True` flag generates additional{" "}
+  <Badge>400w</Badge> <Badge>800w</Badge> <Badge>1600w</Badge> variants for use
+  in `srcset` attributes.
 </Callout>
 
 ### 3. YAML Generation (`yaml_generator.py`)
@@ -238,43 +198,62 @@ The generator handles formatting raw EXIF values into human-readable strings, co
 
 The Click-based CLI ties everything together with four commands:
 
-| Command | Purpose |
-|---------|---------|
-| `process` | Process a single RAW file → extract metadata + generate all AVIF sizes |
-| `generate-yaml` | Scan a directory of processed images → produce a collection YAML |
-| `quick-add` | One-shot: process a RAW file and create its YAML entry |
+| Command             | Purpose                                                                  |
+| ------------------- | ------------------------------------------------------------------------ |
+| `process`           | Process a single RAW file → extract metadata + generate all AVIF sizes   |
+| `generate-yaml`     | Scan a directory of processed images → produce a collection YAML         |
+| `quick-add`         | One-shot: process a RAW file and create its YAML entry                   |
 | `add-to-collection` | Detect new RAW files, process them, and append to an existing collection |
 
 <Callout type="tip" title="Incremental Workflow">
-The `add-to-collection` command is the most interesting it's designed for incremental workflows. It scans `pipeline_artifacts/raw/` for files that don't yet have a corresponding `-thumbnail.avif` in `pipeline_artifacts/converted/`, processes only those, loads the existing collection YAML, calculates the next photo ID, and appends new entries. This means adding photos to a collection is as simple as dropping RAW files into a folder and running one command.
+  The `add-to-collection` command is the most interesting it's designed for
+  incremental workflows. It scans `pipeline_artifacts/raw/` for files that don't
+  yet have a corresponding `-thumbnail.avif` in `pipeline_artifacts/converted/`,
+  processes only those, loads the existing collection YAML, calculates the next
+  photo ID, and appends new entries. This means adding photos to a collection is
+  as simple as dropping RAW files into a folder and running one command.
 </Callout>
 
 ## Design Decisions Worth Noting
 
 <Details summary="AVIF over WebP">
-AVIF consistently delivers 20-30% smaller files than WebP at the same perceptual quality, especially for photographic content. The encoding is slower (hence effort 7 rather than 9), but this is an offline pipeline so encoding speed barely matters.
+  AVIF consistently delivers 20-30% smaller files than WebP at the same
+  perceptual quality, especially for photographic content. The encoding is
+  slower (hence effort 7 rather than 9), but this is an offline pipeline so
+  encoding speed barely matters.
 </Details>
 
 <Details summary="12-bit depth">
-Most images are 8-bit, but encoding at 12-bit avoids introducing banding artifacts in subtle gradients (think: dusk skies, smooth bokeh). The file size increase is negligible.
+  Most images are 8-bit, but encoding at 12-bit avoids introducing banding
+  artifacts in subtle gradients (think: dusk skies, smooth bokeh). The file size
+  increase is negligible.
 </Details>
 
 <Details summary="Chroma subsampling set to auto">
-Lets libvips decide based on quality. At Q≥85, it typically preserves full chroma, which matters for color accuracy in a photography portfolio.
+  Lets libvips decide based on quality. At Q≥85, it typically preserves full
+  chroma, which matters for color accuracy in a photography portfolio.
 </Details>
 
 <Details summary="Metadata stripped, ICC kept">
-EXIF data is extracted separately into JSON, so there's no reason to keep it in the image file. But the ICC color profile must stay for the browser to render colors correctly.
+  EXIF data is extracted separately into JSON, so there's no reason to keep it
+  in the image file. But the ICC color profile must stay for the browser to
+  render colors correctly.
 </Details>
 
 <Details summary="Click for CLI">
-Type-safe argument parsing, auto-generated help text, and composable command groups made it the obvious choice over argparse.
+  Type-safe argument parsing, auto-generated help text, and composable command
+  groups made it the obvious choice over argparse.
 </Details>
 
 ## What's Next
 
 This pipeline handles the core workflow well, but there's room to grow:
 
-- <Badge type="warning">planned</Badge> **Parallel processing**: Currently sequential; libvips is fast enough that Python's GIL isn't the bottleneck, but processing multiple files concurrently would still speed up large batches.
-- <Badge type="warning">planned</Badge> **CDN upload integration**: Automatically push converted images to Cloudflare R2 after processing.
-- <Badge type="warning">planned</Badge> **Watermarking**: The Astro frontend already has a `Watermark.astro` component; baking watermarks into the images themselves would add another layer of protection.
+- <Badge type="warning">planned</Badge> **Parallel processing**: Currently
+  sequential; libvips is fast enough that Python's GIL isn't the bottleneck, but
+  processing multiple files concurrently would still speed up large batches.
+- <Badge type="warning">planned</Badge> **CDN upload integration**:
+  Automatically push converted images to Cloudflare R2 after processing.
+- <Badge type="warning">planned</Badge> **Watermarking**: The Astro frontend
+  already has a `Watermark.astro` component; baking watermarks into the images
+  themselves would add another layer of protection.

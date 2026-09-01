@@ -1,14 +1,16 @@
+import { unified } from "@astrojs/markdown-remark";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers";
 import yaml from "@rollup/plugin-yaml";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
-import d2 from "astro-d2";
 import expressiveCode from "astro-expressive-code";
 import icon from "astro-icon";
+import mermaid from "astro-mermaid";
 import robotsTxt from "astro-robots-txt";
 import { pluginLanguageBadge } from "expressive-code-language-badge";
+import rehypeExpressiveCode from "rehype-expressive-code";
 import compression from "vite-plugin-compression";
 
 // https://astro.build/config
@@ -23,19 +25,26 @@ export default defineConfig({
 		expressiveCode({
 			themes: ["catppuccin-mocha", "catppuccin-latte"],
 			plugins: [pluginLineNumbers(), pluginLanguageBadge()],
+			useDarkModeMediaQuery: false,
+			styleOverrides: {
+				uiFontFamily:
+					'ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
+				codeFontFamily:
+					'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+			},
 		}), // https://shiki.style/languages
 		mdx(),
 		sitemap(),
-		d2({
-			output: "static/diagrams",
-			theme: {
-				default: "0",
-				dark: "200",
-			},
-		}),
+		mermaid(),
 		robotsTxt(),
 		icon(),
 	],
+
+	markdown: {
+		processor: unified({
+			rehypePlugins: [rehypeExpressiveCode],
+		}),
+	},
 
 	vite: {
 		plugins: [

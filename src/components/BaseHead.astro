@@ -202,6 +202,7 @@ if (pathSegments.length > 0) {
 			document.documentElement.classList.add('dark-mode');
 		}
 		document.documentElement.style.colorScheme = theme;
+		document.documentElement.setAttribute('data-theme', theme === 'dark' ? 'github-dark' : 'github-light');
 	})();
 </script>
 

@@ -31,37 +31,22 @@ Pods are ephemeral — they can be created, destroyed, and rescheduled at any ti
 
 ## Service Types
 
-```d2
-direction: down
+```mermaid
+flowchart TB
+  internet[Internet]
+  lb[LoadBalancer Service]
+  np[NodePort Service]
+  cip[ClusterIP Service]
+  p1[Pod 1]
+  p2[Pod 2]
+  p3[Pod 3]
 
-internet: Internet {
-  shape: cloud
-}
-
-lb: LoadBalancer Service {
-  shape: hexagon
-}
-
-np: NodePort Service {
-  port: "30000-32767"
-}
-
-cip: ClusterIP Service {
-  internal: "Cluster Only"
-}
-
-pods: Pods {
-  p1: Pod 1
-  p2: Pod 2
-  p3: Pod 3
-}
-
-internet -> lb: External traffic
-lb -> np
-np -> cip
-cip -> pods.p1
-cip -> pods.p2
-cip -> pods.p3
+  internet -- External traffic --> lb
+  lb --> np
+  np --> cip
+  cip --> p1
+  cip --> p2
+  cip --> p3
 ```
 
 ### ClusterIP (Default)

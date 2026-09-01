@@ -1,153 +1,89 @@
 ---
-title: 'D2 Diagrams Example'
-description: 'Testing D2 diagram integration with astro-d2'
+title: 'Mermaid Diagrams Example'
+description: 'Testing Mermaid diagram integration with astro-mermaid'
 pubDate: 2024-12-22
 draft: true
-tags: ['d2', 'diagrams', 'example']
+tags: ['mermaid', 'diagrams', 'example']
 ---
 
-This post demonstrates how to use D2 diagrams in your blog posts.
+This post demonstrates how to use Mermaid diagrams in your blog posts.
 
 ## Basic Shapes
 
-```d2
-server: Web Server
-database: PostgreSQL
-cache: Redis
-
-server -> database: queries
-server -> cache: reads/writes
+```mermaid
+graph TD
+  server[Web Server] --> database[PostgreSQL]
+  server --> cache[Redis]
 ```
 
 ## Architecture Diagram
 
-```d2
-direction: right
+```mermaid
+flowchart LR
+  client[Client] --> lb[Load Balancer]
+  lb --> api[API Gateway]
+  api --> services_auth[Auth Service]
+  api --> services_users[Users Service]
+  api --> services_orders[Orders Service]
 
-client: Client {
-  shape: person
-}
-
-lb: Load Balancer {
-  shape: hexagon
-}
-
-api: API Gateway {
-  shape: rectangle
-}
-
-services: Microservices {
-  auth: Auth Service
-  users: Users Service
-  orders: Orders Service
-}
-
-db: Databases {
-  postgres: PostgreSQL
-  redis: Redis
-  mongo: MongoDB
-}
-
-client -> lb
-lb -> api
-api -> services.auth
-api -> services.users
-api -> services.orders
-services.auth -> db.redis
-services.users -> db.postgres
-services.orders -> db.mongo
+  services_auth --> db_redis[(Redis)]
+  services_users --> db_postgres[(PostgreSQL)]
+  services_orders --> db_mongo[(MongoDB)]
 ```
 
 ## Sequence Diagram
 
-```d2
-shape: sequence_diagram
-
-user: User
-browser: Browser
-server: Server
-db: Database
-
-user -> browser: Click login
-browser -> server: POST /login
-server -> db: SELECT user
-db -> server: User data
-server -> browser: JWT token
-browser -> user: Logged in
+```mermaid
+sequenceDiagram
+  user->>browser: Click login
+  browser->>server: POST /login
+  server->>db: SELECT user
+  db-->>server: User data
+  server-->>browser: JWT token
+  browser-->>user: Logged in
 ```
 
 ## Kubernetes Deployment
 
-```d2
-k8s: Kubernetes Cluster {
-  ns: namespace/production {
-    deploy: Deployment {
-      replicas: 3
-      pod1: Pod
-      pod2: Pod
-      pod3: Pod
-    }
-    svc: Service {
-      type: ClusterIP
-    }
-    ing: Ingress {
-      shape: cloud
-    }
-  }
-}
+```mermaid
+flowchart TB
+  k8s[Kubernetes Cluster] --> ns[namespace/production]
 
-internet: Internet {
-  shape: cloud
-}
+  ns --> deploy[Deployment]
+  ns --> svc[Service]
+  ns --> ing[Ingress]
 
-internet -> k8s.ns.ing: HTTPS
-k8s.ns.ing -> k8s.ns.svc
-k8s.ns.svc -> k8s.ns.deploy.pod1
-k8s.ns.svc -> k8s.ns.deploy.pod2
-k8s.ns.svc -> k8s.ns.deploy.pod3
+  deploy --> pod1[Pod 1]
+  deploy --> pod2[Pod 2]
+  deploy --> pod3[Pod 3]
+
+  internet[Internet] -- HTTPS --> ing
+  ing --> svc
+  svc --> pod1
+  svc --> pod2
+  svc --> pod3
 ```
 
 ## CI/CD Pipeline
 
-```d2
-direction: right
-
-git: Git Push {
-  icon: https://icons.terrastruct.com/dev%2Fgit.svg
-}
-
-ci: CI Pipeline {
-  build: Build
-  test: Test
-  scan: Security Scan
-
-  build -> test -> scan
-}
-
-registry: Container Registry {
-  shape: cylinder
-}
-
-cd: CD Pipeline {
-  staging: Deploy Staging
-  prod: Deploy Production
-
-  staging -> prod
-}
-
-git -> ci.build
-ci.scan -> registry: Push image
-registry -> cd.staging: Pull image
+```mermaid
+flowchart LR
+  git[Git Push] --> ci_build[Build]
+  ci_build --> test[Test]
+  ci_build --> scan[Security Scan]
+  scan --> registry[Container Registry]
+  registry --> staging[Deploy Staging]
+  staging --> prod[Deploy Production]
 ```
 
 ---
 
-## How to Use D2
+## How to Use Mermaid
 
-D2 is already configured via `astro-d2` in the Astro config. Simply use fenced code blocks with the `d2` language:
+Mermaid is already supported in Astro. Simply use fenced code blocks with the `mermaid` language:
 
 ````markdown
-```d2
+```mermaid
 server -> database
 ```
 ````
@@ -156,6 +92,5 @@ The diagrams are rendered at build time and output as SVGs.
 
 ### Resources
 
-- [D2 Documentation](https://d2lang.com)
-- [D2 Playground](https://play.d2lang.com)
-- [astro-d2 Plugin](https://github.com/fabiospampinato/astro-d2)
+- [Mermaid Documentation](https://mermaid.js.org)
+- [Mermaid Playground](https://mermaid.live)
