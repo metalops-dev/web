@@ -40,7 +40,7 @@ const tagPages = Object.fromEntries(
 
 const pages = { ...staticPages, ...postPages, ...tagPages };
 
-export const { getStaticPaths, GET } = OGImageRoute({
+export const { getStaticPaths, GET } = await OGImageRoute({
 	param: "slug",
 	pages,
 	getImageOptions: (_, page) => ({
