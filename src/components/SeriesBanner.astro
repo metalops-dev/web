@@ -16,6 +16,11 @@ const sortedPosts = posts.sort((a, b) => a.part - b.part);
 		<span class="series-label" aria-label="Content type">Series</span>
 		<h3 id="series-title">{series}</h3>
 		<span class="series-part" aria-current="page">† Part {part}{totalParts ? ` of ${totalParts}` : ''}</span>
+		{totalParts && (
+			<div class="series-progress" aria-label={`${part} of ${totalParts} parts published`}>
+				<span style={`width: ${(part / totalParts) * 100}%`}></span>
+			</div>
+		)}
 	</header>
 	<nav class="series-nav" aria-labelledby="series-title">
 		<ol>
@@ -65,6 +70,19 @@ const sortedPosts = posts.sort((a, b) => a.part - b.part);
 	.series-part {
 		font-size: 0.85rem;
 		color: var(--muted);
+	}
+	.series-progress {
+		height: 3px;
+		margin-top: 0.75rem;
+		background: var(--border);
+		border-radius: 999px;
+		overflow: hidden;
+	}
+	.series-progress span {
+		display: block;
+		height: 100%;
+		background: var(--accent);
+		border-radius: inherit;
 	}
 	.series-nav {
 		padding: 1rem 1.25rem;

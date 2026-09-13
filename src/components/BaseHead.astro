@@ -122,9 +122,15 @@ if (pathSegments.length > 0) {
 			item: canonicalURL.toString(),
 		});
 	} else if (
-		["archive", "about", "series", "reading", "uses", "now", "talks"].includes(
-			pathSegments[0],
-		)
+		[
+			"archive",
+			"about",
+			"series",
+			"bookmarks",
+			"uses",
+			"now",
+			"talks",
+		].includes(pathSegments[0])
 	) {
 		items.push({
 			"@type": "ListItem",

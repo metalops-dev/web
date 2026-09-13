@@ -9,6 +9,7 @@ import Newsletter from "../components/Newsletter.astro";
 import PostNavigation from "../components/PostNavigation.astro";
 import TableOfContents from "../components/TableOfContents.astro";
 import Tags from "../components/Tags.astro";
+import { siteConfig } from "../config/site";
 
 interface Heading {
 	depth: number;
@@ -31,6 +32,7 @@ interface Props {
 	content?: string;
 	prev?: PostLink;
 	next?: PostLink;
+	related?: PostLink[];
 	draft?: boolean;
 }
 
@@ -44,6 +46,7 @@ const {
 	content = "",
 	prev,
 	next,
+	related = [],
 	draft = false,
 } = Astro.props;
 
@@ -94,6 +97,25 @@ const readingTime = Math.ceil(wordCount / 200);
 			</article>
 
 			<Newsletter />
+			<aside class="author-card">
+				<div class="author-mark" aria-hidden="true">AV</div>
+				<div>
+					<p class="author-label">Written by</p>
+					<h2>{siteConfig.author.name}</h2>
+					<p>Software engineer building cloud-native data platforms, infrastructure, and developer tooling.</p>
+					<a href={siteConfig.author.url}>More about Adrian <span aria-hidden="true">→</span></a>
+				</div>
+			</aside>
+			{related.length > 0 && (
+				<section class="related-posts" aria-labelledby="related-posts-title">
+					<h2 id="related-posts-title">Related posts</h2>
+					<ul>
+						{related.map((post) => (
+							<li><a href={`/blog/${post.slug}/`}>{post.title}</a></li>
+						))}
+					</ul>
+				</section>
+			)}
 			<Comments />
 			<PostNavigation prev={prev} next={next} />
 		</main>
@@ -152,6 +174,71 @@ const readingTime = Math.ceil(wordCount / 200);
 	.prose :global(img) {
 		margin: 1.5rem 0;
 	}
+	.related-posts {
+		margin-top: 2rem;
+		padding-top: 1.5rem;
+		border-top: 1px solid var(--accent);
+	}
+	.related-posts h2 {
+		font-size: 1.25rem;
+	}
+	.related-posts ul {
+		padding-left: 1.25rem;
+	}
+	.author-card {
+		display: flex;
+		align-items: flex-start;
+		gap: 1rem;
+		margin: 2rem 0;
+		padding: 1.25rem;
+		border: 1px solid var(--border);
+		border-left: 3px solid var(--accent);
+		background: var(--surface);
+		box-shadow: var(--shadow);
+		border-radius: var(--radius);
+	}
+	.author-mark {
+		display: grid;
+		place-items: center;
+		flex: 0 0 2.75rem;
+		height: 2.75rem;
+		border: 1px solid var(--accent);
+		border-radius: 50%;
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		color: var(--accent);
+	}
+	.author-card h2 {
+		margin: 0.15rem 0 0.4rem;
+		padding: 0;
+		font-size: 1rem;
+	}
+	.author-card h2::before {
+		display: none;
+	}
+	.author-label {
+		margin: 0;
+		font-family: var(--font-mono);
+		font-size: 0.65rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--accent);
+	}
+	.author-card p:not(.author-label) {
+		margin: 0 0 0.65rem;
+		font-size: 0.85rem;
+		line-height: 1.6;
+		color: var(--muted);
+	}
+	.author-card a {
+		font-size: 0.85rem;
+	}
+	@media (max-width: 600px) {
+		.author-card {
+			gap: 0.75rem;
+			padding: 1rem;
+		}
+	}
 
 	/* Hide duplicate h1 from MDX content since layout already renders it */
 	.prose :global(h1:first-child) {
@@ -185,7 +272,7 @@ const readingTime = Math.ceil(wordCount / 200);
 			const scrollTop = window.scrollY;
 			const docHeight = document.documentElement.scrollHeight - window.innerHeight;
 			const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-			bar.style.width = progress + '%';
+			if (bar) bar.style.width = progress + '%';
 		}
 
 		window.addEventListener('scroll', update, { passive: true });

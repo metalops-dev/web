@@ -20,6 +20,9 @@ export default defineConfig({
 		assets: "static/assets",
 	},
 	site: "https://metalops.dev",
+	redirects: {
+		"/reading": "/bookmarks",
+	},
 
 	integrations: [
 		expressiveCode({

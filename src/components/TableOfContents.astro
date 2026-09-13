@@ -84,6 +84,8 @@ const filteredHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
 		display: flex;
 		flex-direction: column;
 		gap: 6px;
+		padding-left: 0.75rem;
+		border-left: 1px solid var(--border);
 		z-index: 100;
 	}
 
@@ -118,6 +120,7 @@ const filteredHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
 		line-height: 1.2;
 		font-family: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
 		transition: opacity 0.2s, color 0.2s;
+		position: relative;
 		max-width: 160px;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -132,6 +135,16 @@ const filteredHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
 	.toc-link.is-active {
 		opacity: 1;
 		color: var(--accent);
+	}
+
+	.toc-link.is-active::before {
+		content: "";
+		position: absolute;
+		left: -0.85rem;
+		top: 0;
+		bottom: 0;
+		width: 2px;
+		background: var(--accent);
 	}
 
 	.toc-link.depth-3 {
@@ -155,6 +168,7 @@ const filteredHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
 			box-shadow: var(--shadow-lg);
 			z-index: 99;
 			gap: 0.5rem;
+			border-left: 0;
 			max-height: 50vh;
 			overflow-y: auto;
 		}

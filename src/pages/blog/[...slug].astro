@@ -15,6 +15,24 @@ export async function getStaticPaths() {
 		params: { slug: post.id },
 		props: {
 			post,
+			related: sortedPosts
+				.filter((candidate) => candidate.id !== post.id)
+				.map((candidate) => ({
+					...candidate,
+					score: candidate.data.tags.filter((tag) =>
+						post.data.tags.includes(tag),
+					).length,
+				}))
+				.sort(
+					(a, b) =>
+						b.score - a.score ||
+						b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+				)
+				.slice(0, 3)
+				.map((candidate) => ({
+					title: candidate.data.title,
+					slug: candidate.id,
+				})),
 			prev:
 				index < sortedPosts.length - 1
 					? {
@@ -35,11 +53,12 @@ export async function getStaticPaths() {
 
 interface Props {
 	post: CollectionEntry<"blog">;
+	related: { title: string; slug: string }[];
 	prev?: { title: string; slug: string };
 	next?: { title: string; slug: string };
 }
 
-const { post, prev, next } = Astro.props;
+const { post, related, prev, next } = Astro.props;
 const { Content, headings } = await render(post);
 ---
 
@@ -47,6 +66,7 @@ const { Content, headings } = await render(post);
 	{...post.data}
 	headings={headings}
 	content={post.body || ''}
+	related={related}
 	prev={prev}
 	next={next}
 >

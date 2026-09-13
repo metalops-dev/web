@@ -4,29 +4,30 @@
 		"config:recommended",
 		":dependencyDashboard",
 		":semanticCommits",
-		":enableVulnerabilityAlerts",
-		":separatePatchReleases"
+		":enableVulnerabilityAlerts"
 	],
 	"schedule": ["before 5am on Monday"],
 	"timezone": "Europe/Madrid",
 	"packageRules": [
 		{
-			"matchUpdateTypes": ["minor", "patch"],
-			"matchCurrentVersion": "!/^0/",
-			"automerge": false
+			"matchManagers": ["npm"],
+			"groupName": "Node packages",
+			"groupSlug": "node-packages"
 		},
 		{
-			"matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-			"groupName": "all non-major dependencies",
-			"groupSlug": "all-minor-patch"
+			"matchManagers": ["dockerfile"],
+			"groupName": "Docker images",
+			"groupSlug": "docker-images"
 		},
 		{
-			"groupName": "TypeScript",
-			"matchPackageNames": ["typescript", "@types/*"]
+			"matchManagers": ["github-actions"],
+			"groupName": "GitHub Actions",
+			"groupSlug": "github-actions"
 		},
 		{
-			"groupName": "Testing packages",
-			"matchPackageNames": ["jest", "@testing-library/*", "vitest"]
+			"matchManagers": ["asdf"],
+			"groupName": "Tool versions",
+			"groupSlug": "tool-versions"
 		}
 	],
 	"labels": ["dependencies"],

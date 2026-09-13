@@ -58,8 +58,13 @@ const description = "Multi-part blog series";
 						<div class="series-list" role="region" aria-label="Published series">
 							{seriesList.map((series, idx) => (
 								<section class="series-item" aria-labelledby={`series-${idx}`}>
-									<h2 id={`series-${idx}`}>{series.name}</h2>
-									<p class="series-meta" aria-label="Number of posts in series">{series.posts.length} {series.posts.length === 1 ? 'post' : 'posts'}</p>
+									<div class="series-heading">
+										<div>
+											<p class="series-kicker">SERIES / {String(idx + 1).padStart(2, "0")}</p>
+											<h2 id={`series-${idx}`}>{series.name}</h2>
+										</div>
+										<p class="series-meta" aria-label="Number of posts in series">{series.posts.length} {series.posts.length === 1 ? 'part' : 'parts'}</p>
+									</div>
 									<nav class="series-posts" aria-label={`Posts in ${series.name}`}>
 										<ol>
 											{series.posts.map((post, idx) => (
@@ -114,22 +119,77 @@ const description = "Multi-part blog series";
 		margin: 0.5rem 0 0 0;
 	}
 
+	.series-item {
+		padding: 1.5rem;
+		border: 1px solid var(--border);
+		border-top: 2px solid var(--accent);
+		background: var(--surface);
+		box-shadow: var(--shadow);
+		border-radius: var(--radius);
+	}
+
+	.series-item + .series-item {
+		margin-top: 1.5rem;
+	}
+
+	.series-heading {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 1rem;
+		margin-bottom: 1.25rem;
+	}
+
+	.series-kicker {
+		margin: 0 0 0.4rem;
+		font-family: var(--font-mono);
+		font-size: 0.65rem;
+		letter-spacing: 0.12em;
+		color: var(--accent);
+	}
+
+	.series-item h2 {
+		margin: 0;
+		padding: 0;
+	}
+
+	.series-item h2::before {
+		display: none;
+	}
+
 	.series-meta {
-		font-size: 0.85rem;
+		flex-shrink: 0;
+		margin: 0.25rem 0 0;
+		padding: 0.3rem 0.55rem;
+		border: 1px solid var(--border);
+		border-radius: 999px;
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
 		color: var(--muted);
-		margin: 0.5rem 0 1rem 0;
 	}
 
 	.series-posts {
 		list-style: none;
 		padding: 0;
 		margin: 0;
+		padding-top: 0.75rem;
+		border-top: 1px solid var(--border);
 	}
 
 	.series-post {
-		margin-bottom: 0.75rem;
+		margin-bottom: 0.5rem;
 		padding-left: 1.5rem;
+		padding-top: 0.5rem;
+		padding-bottom: 0.5rem;
 		position: relative;
+	}
+
+	.series-post:last-child {
+		margin-bottom: 0;
+	}
+
+	.series-post:hover {
+		background: color-mix(in srgb, var(--accent) 8%, transparent);
 	}
 
 	.series-post::before {
@@ -142,7 +202,9 @@ const description = "Multi-part blog series";
 	}
 
 	.series-post a {
-		display: inline;
+		display: flex;
+		align-items: baseline;
+		gap: 0.5rem;
 		color: var(--accent);
 		text-decoration: none;
 		border-bottom: 1px solid var(--accent-muted);
@@ -168,6 +230,20 @@ const description = "Multi-part blog series";
 
 	.series-post a:hover .part {
 		color: var(--accent-light);
+	}
+
+	@media (max-width: 600px) {
+		.series-heading {
+			flex-direction: column;
+			gap: 0.5rem;
+		}
+		.series-item {
+			padding: 1rem;
+		}
+		.series-post a {
+			flex-direction: column;
+			gap: 0.15rem;
+		}
 	}
 
 	.muted {
