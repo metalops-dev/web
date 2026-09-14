@@ -1,0 +1,164 @@
+---
+title: "Securing PostgreSQL with TLS via Traefik"
+description: "How to terminate TLS for PostgreSQL connections at Traefik using Let's Encrypt, without managing certificates inside your PostgreSQL container."
+pubDate: "Sept 14 2026"
+tags: ["postgresql", "traefik", "security", "devops"]
+draft: false
+---
+
+import Callout from "../../components/mdx/Callout.astro";
+import CodeFile from "../../components/mdx/CodeFile.astro";
+import Comparison from "../../components/mdx/Comparison.astro";
+
+Running a database publicly is generally not a great idea, unless you know what you are doing, and running it without encryption is worse. Credentials go over the network in plain text, meaning anyone positioned to sniff traffic on your network path can grab them. You could configure PostgreSQL with its own TLS certificate, but if you're already using Traefik as your reverse proxy, why not let Traefik handle TLS termination for your database connections the same way it handles your HTTP services?
+
+I set this up recently and surprised me how smoothly it worked.
+
+- **Proxy:** Traefik 3.7.13
+- **Database:** PostgreSQL 18.6
+- **TLS:** Let's Encrypt
+
+## How It Works
+
+PostgreSQL has its own SSL negotiation mechanism `sslmode=postgres` which is the default method.
+
+When a client connects, it first sends a special 8-byte SSLRequest message asking whether the server supports SSL/TLS. The server responds with either S or N. If the response is S, the client proceeds with a normal TLS handshake over the same connection.
+
+<Callout type="note" title="PostgreSQL 17">
+  Since PostgreSQL 17, `sslmode=direct` changes the way connections are handled
+  by eliminating the initial `SSLRequest` round-trip, which reduces latency.
+</Callout>
+
+Traefik supports this PostgreSQL-specific negotiation natively. When a PostgreSQL client connects to a TCP entrypoint configured for TLS, Traefik recognizes the initial SSLRequest, responds appropriately, and then terminates the TLS connection using the certificate configured through its certificate resolver.
+
+The architecture therefore looks like this:
+
+```mermaid
+flowchart TB
+  client["Client"] -- "TLS 1.3 / TCP 5432" --> traefik["Traefik"]
+  traefik -- "ACME HTTP/TLS challenge" --> le["Let's Encrypt"]
+  le -- "TLS certificate" --> traefik
+  traefik -- "TCP passthrough" --> postgres["PostgreSQL 5432"]
+```
+
+From the client point of view, it has a fully encrypted TLS 1.3 connection to your database. From the Postgres side, it is receiving plain TCP on an internal network and does not need to know anything about TLS.
+
+## Why This Approach
+
+The alternative is **TLS passthrough**, where Traefik forwards the encrypted bytes directly to Postgres and Postgres handles TLS itself with its own certificate. This works, but it has some drawbacks:
+
+- You need to provision and renew certificates inside the Postgres container
+- Traefik cannot inspect or route based on connection content
+- More moving parts to maintain
+
+With TLS termination at Traefik, you get a single place to manage all the certificates via Let's Encrypt automatic renewal, and a clean separation of concerns: Traefik handles security, Postgres focuses on being a database.
+
+<Callout type="warning" title="Network boundary">
+  Traffic between Traefik and Postgres is unencrypted. That is "fine" when both
+  are on the same internal Docker network. If you're running a multi-host
+  cluster where Traefik and Postgres live on different hosts, the traffic should
+  be encrypted on that side too.
+</Callout>
+
+<Comparison beforeLabel="TLS passthrough" afterLabel="TLS termination">
+<Fragment slot="before">
+- Certificates are managed inside Postgres
+- Postgres handles the TLS connection
+- Traefik forwards encrypted bytes
+</Fragment>
+
+<Fragment slot="after">
+- Let's Encrypt is managed by Traefik
+- Traefik terminates the TLS connection
+- Postgres receives plain internal TCP
+</Fragment>
+</Comparison>
+
+## Configuration
+
+### Traefik Static Config
+
+Add a dedicated TCP entrypoint for Postgres and a Let's Encrypt certificate resolver:
+
+<CodeFile filename="traefik.yml" lang="yaml">
+```yaml
+entryPoints:
+  postgres:
+    address: ":5432"
+
+certificatesResolvers:
+letsencrypt:
+acme:
+email: <your@email.com>
+storage: acme.json
+httpChallenge:
+entryPoint: http
+keyType: EC384
+```
+</CodeFile>
+
+### Postgres Docker Labels
+
+<CodeFile filename="docker-compose.yml" lang="yaml">
+```yaml
+labels:
+  - "traefik.enable=true"
+  - "traefik.tcp.routers.pg.rule=HostSNI(`pg.yourdomain.com`)"
+  - "traefik.tcp.routers.pg.entrypoints=postgres"
+  - "traefik.tcp.routers.pg.tls=true"
+  - "traefik.tcp.routers.pg.tls.certresolver=letsencrypt"
+  - "traefik.tcp.routers.pg.service=pg-loadbalancer"
+  - "traefik.tcp.services.pg-loadbalancer.loadbalancer.server.port=5432"
+  - "traefik.docker.network=proxy"
+```
+
+</CodeFile>
+
+A few things worth noting:
+
+- `HostSNI` works because the client sends the hostname as part of the TLS handshake (Server Name Indication). Traefik uses this to match the router rule and select the right certificate.
+- The router and service must be explicitly linked via the `service` label. Unlike HTTP routers, Traefik will not auto-associate TCP routers and services by name.
+- The Postgres container only needs to be on the Traefik network to reach it. Port 5432 does not need to be exposed to the host.
+
+### Postgres Container
+
+No special configuration needed inside the Postgres container. It receives plain TCP from Traefik and does not need any SSL settings:
+
+<CodeFile filename="docker-compose.yml" lang="yaml">
+```yaml
+services:
+  postgres:
+    image: postgres:18-bookworm
+    expose:
+      - "5432"
+    networks:
+      - postgres_network
+      - proxy
+```
+</CodeFile>
+
+### Connecting
+
+With `sslmode=require`, the client negotiates TLS with Traefik and gets a fully encrypted connection:
+
+<CodeFile filename="terminal" lang="bash">
+```bash
+psql "postgresql://user:password@pg.yourdomain.com:5432/mydb?sslmode=require"
+```
+</CodeFile>
+
+To verify TLS details:
+
+```text
+SSL connection (protocol: TLSv1.3, cipher: TLS_AES_128_GCM_SHA256, compression: off)
+```
+
+## A Note on sslmode
+
+PostgreSQL `sslmode` has several values: `disable`, `allow`, `prefer`, `require`, `verify-ca`, and `verify-full`. Use `require` for this setup. The negotiation only makes sense if the client is going to follow through with TLS. Values like `allow` and `prefer` have ambiguous behaviour in this context and probably will fail depending on how Traefik responds to the initial negotiation. Using `require` tells the client to always attempt TLS and fail the connection if it can't be established, which is the correct behaviour here.
+
+## Wrapping Up
+
+Traefik's native support for SSL PostgreSQL means your database connections can secured with Let's Encrypt certificates using the same tooling you already use for your HTTP services. No certificate management inside the database container, no manual renewal, and a single consistent approach across your entire stack.
+
+This works well on a single VPS. For multi-host architecture, encrypt the connection between Traefik and PostgreSQL as well.
