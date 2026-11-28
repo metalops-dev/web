@@ -189,3 +189,9 @@ examples/**/env.d.ts
 *.code-workspace
 
 public/static/diagrams/blog/*.svg
+
+# Local browser captures and machine-specific Impeccable settings
+.playwright-mcp/
+.impeccable/config.local.json
+
+.agents

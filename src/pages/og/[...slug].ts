@@ -8,12 +8,7 @@ const staticPages: Record<string, { title: string; description: string }> = {
 	"": { title: "metalops.dev", description: SITE_DESCRIPTION },
 	about: { title: "About", description: "About metalops.dev and the author" },
 	archive: { title: "Archive", description: "All blog posts" },
-	bookmarks: { title: "Bookmarks", description: "Curated links and resources" },
-	now: { title: "Now", description: "What I'm doing right now" },
-	reading: { title: "Reading", description: "Books and articles I'm reading" },
 	series: { title: "Series", description: "Blog post series" },
-	talks: { title: "Talks", description: "Presentations and talks" },
-	uses: { title: "Uses", description: "Tools and equipment I use" },
 	tags: { title: "Tags", description: "Browse posts by tag" },
 };
 
@@ -41,7 +36,6 @@ const tagPages = Object.fromEntries(
 const pages = { ...staticPages, ...postPages, ...tagPages };
 
 export const { getStaticPaths, GET } = await OGImageRoute({
-	param: "slug",
 	pages,
 	getImageOptions: (_, page) => ({
 		title: page.title,

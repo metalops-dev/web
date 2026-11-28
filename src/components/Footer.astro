@@ -6,21 +6,6 @@ const today = new Date();
 
 <footer>
 	<div class="footer-main">
-		<div class="footer-content">
-			<span>&copy; {today.getFullYear()} {siteConfig.name}</span>
-			<span class="sep">·</span>
-			<a href="/rss.xml">rss</a>
-			<span class="sep">·</span>
-			<a href={siteConfig.author.url} target="_blank" rel="noopener">{siteConfig.author.name}</a>
-			<span class="sep">·</span>
-			<a href="https://adrianvillanueva.com" target="_blank" rel="noopener" class="portfolio-link">portfolio</a>
-			<span class="sep">·</span>
-			<a href="https://www.linkedin.com/in/adrian-villanueva-martinez/" target="_blank" rel="noopener">LinkedIn</a>
-			<span class="sep">·</span>
-			<a href={siteConfig.social.resume} target="_blank" rel="noopener">resume</a>
-		</div>
-	</div>
-	<div class="footer-badges">
 		<div class="skull" aria-hidden="true">
 			<pre>
    .-.
@@ -30,12 +15,21 @@ const today = new Date();
  |     |
   `---'</pre>
 		</div>
+		<div class="footer-content">
+			<span>&copy; {today.getFullYear()} {siteConfig.name}</span>
+			<span class="sep">·</span>
+			<a href="/rss.xml">rss</a>
+			<span class="sep">·</span>
+			<a href={siteConfig.author.url} target="_blank" rel="noopener">{siteConfig.author.name}</a>
+		</div>
+	</div>
+	<div class="footer-badges">
 		<a href="https://hayahora.futbol/#sobre-los-bloqueos" target="_blank" rel="noopener noreferrer" class="badge-link" id="laliga-link">
 			<img src="/blocked.png" alt="LaLiga blocking notice" id="laliga-img" loading="lazy" />
 			<span class="badge-label">#LaLigaGate</span>
 		</a>
 		<div class="badge-item">
-			<img src="/ai.svg" alt="Built with AI" loading="lazy" />
+			<img src="/ai.svg" alt="Written by a human, not by AI" loading="lazy" />
 		</div>
 	</div>
 </footer>
@@ -65,7 +59,11 @@ const today = new Date();
 	.footer-main {
 		max-width: 700px;
 		margin: 0 auto;
-		padding: 2rem 1.5rem;
+		padding: 2rem 1.5rem 1.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 1rem;
 	}
 	.footer-content {
 		display: flex;
@@ -91,18 +89,14 @@ const today = new Date();
 		border-bottom-color: var(--accent);
 	}
 
-	.portfolio-link:hover {
-		color: var(--accent-portfolio);
-		border-bottom-color: var(--accent-portfolio);
-	}
 	.footer-badges {
 		max-width: 700px;
 		margin: 0 auto;
 		padding: 0 1.5rem 2.5rem;
 		display: flex;
-		align-items: flex-end;
+		align-items: center;
 		justify-content: center;
-		gap: 2rem;
+		gap: 1.5rem;
 		flex-wrap: wrap;
 	}
 	.badge-link {
@@ -119,11 +113,11 @@ const today = new Date();
 		border-bottom: none;
 	}
 	.badge-link img {
-		max-width: 280px;
+		max-width: 200px;
 		width: 100%;
 		height: auto;
 		border: 1px solid var(--border);
-		opacity: 0.6;
+		opacity: 0.85;
 		transition: opacity 0.2s;
 		border-radius: var(--radius, 6px);
 	}
@@ -157,24 +151,22 @@ const today = new Date();
 	}
 	.skull pre {
 		margin: 0;
-		font-size: 0.5rem;
+		font-size: 0.7rem;
 		line-height: 1.2;
-		color: var(--muted);
-		opacity: 0.3;
+		color: var(--accent);
+		opacity: 0.7;
 		border: none;
 		background: none;
 		padding: 0;
 		box-shadow: none;
 	}
 	.skull pre:hover {
-		opacity: 0.6;
+		opacity: 1;
 		filter: drop-shadow(0 0 4px var(--accent));
 	}
 	@media (max-width: 500px) {
 		.footer-badges {
-			flex-direction: column;
-			align-items: center;
-			gap: 1.5rem;
+			gap: 1rem;
 		}
 		.badge-link {
 			align-items: center;
