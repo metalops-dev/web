@@ -6,7 +6,6 @@
 		":semanticCommits",
 		":enableVulnerabilityAlerts"
 	],
-	"schedule": ["before 5am on Monday"],
 	"timezone": "Europe/Madrid",
 	"packageRules": [
 		{
