@@ -16,7 +16,7 @@ COPY . .
 RUN pnpm build
 
 # Production Stage
-FROM nginx:1.29-bookworm AS production
+FROM nginx:1.31.10 AS production
 COPY infra/nginx.conf /etc/nginx/nginx.conf
 COPY --from=builder /app/dist /usr/share/nginx/html
 EXPOSE 80
