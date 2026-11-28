@@ -1,8 +1,8 @@
 # Building stage
-FROM node:24.21.0-bookworm-slim AS builder
+FROM node:26.13.1-bookworm-slim AS builder
 ENV NODE_OPTIONS="--max-old-space-size=6144"
 
-RUN corepack enable && corepack prepare pnpm@12.21.0 --activate
+RUN npm install --global pnpm@latest
 
 WORKDIR /app
 

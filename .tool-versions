@@ -1,4 +1,4 @@
-nodejs     24.22.3
+nodejs     26.13.1
 pre-commit 4.7.0
 pnpm       latest
 typos      latest
