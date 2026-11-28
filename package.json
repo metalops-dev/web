@@ -39,7 +39,7 @@
 	"devDependencies": {
 		"@biomejs/biome": "2.6.9",
 		"@rollup/plugin-yaml": "5.0.1",
-		"typescript": "6.0.3",
+		"typescript": "7.0.2",
 		"vite": "8.4.0",
 		"vite-plugin-compression": "0.5.1",
 		"vitest": "5.1.2",
