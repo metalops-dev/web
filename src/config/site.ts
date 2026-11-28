@@ -3,7 +3,7 @@ export const siteConfig = {
 	name: "metalops.dev",
 	title: "metalops.dev",
 	description:
-		"A technical blog about software, systems, infrastructure and DevOps. Deep dives on Rust, infrastructure automation, and building resilient production systems.",
+		"Independent infrastructure engineering, from bare metal to distributed systems. Technical writing and practical research for understandable, resilient systems.",
 	author: {
 		name: "Adrian Villanueva",
 		url: "https://adrianvillanueva.com",
@@ -32,7 +32,6 @@ export const siteConfig = {
 	},
 	social: {
 		github: "https://github.com/metalops-dev",
-		resume: "https://resume.adrianvillanueva.com",
 	},
 } as const;
 
